@@ -16,7 +16,7 @@ import com.grupo56.proyectoIngeBackend.model.auto;
 import com.grupo56.proyectoIngeBackend.service.autoserviceimp;
 //Expone los endpoints y llama a los metodos que se relacionan con la base de datos, o simplemente hace otra cosa como un calculo etc 
 @RestController  //porque es apiRest
-@RequestMapping("/autos")  //Endpoint base
+@RequestMapping("/auto_patente")  //Endpoint base
 public class autocontroller {
 	@Autowired
 	private autoserviceimp autoService;
@@ -29,9 +29,9 @@ public class autocontroller {
 	public auto agregarAuto(@RequestBody auto car) { 
 		return autoService.cargarAuto(car);
 	}
-	@DeleteMapping("/borrar/{id}")
-	public void borrarAuto(@PathVariable int id) {
-		autoService.borrarAuto(id);
+	@DeleteMapping("/borrar/{patente}")
+	public void borrarAuto(@PathVariable String patente) {
+		autoService.borrarAuto(patente);
 	}
 	 @DeleteMapping("/borrar-todos")
 	    public ResponseEntity<String> borrarTodosYReiniciar() {

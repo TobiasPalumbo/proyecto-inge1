@@ -19,8 +19,8 @@ public class autoserviceimp {
 	public auto cargarAuto(auto car) {
 		return autoRepository.save(car);
 	}
-	public void borrarAuto( int id) {
-		autoRepository.deleteById(id);
+	public void borrarAuto( String patente) {
+		autoRepository.deleteById(patente);
 	}
 	public void borrarTodo() {
 		autoRepository.deleteAll();

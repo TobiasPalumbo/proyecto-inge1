@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.grupo56.proyectoIngeBackend.model.auto;
 @Repository
-public interface autorepo extends JpaRepository <auto,Integer> {
+public interface autorepo extends JpaRepository <auto,String> {
 	
 	// Método para resetear el AUTO_INCREMENT
     @Modifying
