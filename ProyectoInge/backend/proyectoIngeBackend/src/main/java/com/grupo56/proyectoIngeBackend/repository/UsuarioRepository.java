@@ -5,10 +5,10 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.grupo56.proyectoIngeBackend.model.usuario;
+import com.grupo56.proyectoIngeBackend.model.Usuario;
 
 @Repository
-public interface  usuarioRepo extends JpaRepository  <usuario,Integer> {
-	Optional<usuario> findByCorreo(String correo);
+public interface  UsuarioRepository extends JpaRepository  <Usuario,Integer> {
+	Optional<Usuario> findByCorreo(String correo);
 
 }

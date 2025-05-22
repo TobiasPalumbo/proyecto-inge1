@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.grupo56.proyectoIngeBackend.model.LoginRequest;
 import com.grupo56.proyectoIngeBackend.model.VerificacionRequest;
-import com.grupo56.proyectoIngeBackend.model.usuario;
-import com.grupo56.proyectoIngeBackend.repository.usuarioRepo;
+import com.grupo56.proyectoIngeBackend.model.Usuario;
+import com.grupo56.proyectoIngeBackend.repository.UsuarioRepository;
 import com.grupo56.proyectoIngeBackend.service.CorreoServiceImp;
 
 @RestController
@@ -25,16 +25,16 @@ import com.grupo56.proyectoIngeBackend.service.CorreoServiceImp;
 public class AutenticacionController {
 	private final Map<String,String> codigos= new HashMap<>();
 	@Autowired
-	private usuarioRepo usuarioRepository;
+	private UsuarioRepository usuarioRepository;
 	@Autowired
 	private CorreoServiceImp correoService;
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody LoginRequest request){
-		Optional<usuario> usuarioOp= usuarioRepository.findByCorreo(request.getCorreo());
+		Optional<Usuario> usuarioOp= usuarioRepository.findByCorreo(request.getCorreo());
 		if(usuarioOp.isEmpty() || !usuarioOp.get().getContraseña().equals(request.getContraseña())) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales invalidas");
 		}
-		usuario usuario1=usuarioOp.get();
+		Usuario usuario1=usuarioOp.get();
 		
 		if(!usuario1.getRol().equals("admin")) {
 			return ResponseEntity.ok(Map.of(

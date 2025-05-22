@@ -7,19 +7,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.grupo56.proyectoIngeBackend.model.usuario;
-import com.grupo56.proyectoIngeBackend.service.usuarioServiceImp;
+import com.grupo56.proyectoIngeBackend.model.Usuario;
+import com.grupo56.proyectoIngeBackend.service.UsuarioServiceImp;
 
 @RestController
 @RequestMapping("/usuario")
-public class usuarioController {
-	private usuarioServiceImp usuarioService;
+public class UsuarioController {
+	private UsuarioServiceImp usuarioService;
 	@GetMapping
-	public List<usuario> listarUsuarios(){
+	public List<Usuario> listarUsuarios(){
 		return usuarioService.obtenerUsuarios();
 	}
 	@GetMapping("/{correo}")
-	public usuario obtenerUsuarioPorCorreo(@PathVariable String correo) {
+	public Usuario obtenerUsuarioPorCorreo(@PathVariable String correo) {
 		return usuarioService.obtenerUsuarioPorCorreo(correo);
 	}
 }
