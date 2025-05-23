@@ -57,17 +57,17 @@ export function LoginForm({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card className="w-full max-w-4xl overflow-hidden bg-white ">
+      <Card className="w-full max-w-lg overflow-hidden bg-white border border-gray-300 rounded-lg shadow-md">
         <CardContent className="grid  p-0 h-full">
           <form onSubmit={handleSubmit} className="flex flex-col justify-center p-6 md:p-8">
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center text-center">
-                <h1 className="text-2xl font-bold">Iniciar Sesion</h1>
+                <h1 className="text-2xl font-bold pb-6 pt-4">Iniciar Sesion</h1>
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="correo"></Label>
                 <Input
                   id="email"
+                  className="focus:outline-none focus:ring-2 focus:ring-gray-100 border-gray-300"
                   type="email"
                   placeholder="Correo electrónico"
                   value={correo}
@@ -77,19 +77,19 @@ export function LoginForm({
               </div>
               <div className="grid gap-2">
                 <div className="flex items-center">
-                  <Label htmlFor="contraseña"></Label>
-                  <a
+                  <Link
                     href="#"
                     className="ml-auto text-sm underline-offset-2 hover:underline"
                   >
                     ¿Olvidaste tu contraseña?
-                  </a>
+                  </Link>
                 </div>
                 <div className="relative">
                 <Input 
                     id="contraseña" 
                     type={mostrarContraseña ? "text" : "password"} 
                     placeholder="Contraseña"
+                    className="focus:outline-none focus:ring-2 focus:ring-gray-100 border-gray-300"
                     value={contraseña}
                     onChange={(e) => setContraseña(e.target.value)}
                 required />
@@ -101,7 +101,7 @@ export function LoginForm({
                 </button>
               </div>
               </div>
-              <Button type="submit" className="w-full">
+              <Button type="submit" className="w-full  bg-amber-900 hover:bg-amber-800 text-white">
                 Iniciar Sesión
               </Button>
               {error && (
