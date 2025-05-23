@@ -42,4 +42,10 @@ public class AutoService {
 	public Integer obtenerIdAuto(MarcaModeloRequest marcaModelo) {
 		return repository.findIdAuto(marcaModelo.getMarca(), marcaModelo.getModelo());
 	}
+	public Auto obtenerAutoPorId(Integer id ) {
+		Optional<Auto> autoOp= repository.findById(id);
+		if(autoOp.isPresent())
+			return autoOp.get();
+		return null;
+	}
 }

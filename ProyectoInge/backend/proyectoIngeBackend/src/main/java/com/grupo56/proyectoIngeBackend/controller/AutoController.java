@@ -16,9 +16,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.grupo56.proyectoIngeBackend.model.Auto;
 import com.grupo56.proyectoIngeBackend.model.AutoCategoria;
 import com.grupo56.proyectoIngeBackend.model.MarcaModeloRequest;
+import com.grupo56.proyectoIngeBackend.model.MarcasSucursalesResponse;
+import com.grupo56.proyectoIngeBackend.model.PoliticaCancelacion;
+import com.grupo56.proyectoIngeBackend.model.Sucursal;
 import com.grupo56.proyectoIngeBackend.service.AutoCategoriaService;
 import com.grupo56.proyectoIngeBackend.service.AutoService;
 import com.grupo56.proyectoIngeBackend.service.CategoriaService;
+import com.grupo56.proyectoIngeBackend.service.PoliticaCancelacionService;
+import com.grupo56.proyectoIngeBackend.service.SucursalService;
 
 import jakarta.validation.Valid;
 
@@ -31,7 +36,10 @@ public class AutoController {
 	private AutoCategoriaService serviceAutoCategoria;
 	@Autowired
 	private CategoriaService serviceCategoria;
-	
+	@Autowired
+	private SucursalService serviceSucursal;
+	@Autowired
+	private PoliticaCancelacionService servicePoliticas;
 	@PostMapping("/subirmarca")
 	public ResponseEntity<String> subirAuto(@RequestBody @Valid Auto auto) {
 		if (service.marcaModeloExiste(auto.getIdAuto()))
@@ -39,22 +47,18 @@ public class AutoController {
 		service.subirAuto(auto);
 		return ResponseEntity.status(HttpStatus.CREATED).body("Auto subido");
 	}
-	
 	@GetMapping("/subirauto")
-	public ResponseEntity <List<String>> mandarMarcas(){
+	public ResponseEntity <MarcasSucursalesResponse> mandarMarcas(){
 		List<String> marcas = service.obtenerMarcas();
-		return ResponseEntity.status(HttpStatus.OK).body(marcas);
+		List<Sucursal> sucursales= serviceSucursal.obtenerSucursales();
+		List<PoliticaCancelacion> politicas= servicePoliticas.obtenerPoliticas();
+		MarcasSucursalesResponse respuesta= new MarcasSucursalesResponse(marcas,sucursales,politicas);
+		return ResponseEntity.status(HttpStatus.OK).body(respuesta);
 	}
 	
 	@GetMapping("/subirauto/marca/{marca}")
 	public ResponseEntity <List<String>> mandarModelo(@PathVariable String marca){
 		List<String> modelos = service.obtenerModelos(marca);
-		return ResponseEntity.status(HttpStatus.OK).body(modelos);
-	}
-	
-	@GetMapping("/subirauto/modelo/{modelo}")
-	public ResponseEntity <List<String>> mandar(@PathVariable String modelo){
-		List<String> modelos = service.obtenerModelos(modelo);
 		return ResponseEntity.status(HttpStatus.OK).body(modelos);
 	}
 	

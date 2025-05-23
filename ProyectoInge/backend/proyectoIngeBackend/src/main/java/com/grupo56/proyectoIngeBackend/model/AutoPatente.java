@@ -6,6 +6,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinColumns;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -33,8 +34,52 @@ public class AutoPatente {
 	private PoliticaCancelacion politicaCancelacion;
 	private LocalDate anio;
 	private boolean borrado = false;
-	
 	public String getPatente() {
 		return patente;
 	}
+
+	public Auto getAuto() {
+		return auto;
+	}
+
+	public void setAuto(Auto auto) {
+		this.auto = auto;
+	}
+
+	public Sucursal getIdSucursal() {
+		return idSucursal;
+	}
+
+	public void setIdSucursal(Sucursal idSucursal) {
+		this.idSucursal = idSucursal;
+	}
+
+	public PoliticaCancelacion getPoliticaCancelacion() {
+		return politicaCancelacion;
+	}
+
+	public void setPoliticaCancelacion(PoliticaCancelacion politicaCancelacion) {
+		this.politicaCancelacion = politicaCancelacion;
+	}
+
+	public LocalDate getAnio() {
+		return anio;
+	}
+
+	public void setAnio(LocalDate anio) {
+		this.anio = anio;
+	}
+
+	public boolean isBorrado() {
+		return borrado;
+	}
+
+	public void setBorrado(boolean borrado) {
+		this.borrado = borrado;
+	}
+
+	public void setPatente(String patente) {
+		this.patente = patente;
+	}
+	
 }
