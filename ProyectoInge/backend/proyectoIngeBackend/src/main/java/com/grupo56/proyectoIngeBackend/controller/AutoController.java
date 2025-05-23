@@ -40,7 +40,7 @@ public class AutoController {
 	private SucursalService serviceSucursal;
 	@Autowired
 	private PoliticaCancelacionService servicePoliticas;
-	@PostMapping("/subirmarca")
+	@PostMapping("/subirmarca")//NO USAR DE MOMENTO
 	public ResponseEntity<String> subirAuto(@RequestBody @Valid Auto auto) {
 		if (service.marcaModeloExiste(auto.getIdAuto()))
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("La marca y modelo ya se encuetran cargados");
