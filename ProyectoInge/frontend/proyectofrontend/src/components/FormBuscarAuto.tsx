@@ -136,10 +136,10 @@ export function FormBuscarAuto() {
                   onValueChange={setSucursalDevolucion}
                   value={sucursalDevolucion}
                 >
-                  <SelectTrigger className="w-full **bg-white**"> {/* Añadimos bg-white */}
+                  <SelectTrigger className="w-full **bg-white**"> 
                     <SelectValue placeholder="Sucursal de Devolución" />
                   </SelectTrigger>
-                  <SelectContent className="**bg-white**"> {/* Añadimos bg-white para el contenido del Select */}
+                  <SelectContent className="**bg-white**"> 
                     <SelectGroup>
                       {sucursales.map((s) => (
                         <SelectItem
