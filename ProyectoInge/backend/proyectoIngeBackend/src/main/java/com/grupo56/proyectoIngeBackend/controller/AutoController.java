@@ -61,15 +61,6 @@ public class AutoController {
 		List<String> modelos = service.obtenerModelos(marca);
 		return ResponseEntity.status(HttpStatus.OK).body(modelos);
 	}
-	
-	@GetMapping("/subirauto/bodyAuto")
-	public ResponseEntity <List<String>> mandar(@RequestBody MarcaModeloRequest marcaModelo){
-		 Integer idAuto = service.obtenerIdAuto(marcaModelo);
-		 List<Integer> ids = serviceAutoCategoria.obtenerIdCategorias(idAuto);
-		 List<String> categorias = serviceCategoria.obtenerCategorias(ids);
-		return ResponseEntity.status(HttpStatus.OK).body(categorias);
-	}
-	
 	@GetMapping("/autos")
 	public ResponseEntity<List<Auto>> obtenerAutos(){
 		List<Auto> autos = service.obtenerAutos();
@@ -78,5 +69,4 @@ public class AutoController {
 		}
 		return ResponseEntity.status(HttpStatus.OK).body(autos);
 	}
-	
 }
