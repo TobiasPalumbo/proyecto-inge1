@@ -20,7 +20,7 @@ export default function NavBar() {
   if (!mounted) return null; // <- Evita render hasta que esté en el cliente
 
   return (
-    <nav className="sticky top-0 z-50 border-b-4 border-amber-900 shadow-emerald-50">
+    <nav className="sticky top-0 z-50 border-b-4 bg-amber-50/89 border-amber-900 shadow-amber-700">
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
         {/* Logo */}
         <div className="flex-shrink-0">

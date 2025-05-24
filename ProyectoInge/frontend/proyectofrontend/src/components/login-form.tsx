@@ -33,6 +33,7 @@ export function LoginForm({
     });
 
     const data = await response.json();
+    console.log(data);
 
         if (response.ok) {
             localStorage.setItem("correo", data.correo);
@@ -65,11 +66,11 @@ export function LoginForm({
                 <h1 className="text-2xl font-bold pb-6 pt-4">Iniciar Sesion</h1>
               </div>
               <div className="grid gap-2">
+                <Label htmlFor="contraseña">Correo electronico</Label>  
                 <Input
                   id="email"
                   className="focus:outline-none focus:ring-2 focus:ring-gray-100 border-gray-300"
                   type="email"
-                  placeholder="Correo electrónico"
                   value={correo}
                   onChange={(e) => setCorreo(e.target.value)}
                   required
@@ -85,10 +86,10 @@ export function LoginForm({
                   </Link>
                 </div>
                 <div className="relative">
+                <Label htmlFor="contraseña">Contraseña</Label>  
                 <Input 
                     id="contraseña" 
                     type={mostrarContraseña ? "text" : "password"} 
-                    placeholder="Contraseña"
                     className="focus:outline-none focus:ring-2 focus:ring-gray-100 border-gray-300"
                     value={contraseña}
                     onChange={(e) => setContraseña(e.target.value)}
@@ -107,9 +108,6 @@ export function LoginForm({
               {error && (
                 <div className="text-red-600 text-sm mt-2 text-center">{error}</div>
               )}
-              
-              <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
-              </div>
               <div className="text-center text-sm">
                 ¿No tienes una cuenta?{" "}
                 <Link href="/logIn/registrarCuenta" className="underline underline-offset-4">

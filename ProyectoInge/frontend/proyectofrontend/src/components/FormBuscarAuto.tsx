@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox"
 import {
   Select,
   SelectContent,
@@ -82,42 +83,45 @@ export function FormBuscarAuto() {
 
   return (
     <div className="w-full flex justify-center px-4">
-      <Card className="w-[1000px] shadow-lg border shadow-amber-950/85 bg-white/80"> {/* Aquí puedes ajustar la opacidad de la Card principal */}
+      <Card className="w-[1000px] shadow-lg border shadow-amber-950/85 bg-amber-50/70"> 
         <CardContent className="p-6">
           <form
             onSubmit={handleSubmit}
             className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full"
           >
+
+            
+            <div className="flex flex-col gap-4">
+              <div>
+                <Label className="text-black mb-2 font-normal text-sm ">Rango de fechas</Label>
+                <DatePickerWithRange
+                  value={rangoFechas}
+                  onSelect={setRangoFechas}
+                  className="bg-white text-black border border-gray-400 rounded-md"
+                />
+              </div>
+            </div>
             {/* Columna 1 */}
             <div className="flex flex-col gap-4">
-              <Select
-                onValueChange={(value) =>
-                  setMismaSucursal(value === "mismaSucursal")
-                }
-              >
-                <SelectTrigger className="w-full bg-white"> 
-                  <SelectValue placeholder="Seleccionar punto de devolución" />
-                </SelectTrigger>
-                <SelectContent className="bg-white"> {/* Añadimos bg-white para el contenido del Select */}
-                  <SelectGroup>
-                    <SelectItem value="mismaSucursal">
-                      Mismo punto de devolución
-                    </SelectItem>
-                    <SelectItem value="distintaSucursal">
-                      Distinto punto de devolución
-                    </SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-
+              <div className="flex items-center gap-2">
+          <Checkbox
+          id="distintaSucursalCheckbox"
+          checked={!mismaSucursal}
+          onCheckedChange={(checked) => setMismaSucursal(!checked)}
+          className="bg-white border-gray-800"
+        />
+        <label htmlFor="distintaSucursalCheckbox" className=" text-black font-normal text-sm select-none">
+          Devolver en distinta sucursal
+        </label>
+        </div>
               <Select
                 onValueChange={setSucursalRetiro}
                 value={sucursalRetiro}
               >
-                <SelectTrigger className="w-full bg-white"> {/* Añadimos bg-white */}
+                <SelectTrigger className="w-full bg-white text-black  border-gray-400 mb-4"> 
                   <SelectValue placeholder="Sucursal de Retiro" />
                 </SelectTrigger>
-                <SelectContent className="bg-white"> {/* Añadimos bg-white para el contenido del Select */}
+                <SelectContent className="bg-white"> 
                   <SelectGroup>
                     {sucursales.map((s) => (
                       <SelectItem
@@ -136,7 +140,7 @@ export function FormBuscarAuto() {
                   onValueChange={setSucursalDevolucion}
                   value={sucursalDevolucion}
                 >
-                  <SelectTrigger className="w-full bg-white"> 
+                  <SelectTrigger className="w-full bg-white text-black  border-gray-400"> 
                     <SelectValue placeholder="Sucursal de Devolución" />
                   </SelectTrigger>
                   <SelectContent className="bg-white"> 
@@ -155,37 +159,23 @@ export function FormBuscarAuto() {
               )}
             </div>
 
-            {/* Columna 2 */}
-            <div className="flex flex-col gap-4">
-              <div>
-                <Label>Rango de fechas</Label>
-                {/* DatePickerWithRange probablemente necesite un ajuste interno o su propio className si su fondo es transparente */}
-                {/* Por ahora, asumo que sus componentes internos son opacos o puedes modificarlo directamente si es tu componente */}
-                <DatePickerWithRange
-                  value={rangoFechas}
-                  onSelect={setRangoFechas}
-                  // Si DatePickerWithRange permite className, puedes añadir:
-                  // className="bg-white"
-                />
-              </div>
-            </div>
 
             {/* Columna 3 */}
             <div className="flex flex-col gap-4 justify-end">
               <div>
-                <Label htmlFor="horaRetiro">Hora de Retiro</Label>
+                <Label htmlFor="horaRetiro" className="text-black mb-2 font-normal text-sm ">Hora de Retiro</Label>
                 <Input
                   type="time"
                   id="horaRetiro"
                   value={horaRetiro}
                   onChange={(e) => setHoraRetiro(e.target.value)}
                   required
-                  className="bg-white"
+                  className="bg-white text-black border-gray-400"
                 />
               </div>
 
               <div>
-                <Label htmlFor="horaDevolucion">Hora de Devolución</Label>
+                <Label htmlFor="horaDevolucion" className="text-black mb-2 font-normal text-sm ">Hora de Devolución</Label>
                 <Input
                   type="time"
                   id="horaDevolucion"
@@ -193,13 +183,14 @@ export function FormBuscarAuto() {
                   value={horaDevolucion}
                   onChange={(e) => setHoraDevolucion(e.target.value)}
                   required
-                  className="bg-white" 
+                  className="bg-white text-black border-gray-400" 
                 />
               </div>
 
+
               <Button
                 type="submit"
-                className="bg-amber-900 hover:bg-amber-800 text-white"
+                className= "bg-amber-900 hover:bg-amber-800 text-white shadow-amber-950"
               >
                 Buscar
               </Button>

@@ -22,10 +22,10 @@ interface DatePickerWithRangeProps {
 }
 
 export function DatePickerWithRange({
-  value,    // <--- RECIBE 'value' como prop
-  onSelect, // <--- RECIBE 'onSelect' como prop
+  value,    
+  onSelect, 
   className,
-}: DatePickerWithRangeProps) { // <--- USA LA INTERFAZ CORRECTA
+}: DatePickerWithRangeProps) { 
   return (
     <div className={cn("grid gap-2", className)}>
       <Popover>
@@ -34,7 +34,7 @@ export function DatePickerWithRange({
             id="date"
             variant={"outline"}
             className={cn(
-              "w-[300px] justify-start text-left font-normal **bg-white**", // Asegura que el botón tenga fondo blanco
+              "w-[300px] justify-start text-left font-normal bg-white border-gray-400", // Asegura que el botón tenga fondo blanco
               !value && "text-muted-foreground"
             )}
           >
@@ -54,7 +54,7 @@ export function DatePickerWithRange({
           </Button>
         </PopoverTrigger>
         {/* Asegura un z-index alto para que el PopoverContent se vea */}
-        <PopoverContent className="w-auto p-0 **z-50 bg-white**" align="start"> {/* Añadí z-50 y bg-white */}
+        <PopoverContent className="w-auto p-0 z-50 bg-white" align="start"> {/* Añadí z-50 y bg-white */}
           <Calendar
             initialFocus
             mode="range"
