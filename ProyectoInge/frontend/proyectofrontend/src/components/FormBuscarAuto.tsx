@@ -95,10 +95,10 @@ export function FormBuscarAuto() {
                   setMismaSucursal(value === "mismaSucursal")
                 }
               >
-                <SelectTrigger className="w-full **bg-white**"> {/* Añadimos bg-white */}
+                <SelectTrigger className="w-full bg-white"> 
                   <SelectValue placeholder="Seleccionar punto de devolución" />
                 </SelectTrigger>
-                <SelectContent className="**bg-white**"> {/* Añadimos bg-white para el contenido del Select */}
+                <SelectContent className="bg-white"> {/* Añadimos bg-white para el contenido del Select */}
                   <SelectGroup>
                     <SelectItem value="mismaSucursal">
                       Mismo punto de devolución
@@ -114,10 +114,10 @@ export function FormBuscarAuto() {
                 onValueChange={setSucursalRetiro}
                 value={sucursalRetiro}
               >
-                <SelectTrigger className="w-full **bg-white**"> {/* Añadimos bg-white */}
+                <SelectTrigger className="w-full bg-white"> {/* Añadimos bg-white */}
                   <SelectValue placeholder="Sucursal de Retiro" />
                 </SelectTrigger>
-                <SelectContent className="**bg-white**"> {/* Añadimos bg-white para el contenido del Select */}
+                <SelectContent className="bg-white"> {/* Añadimos bg-white para el contenido del Select */}
                   <SelectGroup>
                     {sucursales.map((s) => (
                       <SelectItem
@@ -136,10 +136,10 @@ export function FormBuscarAuto() {
                   onValueChange={setSucursalDevolucion}
                   value={sucursalDevolucion}
                 >
-                  <SelectTrigger className="w-full **bg-white**"> 
+                  <SelectTrigger className="w-full bg-white"> 
                     <SelectValue placeholder="Sucursal de Devolución" />
                   </SelectTrigger>
-                  <SelectContent className="**bg-white**"> 
+                  <SelectContent className="bg-white"> 
                     <SelectGroup>
                       {sucursales.map((s) => (
                         <SelectItem
@@ -180,7 +180,7 @@ export function FormBuscarAuto() {
                   value={horaRetiro}
                   onChange={(e) => setHoraRetiro(e.target.value)}
                   required
-                  className="**bg-white**"
+                  className="bg-white"
                 />
               </div>
 
@@ -193,7 +193,7 @@ export function FormBuscarAuto() {
                   value={horaDevolucion}
                   onChange={(e) => setHoraDevolucion(e.target.value)}
                   required
-                  className="**bg-white**" 
+                  className="bg-white" 
                 />
               </div>
 
