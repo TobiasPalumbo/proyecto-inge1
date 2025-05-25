@@ -32,7 +32,7 @@ public class AutenticacionController {
 	public ResponseEntity<?> login(@RequestBody LoginRequest request){
 		Optional<Usuario> usuarioOp= usuarioRepository.findByCorreo(request.getCorreo());
 		if(usuarioOp.isEmpty() || !usuarioOp.get().getContraseña().equals(request.getContraseña())) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales invalidas");
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "Credenciales inválidas"));
 		}
 		Usuario usuario1=usuarioOp.get();
 		
