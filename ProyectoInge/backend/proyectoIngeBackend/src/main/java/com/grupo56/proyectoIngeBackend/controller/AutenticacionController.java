@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,7 +43,7 @@ public class AutenticacionController {
 	public ResponseEntity<?> login(@RequestBody LoginRequest request, HttpServletRequest httpRequest) {
 		Usuario usuario1= usuarioService.obtenerUsuarioPorCorreo(request.getCorreo());
 		if(usuario1==null || !usuario1.getContraseña().equals(request.getContraseña())) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales invalidas");
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message","Credenciales invalidas"));
 		}
 		if(!usuario1.getRol().equals("admin")) {
 			Authentication authentication = authenticationManager.authenticate(
