@@ -1,15 +1,15 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-
+import { useAuth } from "@/context/AuthContext"; 
 export default function CerrarSesionButton() {
   const router = useRouter();
+  const { logout } = useAuth(); // Usar el hook del contexto
 
   const handleCerrarSesion = () => {
     if (confirm("¿Estás seguro de que deseas cerrar sesión?")) {
-      localStorage.removeItem("rol");
-      localStorage.removeItem("correo");
-      router.push("/pagina-inicio"); // o la ruta donde quieras enviar al usuario
+      logout(); //  Limpia estado y sessionStorage
+      router.push("/pagina-inicio"); // Redirige después del logout
     }
   };
 

@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link"
+import { useAuth } from "@/context/AuthContext"
 
 export function LoginForm({
   className,
@@ -19,12 +20,13 @@ export function LoginForm({
     const [mostrarContraseña, setMostrarContraseña] = useState(false);
 
     const router = useRouter()
+    const {login} = useAuth();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
 
         try {
-            const response = await fetch("http://localhost:8080/autenticacion/login", {
+            const response = await fetch("http://localhost:8080/autenticacion/login", { 
             method: "POST",
             headers: {
             "Content-Type": "application/json",
@@ -36,8 +38,7 @@ export function LoginForm({
     console.log(data);
 
         if (response.ok) {
-            localStorage.setItem("correo", data.correo);
-            localStorage.setItem("rol", data.rol);
+            login(data.correo, data.rol)
 
             if (data.rol === "cliente" || data.rol === "empleado") {
                 router.push("/pagina-inicio"); // Ruta para cliente o empleado
@@ -77,14 +78,7 @@ export function LoginForm({
                 />
               </div>
               <div className="grid gap-2">
-                <div className="flex items-center">
-                  <Link
-                    href="#"
-                    className="ml-auto text-sm underline-offset-2 hover:underline"
-                  >
-                    ¿Olvidaste tu contraseña?
-                  </Link>
-                </div>
+                
                 <div className="relative">
                 <Label htmlFor="contraseña">Contraseña</Label>  
                 <Input 
@@ -97,7 +91,7 @@ export function LoginForm({
                 <button
                   type="button"
                   onClick={() => setMostrarContraseña(!mostrarContraseña)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+                  className="absolute right-3 top-1/2 transform -translate-y-1/4 text-gray-500">
                 {mostrarContraseña ?  <Eye size={18} /> : <EyeOff size={18} />}
                 </button>
               </div>

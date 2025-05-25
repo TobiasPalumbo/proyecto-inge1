@@ -4,20 +4,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import CerrarSesionButton from "./CerrarSesionBoton";
-import { useEffect, useState } from "react";
+import { useAuth } from "@/context/AuthContext"; // 👈 Importá el contexto
 
 export default function NavBar() {
   const pathname = usePathname();
-  const [rol, setRol] = useState<string | null>(null);
-  const [mounted, setMounted] = useState(false);
+  const { rol, loading } = useAuth(); // 👈 Obtené el rol desde el contexto
 
-  useEffect(() => {
-    setMounted(true);
-    const rolGuardado = localStorage.getItem("rol");
-    setRol(rolGuardado);
-  }, []);
-
-  if (!mounted) return null; // <- Evita render hasta que esté en el cliente
+  if (loading) return null; // Espera a que el estado cargue
 
   return (
     <nav className="sticky top-0 z-50 border-b-4 bg-amber-50/89 border-amber-900 shadow-amber-700">
@@ -38,6 +31,19 @@ export default function NavBar() {
         {/* Links */}
         <div className="flex-1 flex justify-center">
           <div className="flex space-x-10 text-xl font-semibold">
+            {rol === "admin" &&
+            <Link
+              href="/dashboard"
+              className={`hover:text-amber-900 transition-colors ${
+                pathname.startsWith("/dashboard")
+                  ? "text-amber-800"
+                  : "text-amber-900 hover:text-amber-800 hover:underline"
+              }`}
+            >
+              Panel de gestión
+            </Link>
+            }
+            { rol &&
             <Link
               href="/miperfil"
               className={`hover:text-amber-900 transition-colors ${
@@ -47,6 +53,16 @@ export default function NavBar() {
               }`}
             >
               Mi perfil
+            </Link> }
+            <Link
+              href="/realizar-reserva"
+              className={`hover:text-amber-900 transition-colors ${
+                pathname.startsWith("/realizar-reserva")
+                  ? "text-amber-800"
+                  : "text-amber-900 hover:text-amber-800 hover:underline"
+              }`}
+            >
+              Reservar
             </Link>
             <Link
               href="/sucursales"
@@ -67,16 +83,6 @@ export default function NavBar() {
               }`}
             >
               Flota
-            </Link>
-            <Link
-              href="/mis-reservas"
-              className={`hover:text-amber-900 transition-colors ${
-                pathname.startsWith("/mis-reservas")
-                  ? "text-amber-800"
-                  : "text-amber-900 hover:text-amber-800 hover:underline"
-              }`}
-            >
-              Mis Reservas
             </Link>
           </div>
         </div>

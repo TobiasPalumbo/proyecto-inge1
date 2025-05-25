@@ -64,7 +64,7 @@ export function FormBuscarAuto() {
     };
 
     try {
-      const response = await fetch("http://localhost:8080/buscarautos", {
+      const response = await fetch("http://localhost:8080/presupuesto", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(datosParaEnviar),
@@ -73,11 +73,12 @@ export function FormBuscarAuto() {
       if (!response.ok) {
         throw new Error("Error en la búsqueda de autos");
       }
-
-      router.push("/listado-autos");
+      else{
+      router.push("/presupuesto");
+    }
     } catch (error) {
       console.error("Error en la búsqueda:", error);
-      alert("Ocurrió un error al buscar autos.");
+      alert("Ocurrió un error al generar presupuesto");
     }
   };
 
@@ -192,7 +193,7 @@ export function FormBuscarAuto() {
                 type="submit"
                 className= "bg-amber-900 hover:bg-amber-800 text-white shadow-amber-950"
               >
-                Buscar
+                Generar presupuesto
               </Button>
             </div>
           </form>

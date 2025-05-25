@@ -9,6 +9,9 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Eye, EyeOff } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
+
+import { useEffect } from "react";
 
 interface RegistrarCuentaProps {
   className?: string;
@@ -22,17 +25,41 @@ export function SignUpForm({ className }: RegistrarCuentaProps) {
     apellido: "",
     correo: "",
     contraseña: "",
-    fechaNacimiento: "",
+    fechaNac: "",
     dni: "",
     telefono: "",
   });
-
+  const { correo } = useAuth();
+  const {login} = useAuth();
+  const { loading } = useAuth();
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (new Date(formData.fechaNac) > new Date()) {
+    setError("La fecha de nacimiento no puede ser futura.");
+    return;
+    }
+
+    if (formData.contraseña.length < 4) {
+    setError("La contraseña debe tener al menos 4 caracteres.");
+    return;
+    }
+
+    if (!/^\d{8,15}$/.test(formData.telefono)) {
+    setError("El teléfono debe contener entre 8 y 15 dígitos numéricos.");
+    return;
+    }
+
+    if (!/^\d{7,9}$/.test(formData.dni)) {
+      setError("El DNI debe contener entre 7 y 9 dígitos numéricos.");
+    return;
+    }
+
+    setError(""); // Limpiar errores si todo está OK
+    
     try {
-      const response = await fetch("http://localhost:8080/registrarcuenta", {
+      const response = await fetch("http://localhost:8080/registrarse", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -41,16 +68,30 @@ export function SignUpForm({ className }: RegistrarCuentaProps) {
       const data = await response.json();
 
       if (response.ok) {
-        localStorage.setItem("correo", formData.correo);
-        localStorage.setItem("rol", "cliente");
-        router.push("/");
-      } else {
-        setError(data.message || "Registro fallido");
-      }
-    } catch {
-      setError("Usuario existente");
+        try {
+        login(formData.correo, "cliente"); // 👈 Si esto falla, se corta todo
+    } catch (loginError) {
+        console.error("Error en login después de registrarse:", loginError);
+        setError("Error al iniciar sesión luego del registro.");
     }
+  } else {
+    setError(data.message || "Registro fallido");
+  }
+} catch (err) {
+  console.error("Error en fetch:", err);
+  setError("Ocurrió un error en el registro.");
+}
   };
+
+
+useEffect(() => {
+  if (!loading && correo) {
+    router.push("/pagina-inicio");
+  }
+  }, [correo, loading]);
+
+
+  
 
   return (
     <div className={cn("flex justify-center py-10", className)}>
@@ -118,8 +159,8 @@ export function SignUpForm({ className }: RegistrarCuentaProps) {
                   id="fechaNacimiento"
                   type="date"
                   className="focus:outline-none focus:ring-2 focus:ring-gray-100 border-gray-300"
-                  value={formData.fechaNacimiento}
-                  onChange={(e) => setFormData({ ...formData, fechaNacimiento: e.target.value })}
+                  value={formData.fechaNac}
+                  onChange={(e) => setFormData({ ...formData, fechaNac: e.target.value })}
                   required
                 />
               </div>
@@ -135,6 +176,7 @@ export function SignUpForm({ className }: RegistrarCuentaProps) {
               <Label htmlFor="telefono">Teléfono</Label>
               <Input
                 id="telefono"
+                type="tel"
                 className="focus:outline-none focus:ring-2 focus:ring-gray-100 border-gray-300"
                 value={formData.telefono}
                 onChange={(e) => setFormData({ ...formData, telefono: e.target.value })}
