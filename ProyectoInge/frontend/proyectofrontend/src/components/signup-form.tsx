@@ -10,7 +10,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Eye, EyeOff } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
-
+import { Alert, AlertDescription, AlertTitle} from "./ui/alert";
+import { AlertCircle } from "lucide-react";
 import { useEffect } from "react";
 
 interface RegistrarCuentaProps {
@@ -36,10 +37,24 @@ export function SignUpForm({ className }: RegistrarCuentaProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (new Date(formData.fechaNac) > new Date()) {
-    setError("La fecha de nacimiento no puede ser futura.");
-    return;
-    }
+    
+  const fechaNac = new Date(formData.fechaNac);
+const hoy = new Date();
+const edad = hoy.getFullYear() - fechaNac.getFullYear();
+const mes = hoy.getMonth() - fechaNac.getMonth();
+const dia = hoy.getDate() - fechaNac.getDate();
+
+if (fechaNac > hoy) {
+  setError("La fecha de nacimiento no puede ser futura.");
+  return;
+}
+
+if (edad < 18 || (edad === 18 && (mes < 0 || (mes === 0 && dia < 0)))) {
+  setError("Debes tener al menos 18 años para registrarte.");
+  return;
+}
+
+
 
     if (formData.contraseña.length < 4) {
     setError("La contraseña debe tener al menos 4 caracteres.");
@@ -97,6 +112,13 @@ useEffect(() => {
     <div className={cn("flex justify-center py-10", className)}>
       <Card className="w-full max-w-md bg-white border border-gray-300 rounded-lg shadow-md">
         <CardContent className="grid  p-6 h-full">
+           {/* {error && (
+              <Alert variant="destructive" className="slide-out-to-top-translate-full">
+              <AlertTitle>Error</AlertTitle>
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}*/}
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="text-center">
               <h1 className="text-2xl font-bold">Registrar Cuenta</h1>
@@ -183,16 +205,14 @@ useEffect(() => {
                 required
               />
             </div>
-
-<div className="text-center text-xs text-muted-foreground">
-  Al continuar, aceptas nuestros Términos de servicio y Política de privacidad.
-</div>
+            {error && (
+                <div className="text-red-600 text-sm mt-2 text-center">{error}</div>
+              )}
+           
 
             <Button type="submit" className="w-full bg-amber-900 hover:bg-amber-800 text-white">
               Registrarte
             </Button>
-
-            {error && <div className="text-red-600 text-sm mt-2 text-center">{error}</div>}
 
             <p className="text-center text-sm">
               ¿Ya tienes una cuenta?{" "}
@@ -200,6 +220,9 @@ useEffect(() => {
                 Inicia Sesión
               </Link>
             </p>
+             <div className="text-center text-xs text-muted-foreground">
+            Al continuar, aceptas nuestros Términos de servicio y Política de privacidad.
+            </div>
           </form>
         </CardContent>
       </Card>
