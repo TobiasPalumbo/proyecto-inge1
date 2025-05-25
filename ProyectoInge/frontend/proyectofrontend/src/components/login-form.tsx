@@ -26,12 +26,13 @@ export function LoginForm({
         e.preventDefault()
 
         try {
-            const response = await fetch("http://localhost:8080/autenticacion/login", { 
+            const response = await fetch("http://localhost:8080/public/autenticacion/login", { 
             method: "POST",
+            credentials: "include",
             headers: {
             "Content-Type": "application/json",
             },
-            body: JSON.stringify({ correo, contraseña }),
+            body: JSON.stringify({ correo: correo.toLowerCase().trim(), contraseña: contraseña.trim() }),
     });
 
     const data = await response.json();

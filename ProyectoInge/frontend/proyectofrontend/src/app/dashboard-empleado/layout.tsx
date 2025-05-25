@@ -1,4 +1,4 @@
-import { AppSidebar } from "@/components/app-sidebar"
+import { EmployeeSidebar } from "@/components/sidebar-empleado"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -13,11 +13,13 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
+import EmpleadoGuard from "@/components/empleadoprotect"
 
 export default function Page() {
   return (
+    <EmpleadoGuard>
     <SidebarProvider>
-      <AppSidebar />
+      <EmployeeSidebar />
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
           <div className="flex items-center gap-2 px-4">
@@ -48,5 +50,6 @@ export default function Page() {
         </div>
       </SidebarInset>
     </SidebarProvider>
+    </EmpleadoGuard>
   )
 }

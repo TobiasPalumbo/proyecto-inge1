@@ -4,13 +4,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import CerrarSesionButton from "./CerrarSesionBoton";
-import { useAuth } from "@/context/AuthContext"; // 👈 Importá el contexto
+import { useAuth } from "@/context/AuthContext"; // 
 
 export default function NavBar() {
   const pathname = usePathname();
-  const { rol, loading } = useAuth(); // 👈 Obtené el rol desde el contexto
+  const { rol, loading, adminVerificado} = useAuth(); // 
 
-  if (loading) return null; // Espera a que el estado cargue
+  if (loading) return null; 
 
   return (
     <nav className="sticky top-0 z-50 border-b-4 bg-amber-50/89 border-amber-900 shadow-amber-700">
@@ -31,11 +31,11 @@ export default function NavBar() {
         {/* Links */}
         <div className="flex-1 flex justify-center">
           <div className="flex space-x-10 text-xl font-semibold">
-            {rol === "admin" &&
+            {rol === "admin" && adminVerificado &&
             <Link
-              href="/dashboard"
+              href="/dashboard-admin"
               className={`hover:text-amber-900 transition-colors ${
-                pathname.startsWith("/dashboard")
+                pathname.startsWith("/dashboard-admin")
                   ? "text-amber-800"
                   : "text-amber-900 hover:text-amber-800 hover:underline"
               }`}
@@ -43,7 +43,19 @@ export default function NavBar() {
               Panel de gestión
             </Link>
             }
-            { rol &&
+            {rol === "empleado" &&
+            <Link
+              href="/dashboard-empleado"
+              className={`hover:text-amber-900 transition-colors ${
+                pathname.startsWith("/dashboard-empleado")
+                  ? "text-amber-800"
+                  : "text-amber-900 hover:text-amber-800 hover:underline"
+              }`}
+            >
+              Panel de gestión
+            </Link>
+            }
+            { rol=== "cliente" &&
             <Link
               href="/miperfil"
               className={`hover:text-amber-900 transition-colors ${
@@ -83,6 +95,8 @@ export default function NavBar() {
               }`}
             >
               Flota
+            </Link>
+            <Link href="#sobre-nosotros" className="text-amber-900 hover:text-amber-800 hover:underline"> Sobre Nosotros
             </Link>
           </div>
         </div>

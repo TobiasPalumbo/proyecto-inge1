@@ -39,10 +39,10 @@ export function SignUpForm({ className }: RegistrarCuentaProps) {
     e.preventDefault();
     
   const fechaNac = new Date(formData.fechaNac);
-const hoy = new Date();
-const edad = hoy.getFullYear() - fechaNac.getFullYear();
-const mes = hoy.getMonth() - fechaNac.getMonth();
-const dia = hoy.getDate() - fechaNac.getDate();
+  const hoy = new Date();
+  const edad = hoy.getFullYear() - fechaNac.getFullYear();
+  const mes = hoy.getMonth() - fechaNac.getMonth();
+  const dia = hoy.getDate() - fechaNac.getDate();
 
 if (fechaNac > hoy) {
   setError("La fecha de nacimiento no puede ser futura.");
@@ -50,7 +50,7 @@ if (fechaNac > hoy) {
 }
 
 if (edad < 18 || (edad === 18 && (mes < 0 || (mes === 0 && dia < 0)))) {
-  setError("Debes tener al menos 18 años para registrarte.");
+  setError("Debes ser mayor de edad para registrarte.");
   return;
 }
 
@@ -76,6 +76,7 @@ if (edad < 18 || (edad === 18 && (mes < 0 || (mes === 0 && dia < 0)))) {
     try {
       const response = await fetch("http://localhost:8080/registrarse", {
         method: "POST",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
@@ -112,13 +113,6 @@ useEffect(() => {
     <div className={cn("flex justify-center py-10", className)}>
       <Card className="w-full max-w-md bg-white border border-gray-300 rounded-lg shadow-md">
         <CardContent className="grid  p-6 h-full">
-           {/* {error && (
-              <Alert variant="destructive" className="slide-out-to-top-translate-full">
-              <AlertTitle>Error</AlertTitle>
-              <AlertCircle className="h-4 w-4" />
-              <AlertDescription>{error}</AlertDescription>
-              </Alert>
-            )}*/}
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="text-center">
               <h1 className="text-2xl font-bold">Registrar Cuenta</h1>

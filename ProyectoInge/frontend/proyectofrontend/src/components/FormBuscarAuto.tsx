@@ -37,7 +37,9 @@ export function FormBuscarAuto() {
   const router = useRouter();
 
   useEffect(() => {
-    fetch("http://localhost:8080/sucursales")
+    fetch("http://localhost:8080/public/sucursales", {
+    credentials: "include", // <- AGREGÁ ESTO
+  })
       .then((res) => res.json())
       .then((data) => setSucursales(data))
       .catch((err) => console.error("Error al traer sucursales:", err))
@@ -64,10 +66,11 @@ export function FormBuscarAuto() {
     };
 
     try {
-      const response = await fetch("http://localhost:8080/presupuesto", {
+      const response = await fetch("http://localhost:8080/public/presupuesto", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(datosParaEnviar),
+        credentials: "include",
       });
 
       if (!response.ok) {

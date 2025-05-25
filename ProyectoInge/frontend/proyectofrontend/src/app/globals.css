@@ -2,6 +2,7 @@
 @import "react-day-picker/dist/style.css";
 @import "tw-animate-css"; 
 
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -53,4 +54,8 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
+}
+
+html {
+  scroll-behavior: smooth;
 }

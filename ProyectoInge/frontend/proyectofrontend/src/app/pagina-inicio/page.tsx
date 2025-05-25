@@ -3,6 +3,7 @@ import NavBar from "@/components/NavBar";
 import { FormBuscarAuto } from "@/components/FormBuscarAuto";
 import Footer from "@/components/Footer";
 import Image  from "next/image";
+import SobreNosotros from "@/components/SobreNosotros";
 
 export default function PaginaInicio() {
     return(
@@ -24,6 +25,7 @@ export default function PaginaInicio() {
 
             </div>
         </div>
+        <SobreNosotros />
         <div className="py-12 px-4 max-w-7xl mx-auto">
 
         </div>
