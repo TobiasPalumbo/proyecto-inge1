@@ -67,16 +67,6 @@ export default function NavBar() {
               Mi perfil
             </Link> }
             <Link
-              href="/realizar-reserva"
-              className={`hover:text-amber-900 transition-colors ${
-                pathname.startsWith("/realizar-reserva")
-                  ? "text-amber-800"
-                  : "text-amber-900 hover:text-amber-800 hover:underline"
-              }`}
-            >
-              Reservar
-            </Link>
-            <Link
               href="/sucursales"
               className={`hover:text-amber-900 transition-colors ${
                 pathname === "/sucursales"

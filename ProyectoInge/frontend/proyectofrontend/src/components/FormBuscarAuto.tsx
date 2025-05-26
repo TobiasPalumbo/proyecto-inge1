@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import FechaRangoNuevo from "./ui/FechaRangoNuevo";
+import { useAuth } from "@/context/AuthContext";
 
 type Sucursal = {
   idSucursal: number;
@@ -51,6 +52,7 @@ export function FormBuscarAuto() {
   const [mostrarFiltrosAuto, setMostrarFiltrosAuto] = useState(false);
 
   const router = useRouter();
+  const { correo } = useAuth();
 
   // Función auxiliar para parsear JSON de forma segura
   const parseJsonResponse = async (response: Response) => {
@@ -85,7 +87,7 @@ export function FormBuscarAuto() {
   // Efecto para cargar marcas
   useEffect(() => {
     if (mounted && sucursales.length > 0) {
-      fetch("http://localhost:8080/public/subirauto", {
+      fetch("http://localhost:8080/subirauto", {
         credentials: "include",
       })
         .then(parseJsonResponse)
@@ -100,7 +102,7 @@ export function FormBuscarAuto() {
   // Efecto para cargar modelos cuando se selecciona una marca
   useEffect(() => {
     if (marcaSeleccionada) {
-      fetch(`http://localhost:8080/public/subirauto/marca/${marcaSeleccionada}`, {
+      fetch(`http://localhost:8080/subirauto/marca/${marcaSeleccionada}`, {
         credentials: "include",
       })
         .then(parseJsonResponse)
@@ -219,7 +221,7 @@ export function FormBuscarAuto() {
 
   return (
     <div className="w-full flex justify-center px-2">
-      <Card className="w-[1000px] shadow-lg border shadow-amber-950/85 bg-amber-50/70">
+      <Card className="w-[1000px] shadow-lg border shadow-amber-950/85 bg-amber-50/65">
         <CardContent className="p-6">
           <form
             onSubmit={handleSubmit}
@@ -398,22 +400,23 @@ export function FormBuscarAuto() {
           </form>
 
           {/* Botones al final del CardContent, debajo del formulario */}
-          <div className="mt-8 pt-6 border-t border-gray-300 flex flex-col sm:flex-row justify-end gap-4">
+          <div className=" pt-3 border-t border-gray-300 flex flex-col sm:flex-row justify-end gap-4">
             <Button
               type="submit"
-              className="bg-amber-900 hover:bg-amber-800 text-white shadow-amber-950 w-full sm:w-auto"
+              className="mt-1 mr-2 bg-amber-900 hover:bg-amber-800 text-white shadow-amber-950 w-full sm:w-auto"
               form="main-form"
             >
               Generar presupuesto
             </Button>
-            {/* Aquí iría el futuro botón "Reservar" */}
-            {/* <Button
+            { correo && (
+            <Button
               type="button"
-              className="bg-blue-600 hover:bg-blue-500 text-white w-full sm:w-auto"
+              className="mt-1 mr-2 bg-amber-900 hover:bg-amber-800 text-white w-full sm:w-auto"
               // Agrega lógica para solo mostrar si el usuario está logueado
             >
               Reservar
-            </Button> */}
+            </Button>
+            )}
           </div>
         </CardContent>
       </Card>
