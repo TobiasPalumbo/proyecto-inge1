@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.grupo56.proyectoIngeBackend.model.Auto;
 import com.grupo56.proyectoIngeBackend.model.AutoCategoria;
+import com.grupo56.proyectoIngeBackend.model.AutoCompletoResponse;
+import com.grupo56.proyectoIngeBackend.model.AutoDTO;
+import com.grupo56.proyectoIngeBackend.model.Categoria;
 import com.grupo56.proyectoIngeBackend.model.MarcaModeloRequest;
 import com.grupo56.proyectoIngeBackend.model.MarcasSucursalesResponse;
 import com.grupo56.proyectoIngeBackend.model.PoliticaCancelacion;
@@ -40,6 +43,8 @@ public class AutoController {
 	private SucursalService serviceSucursal;
 	@Autowired
 	private PoliticaCancelacionService servicePoliticas;
+	
+	
 	@PostMapping("/subirmarca")//NO USAR DE MOMENTO
 	public ResponseEntity<String> subirAuto(@RequestBody @Valid Auto auto) {
 		if (service.marcaModeloExiste(auto.getIdAuto()))
@@ -61,12 +66,16 @@ public class AutoController {
 		List<String> modelos = service.obtenerModelos(marca);
 		return ResponseEntity.status(HttpStatus.OK).body(modelos);
 	}
+	
+	
+	
 	@GetMapping("/autos")
-	public ResponseEntity<List<Auto>> obtenerAutos(){
+	public ResponseEntity<List<AutoDTO>> obtenerAutos(){
 		List<Auto> autos = service.obtenerAutos();
 		if (autos.isEmpty()) {
 			return ResponseEntity.noContent().build();
 		}
-		return ResponseEntity.status(HttpStatus.OK).body(autos);
+		List<AutoDTO> autoCompleto =  serviceAutoCategoria.obtenerMatches();
+		return ResponseEntity.status(HttpStatus.OK).body(autoCompleto);
 	}
 }

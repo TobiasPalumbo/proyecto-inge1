@@ -41,7 +41,7 @@ public class AutoPatenteController {
 		nuevoAuto.setAnio(autoPatenteBody.getAnio());
 		nuevoAuto.setBorrado(false);
 		nuevoAuto.setAuto(serviceAuto.obtenerAutoPorId(serviceAuto.obtenerIdAuto(autoPatenteBody.getMarcamodelo())));
-		nuevoAuto.setIdSucursal(autoPatenteBody.getSucursal());
+		nuevoAuto.setSucursal(autoPatenteBody.getSucursal());
 		nuevoAuto.setPoliticaCancelacion(autoPatenteBody.getPolitica());
 		service.subirAutoPatente(nuevoAuto);
 		return ResponseEntity.status(HttpStatus.CREATED).body("El auto se ha subido");

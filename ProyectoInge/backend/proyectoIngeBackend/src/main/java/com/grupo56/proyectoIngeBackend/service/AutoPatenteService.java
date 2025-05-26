@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.grupo56.proyectoIngeBackend.model.AutoPatente;
+import com.grupo56.proyectoIngeBackend.model.Sucursal;
 import com.grupo56.proyectoIngeBackend.repository.AutoPatenteRepository;
 
 @Service
@@ -24,5 +25,9 @@ public class AutoPatenteService {
 	
 	public boolean patenteExiste(String patente) {
 		return repository.existsById(patente);
+	}
+	
+	public List<AutoPatente> obtenerAutoPatenteSucurusal(Sucursal sucursal){
+		return repository.findBySucursal(sucursal);
 	}
 }

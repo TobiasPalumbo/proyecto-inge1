@@ -12,6 +12,7 @@ public class RegisterRequest {
 	private LocalDate fechaNac;
 	private String correo;
 	private String contraseña;
+	
 	public Integer getDni() {
 		return dni;
 	}

@@ -33,7 +33,7 @@ public class Auto {
 	@NotBlank(message = "El precio es obligatorio")
 	@Positive(message  = "El precio debe ser mayor a 0")
 	private double precioDia;
-	private boolean borrado = false;
+	private boolean borrado;
 
 	
 	public Integer getIdAuto() {
