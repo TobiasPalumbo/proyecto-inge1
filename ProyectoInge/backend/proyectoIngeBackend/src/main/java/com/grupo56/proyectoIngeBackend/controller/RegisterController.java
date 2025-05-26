@@ -13,6 +13,10 @@ import com.grupo56.proyectoIngeBackend.model.Usuario;
 import com.grupo56.proyectoIngeBackend.service.ClienteService;
 import com.grupo56.proyectoIngeBackend.service.UsuarioServiceImp;
 
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 
 public class RegisterController {
@@ -23,11 +27,13 @@ public class RegisterController {
 	
 	@PostMapping("/registrarse")
 	public ResponseEntity<?> register(@RequestBody RegisterRequest request){
+		Map<String, String> response = new HashMap<>();
 		if (serviceUsuario.obtenerUsuarioPorCorreo(request.getCorreo()) != null) {
 	        // Si el correo ya está registrado
+			response.put("message", "El correo ya está asociado a una cuenta");
 	        return ResponseEntity
 	                .status(HttpStatus.CONFLICT) // 409 Conflict
-	                .body("El correo ya está registrado.");
+	                .body(response);
 	    }
 		Usuario nuevoUsuario= new Usuario();
 		Cliente nuevoCliente= new Cliente();
@@ -38,14 +44,15 @@ public class RegisterController {
 		nuevoCliente.setApellido(request.getApellido());
 		nuevoCliente.setDni(request.getDni());
 		nuevoCliente.setFechaNac(request.getFechaNac());
-		nuevoCliente.setFechaRegistro(request.getFechaRegistro());
+		nuevoCliente.setFechaRegistro(LocalDate.now());
 		nuevoCliente.setNombre(request.getNombre());
 		nuevoCliente.setTelefono(request.getTelefono());
 		nuevoCliente.setIdUsuario(nuevoUsuario);
 		serviceCliente.subirCliente(nuevoCliente);
+		response.put("message", "Registro exitoso.");
 		return ResponseEntity
 	            .status(HttpStatus.CREATED) // 201 Created
-	            .body("Registro exitoso.");
+	            .body(response);
 	
 		
 	}
