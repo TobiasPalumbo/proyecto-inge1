@@ -1,8 +1,6 @@
 @import "tailwindcss";
 @import "react-day-picker/dist/style.css";
 @import "tw-animate-css"; 
-
-
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -58,4 +56,39 @@ body {
 
 html {
   scroll-behavior: smooth;
+}
+
+.rdp-day_range_start {
+    background-color: #b45309 !important; /* bg-amber-700 */
+    color: white !important;
+    border-top-left-radius: 0.375rem !important;
+    border-bottom-left-radius: 0.375rem !important;
+}
+.rdp-day_range_end {
+    background-color: #b45309 !important; /* bg-amber-700 */
+    color: white !important;
+    border-top-right-radius: 0.375rem !important;
+    border-bottom-right-radius: 0.375rem !important;
+}
+.rdp-day_range_middle {
+    background-color: #d68410b4 !important; /* bg-amber-400 */
+    color: black !important;
+}
+/* Si un día está seleccionado individualmente (no parte de un rango completo) */
+.rdp-day_selected:not(.rdp-day_range_start):not(.rdp-day_range_end):not(.rdp-day_range_middle) {
+    background-color: #974c0f !important; /* bg-amber-600 para un solo día seleccionado */
+    color: white !important;
+}
+
+/* Estilo para el hover de los días no seleccionados */
+.rdp-day:hover:not(.rdp-day_disabled):not(.rdp-day_selected) {
+    background-color: #fde68a !important; /* amarillo claro hover */
+}
+
+/* Opcional: Hover más sutil para los días ya seleccionados */
+.rdp-day_range_start:hover,
+.rdp-day_range_end:hover,
+.rdp-day_range_middle:hover,
+.rdp-day_selected:hover {
+    opacity: 0.9; /* Ligeramente más transparente al pasar el ratón */
 }
