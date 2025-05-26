@@ -69,7 +69,7 @@ public class AutoController {
 	
 	
 	
-	@GetMapping("/autos")
+	@GetMapping("/public/autos")
 	public ResponseEntity<List<AutoDTO>> obtenerAutos(){
 		List<Auto> autos = service.obtenerAutos();
 		if (autos.isEmpty()) {
