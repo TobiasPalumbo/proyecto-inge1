@@ -5,8 +5,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.grupo56.proyectoIngeBackend.model.Auto;
 import com.grupo56.proyectoIngeBackend.model.AutoPatente;
 import com.grupo56.proyectoIngeBackend.model.AutoPatenteBodyRequest;
 import com.grupo56.proyectoIngeBackend.service.AutoCategoriaService;
@@ -19,6 +21,7 @@ import com.grupo56.proyectoIngeBackend.service.SucursalService;
 import jakarta.validation.Valid;
 
 @RestController
+@RequestMapping("/admin/autoPatente")
 public class AutoPatenteController {
 	
 	@Autowired
@@ -46,6 +49,7 @@ public class AutoPatenteController {
 		service.subirAutoPatente(nuevoAuto);
 		return ResponseEntity.status(HttpStatus.CREATED).body("El auto se ha subido");
 	}
+	
 	
 
 }
