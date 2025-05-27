@@ -24,6 +24,7 @@ public interface ReservaRepository extends JpaRepository<Reserva, Integer> {
 	
 	@Query("SELECT aP FROM AutoPatente aP " +
 		       "WHERE aP.sucursal.idSucursal = :idSucursal " +
+		       "AND aP.borrado = false " +
 		       "AND aP.patente NOT IN (" +
 		       "  SELECT r.autoPatente.patente FROM Reserva r " +
 		       "  WHERE (r.fechaEntrega <= :fechaRegreso AND r.fechaRegreso >= :fechaEntrega)" +

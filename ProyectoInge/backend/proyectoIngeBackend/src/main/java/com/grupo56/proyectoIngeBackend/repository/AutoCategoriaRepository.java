@@ -16,8 +16,8 @@ public interface AutoCategoriaRepository extends JpaRepository<AutoCategoria, Au
 	@Query("SELECT ac.categoria.idCategoria FROM AutoCategoria ac WHERE ac.auto.idAuto = :idAuto")
     List<Integer> findCategorias(@Param("idAuto") Integer idAuto);
 	
-	@Query("SELECT new com.grupo56.proyectoIngeBackend.model.AutoDTO(a.idAuto, c.idCategoria, a.marca, a.modelo, a.precioDia, a.cantidadAsientos, c.descripcion) "
-			+ "FROM AutoCategoria ac JOIN ac.auto a JOIN  ac.categoria c WHERE a.borrado = false")
+	@Query("SELECT new com.grupo56.proyectoIngeBackend.model.AutoDTO(ac.auto.idAuto, ac.categoria.idCategoria, ac.auto.marca, ac.auto.modelo, ac.auto.precioDia, ac.auto.cantidadAsientos, ac.categoria.descripcion) "
+			+ "FROM AutoCategoria ac WHERE ac.auto.borrado = false")
 	List<AutoDTO> findMatches();
 	
 }
