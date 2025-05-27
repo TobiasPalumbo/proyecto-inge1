@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.grupo56.proyectoIngeBackend.model.AutoAdminDTO;
 import com.grupo56.proyectoIngeBackend.model.AutoDTO;
 import com.grupo56.proyectoIngeBackend.model.AutoPatente;
 import com.grupo56.proyectoIngeBackend.model.Reserva;
@@ -37,5 +38,15 @@ public interface ReservaRepository extends JpaRepository<Reserva, Integer> {
 			+ " FROM AutoPatente aP WHERE aP.patente IN :autosPatentesDisponibles")
 	public List<AutoDTO> autosDTODisponibles(@Param("autosPatentesDisponibles") List<String> autosPatentesDisponibles);
 	
+	
+	
+	@Query("SELECT DISTINCT new com.grupo56.proyectoIngeBackend.model.AutoAdminDTO(" +
+		       "a.idAuto, c.idCategoria, a.marca, a.modelo, a.precioDia, a.cantidadAsientos, " +
+		       "c.descripcion, s.idSucursal, s.localidad) " +
+		       "FROM AutoPatente ap " +
+		       "JOIN ap.auto a " +
+		       "JOIN ap.categoria c " +
+		       "JOIN ap.sucursal s")
+		List<AutoAdminDTO> autosAdminDTO();
 
 }

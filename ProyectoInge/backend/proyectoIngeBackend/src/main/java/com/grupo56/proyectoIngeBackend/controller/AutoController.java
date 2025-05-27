@@ -1,6 +1,8 @@
 package com.grupo56.proyectoIngeBackend.controller;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -53,7 +55,7 @@ public class AutoController {
 		return ResponseEntity.status(HttpStatus.CREATED).body("Auto subido");
 	}
 	
-	@GetMapping("/admin/subirauto")
+	@GetMapping("/admin/subirAuto")
 	public ResponseEntity <MarcasSucursalesResponse> mandarMarcas(){
 		List<String> marcas = service.obtenerMarcas();
 		List<Sucursal> sucursales= serviceSucursal.obtenerSucursales();
@@ -62,18 +64,22 @@ public class AutoController {
 		return ResponseEntity.status(HttpStatus.OK).body(respuesta);
 	}
 	
-	@GetMapping("/admin/subirauto/marca/{marca}")
+	@GetMapping("/admin/subirAuto/marca/{marca}")
 	public ResponseEntity <List<String>> mandarModelo(@PathVariable String marca){
 		List<String> modelos = service.obtenerModelos(marca);
 		return ResponseEntity.status(HttpStatus.OK).body(modelos);
 	}
 	
-	@GetMapping("/admin/subirauto/bodyAuto")
-	public ResponseEntity <List<String>> mandar(@RequestBody MarcaModeloRequest marcaModelo){
+	@GetMapping("/admin/subirAuto/bodyAuto")
+	public ResponseEntity <Map<Integer,String>> mandar(@RequestBody MarcaModeloRequest marcaModelo){
 		 Integer idAuto = service.obtenerIdAuto(marcaModelo);
 		 List<Integer> ids = serviceAutoCategoria.obtenerIdCategorias(idAuto);
 		 List<String> categorias = serviceCategoria.obtenerDescripcionById(ids);
-		return ResponseEntity.status(HttpStatus.OK).body(categorias);
+		 Map<Integer, String> resultado = new LinkedHashMap<>();
+		    for (int i = 0; i < ids.size(); i++) {
+		        resultado.put(ids.get(i), categorias.get(i));
+		    }
+		return ResponseEntity.status(HttpStatus.OK).body(resultado);
 	}
 	
 	@GetMapping("/public/autos")

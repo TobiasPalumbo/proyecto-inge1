@@ -14,8 +14,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import com.grupo56.proyectoIngeBackend.model.AutoAdminDTO;
 import com.grupo56.proyectoIngeBackend.model.AutoDTO;
 import com.grupo56.proyectoIngeBackend.model.AutoPatente;
+import com.grupo56.proyectoIngeBackend.model.AutoPatentesAdminDTO;
 import com.grupo56.proyectoIngeBackend.model.AutoPatentesDTO;
 import com.grupo56.proyectoIngeBackend.model.RequestSucursalFechaDTO;
 import com.grupo56.proyectoIngeBackend.model.Reserva;
@@ -26,6 +28,8 @@ public class ReservaService {
 	
 	@Autowired
 	ReservaRepository repository;
+	@Autowired
+	AutoPatenteService autoPatenteService;
 	
 	public List<Reserva> obtenerReservaDeSucursal(Sucursal sucursal){
 		return repository.findBySucursal(sucursal);
@@ -57,6 +61,26 @@ public class ReservaService {
 		    }
 		}
 		return autoPatentesDTO;
+	}
+	public List<AutoPatentesAdminDTO> obtenerAutosPatentes(){
+		List<AutoPatente> autosPatentes= autoPatenteService.obtenerAutosPatente();
+		List<AutoAdminDTO> autoAdminDTO= repository.autosAdminDTO();
+		List<AutoPatentesAdminDTO> autoPatentesAdminDTO= new ArrayList();
+		autoAdminDTO.stream().forEach(dto -> autoPatentesAdminDTO.add(new AutoPatentesAdminDTO (dto,new ArrayList<String>())));
+		for(AutoPatente p : autosPatentes ) {
+			for(AutoPatentesAdminDTO dto : autoPatentesAdminDTO){
+				if(dto.autoAdminDTO().idAuto().equals(p.getAuto().getIdAuto())&&
+				   dto.autoAdminDTO().idCategoria().equals(p.getCategoria().getId())) {
+					dto.patentes().add(p.getPatente());
+					break;
+				}
+				
+			}
+			
+		}
+		
+		return autoPatentesAdminDTO;
+		
 	}
 	
 }

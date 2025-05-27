@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.grupo56.proyectoIngeBackend.model.SecurityUser;
 import com.grupo56.proyectoIngeBackend.model.Usuario;
+import com.grupo56.proyectoIngeBackend.service.ClienteService;
 import com.grupo56.proyectoIngeBackend.service.UsuarioServiceImp;
 
 @RestController
@@ -21,7 +22,8 @@ import com.grupo56.proyectoIngeBackend.service.UsuarioServiceImp;
 public class UsuarioController {
 	@Autowired
 	private UsuarioServiceImp usuarioService;
-	
+	@Autowired
+	private ClienteService clienteService;
 	public List<Usuario> listarUsuarios(){
 		return usuarioService.obtenerUsuarios();
 	}
@@ -39,7 +41,8 @@ public class UsuarioController {
 
 	        return ResponseEntity.ok(Map.of(
 	            "correo", usuario.getCorreo(),
-	            "rol", usuario.getRol()
+	            "rol", usuario.getRol(),
+	            "cliente",clienteService.obtenerPorUsuario(usuario)
 	        ));
 	    }
 	

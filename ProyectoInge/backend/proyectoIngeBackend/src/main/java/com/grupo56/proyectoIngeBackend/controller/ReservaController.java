@@ -7,30 +7,42 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.grupo56.proyectoIngeBackend.model.AutoDTO;
 import com.grupo56.proyectoIngeBackend.model.AutoPatente;
+import com.grupo56.proyectoIngeBackend.model.AutoPatentesAdminDTO;
 import com.grupo56.proyectoIngeBackend.model.AutoPatentesDTO;
 import com.grupo56.proyectoIngeBackend.model.RequestSucursalFechaDTO;
 import com.grupo56.proyectoIngeBackend.model.Reserva;
+import com.grupo56.proyectoIngeBackend.model.ReservaRequestDTO;
+import com.grupo56.proyectoIngeBackend.model.SecurityUser;
+import com.grupo56.proyectoIngeBackend.model.Usuario;
 import com.grupo56.proyectoIngeBackend.service.AutoCategoriaService;
 import com.grupo56.proyectoIngeBackend.service.AutoPatenteService;
 import com.grupo56.proyectoIngeBackend.service.AutoService;
+import com.grupo56.proyectoIngeBackend.service.ClienteService;
 import com.grupo56.proyectoIngeBackend.service.ReservaService;
+import com.grupo56.proyectoIngeBackend.service.SucursalService;
 @RestController
 public class ReservaController {
 	@Autowired
 	private ReservaService service;
 	
 	@Autowired
-	private AutoPatenteService serviceAutoPatente;
+	private AutoPatenteService autoPatenteService;
 	
 	@Autowired
 	private AutoCategoriaService autoCategoriaService;
+	@Autowired
+	AutoService autoService;
+	@Autowired
+	ClienteService clienteService;
 	
 	@GetMapping("/public/autoDisponibles")
 	public ResponseEntity<List<AutoPatentesDTO>> obtenerAutosDisponibles(@RequestBody RequestSucursalFechaDTO request){
@@ -39,4 +51,27 @@ public class ReservaController {
 			return ResponseEntity.noContent().build();;
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
+	@GetMapping("/public/autosPatentes")
+	public ResponseEntity<List<AutoPatentesAdminDTO>> obtenerAutosPatentes(){
+		List<AutoPatentesAdminDTO> response = service.obtenerAutosPatentes();
+		if (response.isEmpty()) 
+			return ResponseEntity.noContent().build();;
+		return ResponseEntity.status(HttpStatus.OK).body(response);
+	}
+	/*@PostMapping("/realizarReserva")
+	public ResponseEntity<?> subirReserva(@RequestBody ReservaRequestDTO request,Authentication authentication){
+		if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        Usuario usuario = ((SecurityUser) authentication.getPrincipal()).getUsuario();
+		Reserva reserva= new Reserva();
+		reserva.setAutoPatente(autoPatenteService.obtenerAutoPatentePorPatente(request.patente()));
+		reserva.setCliente(clienteService.obtenerPorUsuario(usuario));
+		reserva.setSucursal(reserva.getAutoPatente().getSucursal());
+		reserva.setFecheEntrega(request.fechaEntrega());
+		reserva.setFechaRegreso(request.fechaRegreso());
+		reserva
+		
+	} */
 }

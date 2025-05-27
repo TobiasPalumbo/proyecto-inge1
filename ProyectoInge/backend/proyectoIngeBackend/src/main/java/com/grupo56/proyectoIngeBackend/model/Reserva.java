@@ -31,7 +31,7 @@ public class Reserva {
 	private Cliente cliente;
 	
 	@Column(length = 20)
-	private String estado;
+	private String estado="confirmado";
 	
 	private LocalDate fechaEntrega;
 	private LocalDate fechaRegreso;
