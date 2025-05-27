@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.grupo56.proyectoIngeBackend.model.Auto;
 import com.grupo56.proyectoIngeBackend.model.AutoPatente;
-import com.grupo56.proyectoIngeBackend.model.AutoPatenteBodyRequest;
+import com.grupo56.proyectoIngeBackend.model.AutoPatenteBodyRequestDTO;
 import com.grupo56.proyectoIngeBackend.service.AutoPatenteService;
 import com.grupo56.proyectoIngeBackend.service.AutoService;
 import com.grupo56.proyectoIngeBackend.service.CategoriaService;
@@ -29,7 +29,7 @@ public class AutoPatenteController {
 	private CategoriaService serviceCategoria;
 	
 	@PostMapping("/subirAutoPatente")
-    public ResponseEntity<String> subirAutoPatente(@RequestBody @Valid AutoPatenteBodyRequest autoPatenteBody){
+    public ResponseEntity<String> subirAutoPatente(@RequestBody @Valid AutoPatenteBodyRequestDTO autoPatenteBody){
         if(!service.patenteExiste(autoPatenteBody.patente())) {
             AutoPatente nuevoAuto= new AutoPatente();
             nuevoAuto.setPatente(autoPatenteBody.patente());
