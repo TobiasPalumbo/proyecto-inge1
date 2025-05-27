@@ -34,19 +34,9 @@ public class ReservaController {
 	
 	@GetMapping("/public/autoDisponibles")
 	public ResponseEntity<List<AutoPatentesDTO>> obtenerAutosDisponibles(@RequestBody RequestSucursalFechaDTO request){
-		List<AutoPatente> autosPatentesDisponibles = service.autosPatenteDiponibles(request.fechaEntrega(), request.fechaRegreso(), request.sucursal());
-		List<AutoDTO> autosDTOSDisponibles = service.autosDTODisponibles(autosPatentesDisponibles);
-		List<AutoPatentesDTO> autoPatentesDTO = new ArrayList();
-		autosDTOSDisponibles.stream().forEach(dto -> autoPatentesDTO.add(new AutoPatentesDTO(dto, new ArrayList<String>())));	
-		for (AutoPatente p : autosPatentesDisponibles) {
-		    for (AutoPatentesDTO dto : autoPatentesDTO) {
-		        if (dto.autoDTO().idAuto().equals(p.getAuto().getIdAuto()) &&
-		            dto.autoDTO().idCategoria().equals(p.getCategoria().getId())) {
-		            dto.patentes().add(p.getPatente());	
-		            break;	
-		        }
-		    }
-		}
-		return ResponseEntity.status(HttpStatus.OK).body(autoPatentesDTO);
+		List<AutoPatentesDTO> response = service.obtenerAutosDisponibles(request);
+		if (response.isEmpty()) 
+			return ResponseEntity.noContent().build();;
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 }
