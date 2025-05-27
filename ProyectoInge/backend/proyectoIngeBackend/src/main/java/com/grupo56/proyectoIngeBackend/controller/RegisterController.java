@@ -30,7 +30,7 @@ public class RegisterController {
 		Map<String, String> response = new HashMap<>();
 		if (serviceUsuario.obtenerUsuarioPorCorreo(request.getCorreo()) != null) {
 	        // Si el correo ya está registrado
-			response.put("message", "El correo ya está registrado.");
+			response.put("message", "El correo ya está asociado a una cuenta");
 	        return ResponseEntity
 	                .status(HttpStatus.CONFLICT) // 409 Conflict
 	                .body(response);

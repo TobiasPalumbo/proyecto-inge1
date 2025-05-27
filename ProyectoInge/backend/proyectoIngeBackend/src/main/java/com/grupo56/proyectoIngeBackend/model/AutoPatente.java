@@ -23,17 +23,23 @@ public class AutoPatente {
 	@Id
 	@Column(length = 20)
 	private String patente;
+	
+	@JoinColumn(name = "idCategoria")
+	@ManyToOne
+	private Categoria categoria;
 	@JoinColumn(name = "idAuto")
 	@ManyToOne
 	private Auto auto;
 	@ManyToOne
 	@JoinColumn(name = "idSucursal")
-	private Sucursal idSucursal;
+	private Sucursal sucursal;
 	@ManyToOne
 	@JoinColumn(name = "idPoliticaCancelacion")
 	private PoliticaCancelacion politicaCancelacion;
 	private LocalDate anio;
 	private boolean borrado = false;
+	
+	
 	public String getPatente() {
 		return patente;
 	}
@@ -47,11 +53,11 @@ public class AutoPatente {
 	}
 
 	public Sucursal getIdSucursal() {
-		return idSucursal;
+		return sucursal;
 	}
 
-	public void setIdSucursal(Sucursal idSucursal) {
-		this.idSucursal = idSucursal;
+	public void setSucursal(Sucursal sucursal) {
+		this.sucursal = sucursal;
 	}
 
 	public PoliticaCancelacion getPoliticaCancelacion() {
@@ -81,5 +87,18 @@ public class AutoPatente {
 	public void setPatente(String patente) {
 		this.patente = patente;
 	}
+
+	public Categoria getCategoria() {
+		return categoria;
+	}
+
+	public void setCategoria(Categoria categoria) {
+		this.categoria = categoria;
+	}
+
+	public Sucursal getSucursal() {
+		return sucursal;
+	}
+	
 	
 }

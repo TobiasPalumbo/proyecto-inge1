@@ -20,8 +20,10 @@ public class CategoriaService {
 		repositoy.save(categoria);
 	}
 	
-	public List<String> obtenerCategorias(List<Integer> ids){
+	public List<String> obtenerCategoriaId(List<Integer> ids){
 		return repositoy.findAllById(ids).stream().map(c -> c.getDescripcion()).toList();
 	}
-	
+	public List<Categoria> obtenerCategorias(){
+		return repositoy.findAll();
+	}
 }
