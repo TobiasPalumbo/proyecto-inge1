@@ -45,7 +45,7 @@ public class AutoController {
 	private PoliticaCancelacionService servicePoliticas;
 	
 	
-	@PostMapping("/subirmarca")//NO USAR DE MOMENTO
+	@PostMapping("/admin/subirmarca")//NO USAR DE MOMENTO
 	public ResponseEntity<String> subirAuto(@RequestBody @Valid Auto auto) {
 		if (service.marcaModeloExiste(auto.getIdAuto()))
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("La marca y modelo ya se encuetran cargados");
@@ -53,7 +53,7 @@ public class AutoController {
 		return ResponseEntity.status(HttpStatus.CREATED).body("Auto subido");
 	}
 	
-	@GetMapping("/subirauto")
+	@GetMapping("/admin/subirauto")
 	public ResponseEntity <MarcasSucursalesResponse> mandarMarcas(){
 		List<String> marcas = service.obtenerMarcas();
 		List<Sucursal> sucursales= serviceSucursal.obtenerSucursales();
@@ -62,13 +62,13 @@ public class AutoController {
 		return ResponseEntity.status(HttpStatus.OK).body(respuesta);
 	}
 	
-	@GetMapping("/subirauto/marca/{marca}")
+	@GetMapping("/admin/subirauto/marca/{marca}")
 	public ResponseEntity <List<String>> mandarModelo(@PathVariable String marca){
 		List<String> modelos = service.obtenerModelos(marca);
 		return ResponseEntity.status(HttpStatus.OK).body(modelos);
 	}
 	
-	@GetMapping("/subirauto/bodyAuto")
+	@GetMapping("/admin/subirauto/bodyAuto")
 	public ResponseEntity <List<String>> mandar(@RequestBody MarcaModeloRequest marcaModelo){
 		 Integer idAuto = service.obtenerIdAuto(marcaModelo);
 		 List<Integer> ids = serviceAutoCategoria.obtenerIdCategorias(idAuto);
