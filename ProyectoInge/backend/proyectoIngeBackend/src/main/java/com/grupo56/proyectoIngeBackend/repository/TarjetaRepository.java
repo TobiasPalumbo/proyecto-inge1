@@ -1,0 +1,20 @@
+package com.grupo56.proyectoIngeBackend.repository;
+
+import java.time.LocalDate;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import com.grupo56.proyectoIngeBackend.model.Tarjeta;
+
+public interface TarjetaRepository extends JpaRepository<Tarjeta, Integer> {
+	
+	@Query("SELECT t FROM Tarjeta t "
+			+ "WHERE t.numero = :numero "
+			+ "AND t.CVV = :CVV "
+			+ "AND t.fechaVencimiento = :fechaVencimiento "
+			+ "AND t.nombreTitular = :nombreTitular "
+			+ "AND t.tipo = :tipo")
+	public Tarjeta obtenerTarjetaPorNumero(@Param("numero") String numero, @Param("CVV") String CVV, @Param("fechaVencimiento") LocalDate fechaVencimiento, @Param("nombreTitular") String nombreTitular,  @Param("tipo") String tipo);
+}

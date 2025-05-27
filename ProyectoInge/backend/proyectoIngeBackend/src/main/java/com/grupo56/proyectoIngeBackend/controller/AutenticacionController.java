@@ -2,7 +2,6 @@ package com.grupo56.proyectoIngeBackend.controller;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.grupo56.proyectoIngeBackend.model.LoginRequest;
 import com.grupo56.proyectoIngeBackend.model.VerificacionRequest;
 import com.grupo56.proyectoIngeBackend.model.Usuario;
-import com.grupo56.proyectoIngeBackend.repository.UsuarioRepository;
 import com.grupo56.proyectoIngeBackend.service.CorreoServiceImp;
 import com.grupo56.proyectoIngeBackend.service.UsuarioServiceImp;
 
@@ -29,6 +27,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 @RestController
+
 @RequestMapping("/public/autenticacion")
 
 public class AutenticacionController {

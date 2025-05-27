@@ -1,6 +1,11 @@
 package com.grupo56.proyectoIngeBackend.controller;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,11 +22,15 @@ import com.grupo56.proyectoIngeBackend.model.Auto;
 import com.grupo56.proyectoIngeBackend.model.AutoCategoria;
 import com.grupo56.proyectoIngeBackend.model.AutoCompletoResponse;
 import com.grupo56.proyectoIngeBackend.model.AutoDTO;
+import com.grupo56.proyectoIngeBackend.model.AutoPatentesDTO;
+import com.grupo56.proyectoIngeBackend.model.AutoPresupuestoDTO;
 import com.grupo56.proyectoIngeBackend.model.Categoria;
-import com.grupo56.proyectoIngeBackend.model.MarcaModeloRequest;
-import com.grupo56.proyectoIngeBackend.model.MarcasSucursalesResponse;
+import com.grupo56.proyectoIngeBackend.model.MarcaModeloRequestDTO;
+import com.grupo56.proyectoIngeBackend.model.MarcaModeloRequestDTO;
+import com.grupo56.proyectoIngeBackend.model.MarcasSucursalesResponseDTO;
 import com.grupo56.proyectoIngeBackend.model.PoliticaCancelacion;
 import com.grupo56.proyectoIngeBackend.model.Sucursal;
+import com.grupo56.proyectoIngeBackend.model.TarjetaDTO;
 import com.grupo56.proyectoIngeBackend.service.AutoCategoriaService;
 import com.grupo56.proyectoIngeBackend.service.AutoService;
 import com.grupo56.proyectoIngeBackend.service.CategoriaService;
@@ -45,7 +54,7 @@ public class AutoController {
 	private PoliticaCancelacionService servicePoliticas;
 	
 	
-	@PostMapping("/subirmarca")//NO USAR DE MOMENTO
+	@PostMapping("/subirMarca")//NO USAR DE MOMENTO
 	public ResponseEntity<String> subirAuto(@RequestBody @Valid Auto auto) {
 		if (service.marcaModeloExiste(auto.getIdAuto()))
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("La marca y modelo ya se encuetran cargados");
@@ -53,28 +62,32 @@ public class AutoController {
 		return ResponseEntity.status(HttpStatus.CREATED).body("Auto subido");
 	}
 	
-	@GetMapping("/subirauto")
-	public ResponseEntity <MarcasSucursalesResponse> mandarMarcas(){
+	@GetMapping("/public/subirAuto")
+	public ResponseEntity <MarcasSucursalesResponseDTO> mandarMarcas(){
 		List<String> marcas = service.obtenerMarcas();
 		List<Sucursal> sucursales= serviceSucursal.obtenerSucursales();
 		List<PoliticaCancelacion> politicas= servicePoliticas.obtenerPoliticas();
-		MarcasSucursalesResponse respuesta= new MarcasSucursalesResponse(marcas,sucursales,politicas);
+		MarcasSucursalesResponseDTO respuesta = new MarcasSucursalesResponseDTO(marcas,sucursales,politicas);
 		return ResponseEntity.status(HttpStatus.OK).body(respuesta);
 	}
 	
-	@GetMapping("/subirauto/marca/{marca}")
+	@GetMapping("/public/subirAuto/marca/{marca}")
 	public ResponseEntity <List<String>> mandarModelo(@PathVariable String marca){
 		List<String> modelos = service.obtenerModelos(marca);
 		return ResponseEntity.status(HttpStatus.OK).body(modelos);
 	}
 	
-	@GetMapping("/subirauto/bodyAuto")
-	public ResponseEntity <List<String>> mandar(@RequestBody MarcaModeloRequest marcaModelo){
-		 Integer idAuto = service.obtenerIdAuto(marcaModelo);
-		 List<Integer> ids = serviceAutoCategoria.obtenerIdCategorias(idAuto);
-		 List<String> categorias = serviceCategoria.obtenerDescripcionById(ids);
-		return ResponseEntity.status(HttpStatus.OK).body(categorias);
-	}
+	@GetMapping("/admin/subirAuto/bodyAuto")
+    public ResponseEntity <Map<Integer,String>> mandar(@RequestBody MarcaModeloRequestDTO marcaModelo){
+         Integer idAuto = service.obtenerIdAuto(marcaModelo);
+         List<Integer> ids = serviceAutoCategoria.obtenerIdCategorias(idAuto);
+         List<String> categorias = serviceCategoria.obtenerDescripcionById(ids);
+         Map<Integer, String> resultado = new LinkedHashMap<>();
+            for (int i = 0; i < ids.size(); i++) {
+                resultado.put(ids.get(i), categorias.get(i));
+            }
+        return ResponseEntity.status(HttpStatus.OK).body(resultado);
+    }
 	
 	@GetMapping("/public/autos")
 	public ResponseEntity<List<AutoDTO>> obtenerAutos(){
@@ -85,4 +98,17 @@ public class AutoController {
 		List<AutoDTO> autoCompleto =  serviceAutoCategoria.obtenerMatches();
 		return ResponseEntity.status(HttpStatus.OK).body(autoCompleto);
 	}
+	
+	@GetMapping("/public/simularPresupuesto")
+	public ResponseEntity<Map<String, Double>> generarPresupuesto(@RequestBody AutoPresupuestoDTO request){
+		Auto auto = service.obtenerAutoPorId(request.id());
+		System.out.println(auto);
+		Map<String, Double> presupesto = new HashMap<String, Double>();
+		if (auto == null)
+			 return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		double total = ChronoUnit.DAYS.between(request.fechaEntrega(), request.fechaRegreso()) * auto.getPrecioDia();
+		presupesto.put("presuesto", total);
+		return ResponseEntity.status(HttpStatus.OK).body(presupesto);
+	}
+	
 }
