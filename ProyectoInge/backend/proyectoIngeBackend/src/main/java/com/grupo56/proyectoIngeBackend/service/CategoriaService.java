@@ -26,11 +26,12 @@ public class CategoriaService {
 	}
 	public List<Categoria> obtenerCategorias(){
 		return repository.findAll();
+
 	}
 	public Categoria obtenerCategoriaPorId(Integer id) {
 		Optional<Categoria> categoria= repository.findById(id);
 		if(categoria.isPresent())
 			return categoria.get();
 		return null;
-	}
+}
 }

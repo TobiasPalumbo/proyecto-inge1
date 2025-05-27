@@ -2,13 +2,10 @@ package com.grupo56.proyectoIngeBackend.service;
 
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
-
 import com.grupo56.proyectoIngeBackend.model.Auto;
-import com.grupo56.proyectoIngeBackend.model.MarcaModeloRequest;
+import com.grupo56.proyectoIngeBackend.model.MarcaModeloRequestDTO;
 import com.grupo56.proyectoIngeBackend.repository.AutoRepository;
 
 @Service
@@ -22,7 +19,7 @@ public class AutoService {
 		repository.save(auto);
 	}
 	
-	public List<Auto> obtenerAutos(){
+	public List<Auto> obtenerAutos(){	
 		return 	repository.findAll();
 	}
 	
@@ -39,8 +36,8 @@ public class AutoService {
 		return repository.findModelo(marca);
 	}
 	
-	public Integer obtenerIdAuto(MarcaModeloRequest marcaModelo) {
-		return repository.findIdAuto(marcaModelo.getMarca(), marcaModelo.getModelo());
+	public Integer obtenerIdAuto(MarcaModeloRequestDTO marcaModelo) {
+		return repository.findIdAuto(marcaModelo.marca(), marcaModelo.modelo());
 	}
 	
 	public Auto obtenerAutoPorId(Integer id ) {

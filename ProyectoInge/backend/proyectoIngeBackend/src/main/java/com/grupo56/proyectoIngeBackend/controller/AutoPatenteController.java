@@ -9,12 +9,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.grupo56.proyectoIngeBackend.model.Auto;
 import com.grupo56.proyectoIngeBackend.model.AutoPatente;
 import com.grupo56.proyectoIngeBackend.model.AutoPatenteBodyRequestDTO;
 import com.grupo56.proyectoIngeBackend.model.AutoPatenteModRequestDTO;
-import com.grupo56.proyectoIngeBackend.service.AutoCategoriaService;
 import com.grupo56.proyectoIngeBackend.service.AutoPatenteService;
 import com.grupo56.proyectoIngeBackend.service.AutoService;
 import com.grupo56.proyectoIngeBackend.service.CategoriaService;
@@ -32,8 +29,6 @@ public class AutoPatenteController {
 	@Autowired
 	private AutoService serviceAuto;
 	@Autowired
-	private AutoCategoriaService serviceAutoCategoria;
-	@Autowired
 	private CategoriaService serviceCategoria;
 	@Autowired
 	private SucursalService serviceSucursal;
@@ -41,6 +36,7 @@ public class AutoPatenteController {
 	private PoliticaCancelacionService servicePoliticas;
 	@Autowired
 	private AutoPatenteService serviceAutoPatente;
+
 	
 	@PostMapping("/subirAutoPatente")
 	public ResponseEntity<String> subirAutoPatente(@RequestBody @Valid AutoPatenteBodyRequestDTO autoPatenteBody){
@@ -82,8 +78,6 @@ public class AutoPatenteController {
 		service.subirAutoPatente(nuevoAuto);
 		return ResponseEntity.status(HttpStatus.CREATED).body("Auto modificado correctamente");
 	}
-	
-	
 	@GetMapping("/{patente}")
 	public AutoPatente autoPatentePorPatente(@PathVariable String patente) {
 		return service.obtenerAutoPatentePorPatente(patente);

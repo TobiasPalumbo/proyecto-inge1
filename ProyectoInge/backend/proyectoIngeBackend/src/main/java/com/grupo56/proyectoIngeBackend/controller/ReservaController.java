@@ -18,6 +18,7 @@ import com.grupo56.proyectoIngeBackend.model.AutoDTO;
 import com.grupo56.proyectoIngeBackend.model.AutoPatente;
 import com.grupo56.proyectoIngeBackend.model.AutoPatentesAdminDTO;
 import com.grupo56.proyectoIngeBackend.model.AutoPatentesDTO;
+import com.grupo56.proyectoIngeBackend.model.Cliente;
 import com.grupo56.proyectoIngeBackend.model.RequestSucursalFechaDTO;
 import com.grupo56.proyectoIngeBackend.model.Reserva;
 import com.grupo56.proyectoIngeBackend.model.ReservaRequestDTO;
@@ -58,20 +59,20 @@ public class ReservaController {
 			return ResponseEntity.noContent().build();;
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
-	/*@PostMapping("/realizarReserva")
-	public ResponseEntity<?> subirReserva(@RequestBody ReservaRequestDTO request,Authentication authentication){
-		if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
-        Usuario usuario = ((SecurityUser) authentication.getPrincipal()).getUsuario();
-		Reserva reserva= new Reserva();
-		reserva.setAutoPatente(autoPatenteService.obtenerAutoPatentePorPatente(request.patente()));
-		reserva.setCliente(clienteService.obtenerPorUsuario(usuario));
-		reserva.setSucursal(reserva.getAutoPatente().getSucursal());
-		reserva.setFecheEntrega(request.fechaEntrega());
-		reserva.setFechaRegreso(request.fechaRegreso());
-		reserva
+	@GetMapping("/misReservas")
+	public ResponseEntity<List<Reserva>> obtenerReservas(Authentication authentication){
+		Usuario usuario = ((SecurityUser) authentication.getPrincipal()).getUsuario();
+        Cliente cliente= clienteService.obtenerPorUsuario(usuario);
+        List<Reserva> reservas= service.obtenerReservasPorCliente(cliente);
+        if(!reservas.isEmpty())
+        	return ResponseEntity.status(HttpStatus.OK).body(reservas);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+	}
+	/*@PostMapping("/cancelarReserva")
+	public ResponseEntity<?> cancelarReserva(Integer idReserva){
+		Reserva reserva= service.obtenerReservaPorId(idReserva);
+		
 		
 	} */
+
 }

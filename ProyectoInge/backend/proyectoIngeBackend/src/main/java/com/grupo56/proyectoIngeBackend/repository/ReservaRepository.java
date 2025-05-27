@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import com.grupo56.proyectoIngeBackend.model.AutoAdminDTO;
 import com.grupo56.proyectoIngeBackend.model.AutoDTO;
 import com.grupo56.proyectoIngeBackend.model.AutoPatente;
+import com.grupo56.proyectoIngeBackend.model.Cliente;
 import com.grupo56.proyectoIngeBackend.model.Reserva;
 import com.grupo56.proyectoIngeBackend.model.Sucursal;
 @Repository
@@ -48,5 +49,7 @@ public interface ReservaRepository extends JpaRepository<Reserva, Integer> {
 		       "JOIN ap.categoria c " +
 		       "JOIN ap.sucursal s")
 		List<AutoAdminDTO> autosAdminDTO();
+	
+	public List<Reserva> findAllByCliente(Cliente cliente);
 
 }
