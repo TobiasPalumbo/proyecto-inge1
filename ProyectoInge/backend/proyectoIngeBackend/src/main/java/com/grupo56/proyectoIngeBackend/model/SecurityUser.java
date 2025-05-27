@@ -32,5 +32,8 @@ public class SecurityUser implements UserDetails{
 		super();
 		this.usuario = usuario;
 	}
+	public Usuario getUsuario() {
+		return this.usuario;
+	}
 	
 }
