@@ -2,6 +2,7 @@ package com.grupo56.proyectoIngeBackend.model;
 
 import java.time.LocalDate;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -28,6 +29,9 @@ public class Reserva {
 	@JoinColumn(name = "idCliente")
 	@ManyToOne
 	private Cliente cliente;
+	
+	@Column(length = 20)
+	private String estado;
 	
 	private LocalDate fechaEntrega;
 	private LocalDate fechaRegreso;

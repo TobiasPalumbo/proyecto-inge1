@@ -52,6 +52,7 @@ public class AutoController {
 		service.subirAuto(auto);
 		return ResponseEntity.status(HttpStatus.CREATED).body("Auto subido");
 	}
+	
 	@GetMapping("/subirauto")
 	public ResponseEntity <MarcasSucursalesResponse> mandarMarcas(){
 		List<String> marcas = service.obtenerMarcas();
@@ -67,7 +68,13 @@ public class AutoController {
 		return ResponseEntity.status(HttpStatus.OK).body(modelos);
 	}
 	
-	
+	@GetMapping("/subirauto/bodyAuto")
+	public ResponseEntity <List<String>> mandar(@RequestBody MarcaModeloRequest marcaModelo){
+		 Integer idAuto = service.obtenerIdAuto(marcaModelo);
+		 List<Integer> ids = serviceAutoCategoria.obtenerIdCategorias(idAuto);
+		 List<String> categorias = serviceCategoria.obtenerDescripcionById(ids);
+		return ResponseEntity.status(HttpStatus.OK).body(categorias);
+	}
 	
 	@GetMapping("/public/autos")
 	public ResponseEntity<List<AutoDTO>> obtenerAutos(){
