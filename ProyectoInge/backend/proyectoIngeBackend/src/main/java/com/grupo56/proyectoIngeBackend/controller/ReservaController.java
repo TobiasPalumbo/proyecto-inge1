@@ -1,4 +1,4 @@
-package com.grupo56.proyectoIngeBackend.controller;
+	package com.grupo56.proyectoIngeBackend.controller;
 
 import java.util.ArrayList;
 import java.util.List;
