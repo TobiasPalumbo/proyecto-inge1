@@ -4,20 +4,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import CerrarSesionButton from "./CerrarSesionBoton";
-import { useEffect, useState } from "react";
+import { useAuth } from "@/context/AuthContext"; // 
 
 export default function NavBar() {
   const pathname = usePathname();
-  const [rol, setRol] = useState<string | null>(null);
-  const [mounted, setMounted] = useState(false);
+  const { rol, loading, adminVerificado} = useAuth(); // 
 
-  useEffect(() => {
-    setMounted(true);
-    const rolGuardado = localStorage.getItem("rol");
-    setRol(rolGuardado);
-  }, []);
-
-  if (!mounted) return null; // <- Evita render hasta que esté en el cliente
+  if (loading) return null; 
 
   return (
     <nav className="sticky top-0 z-50 border-b-4 bg-amber-50/89 border-amber-900 shadow-amber-700">
@@ -38,6 +31,31 @@ export default function NavBar() {
         {/* Links */}
         <div className="flex-1 flex justify-center">
           <div className="flex space-x-10 text-xl font-semibold">
+            {rol === "admin" && adminVerificado &&
+            <Link
+              href="/dashboard-admin"
+              className={`hover:text-amber-900 transition-colors ${
+                pathname.startsWith("/dashboard-admin")
+                  ? "text-amber-800"
+                  : "text-amber-900 hover:text-amber-800 hover:underline"
+              }`}
+            >
+              Panel de gestión
+            </Link>
+            }
+            {rol === "empleado" &&
+            <Link
+              href="/dashboard-empleado"
+              className={`hover:text-amber-900 transition-colors ${
+                pathname.startsWith("/dashboard-empleado")
+                  ? "text-amber-800"
+                  : "text-amber-900 hover:text-amber-800 hover:underline"
+              }`}
+            >
+              Panel de gestión
+            </Link>
+            }
+            { rol=== "cliente" &&
             <Link
               href="/miperfil"
               className={`hover:text-amber-900 transition-colors ${
@@ -47,7 +65,7 @@ export default function NavBar() {
               }`}
             >
               Mi perfil
-            </Link>
+            </Link> }
             <Link
               href="/sucursales"
               className={`hover:text-amber-900 transition-colors ${
@@ -68,15 +86,7 @@ export default function NavBar() {
             >
               Flota
             </Link>
-            <Link
-              href="/mis-reservas"
-              className={`hover:text-amber-900 transition-colors ${
-                pathname.startsWith("/mis-reservas")
-                  ? "text-amber-800"
-                  : "text-amber-900 hover:text-amber-800 hover:underline"
-              }`}
-            >
-              Mis Reservas
+            <Link href="#sobre-nosotros" className="text-amber-900 hover:text-amber-800 hover:underline"> Sobre Nosotros
             </Link>
           </div>
         </div>
