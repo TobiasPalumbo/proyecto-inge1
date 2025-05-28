@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.grupo56.proyectoIngeBackend.model.Cliente;
-import com.grupo56.proyectoIngeBackend.model.RegisterRequest;
+import com.grupo56.proyectoIngeBackend.model.RegisterRequestDTO;
 import com.grupo56.proyectoIngeBackend.model.Usuario;
 import com.grupo56.proyectoIngeBackend.service.ClienteService;
 import com.grupo56.proyectoIngeBackend.service.UsuarioServiceImp;
@@ -27,9 +27,9 @@ public class RegisterController {
 	private ClienteService serviceCliente;
 	
 	@PostMapping("/registrarse")
-	public ResponseEntity<?> register(@RequestBody RegisterRequest request){
+	public ResponseEntity<?> register(@RequestBody RegisterRequestDTO request){
 		Map<String, String> response = new HashMap<>();
-		if (serviceUsuario.obtenerUsuarioPorCorreo(request.getCorreo()) != null) {
+		if (serviceUsuario.obtenerUsuarioPorCorreo(request.correo()) != null) {
 	        // Si el correo ya está registrado
 			response.put("message", "El correo ya está asociado a una cuenta");
 	        return ResponseEntity
@@ -38,23 +38,22 @@ public class RegisterController {
 	    }
 		Usuario nuevoUsuario= new Usuario();
 		Cliente nuevoCliente= new Cliente();
-		nuevoUsuario.setCorreo(request.getCorreo());
-		nuevoUsuario.setContraseña(request.getContraseña());
+		nuevoUsuario.setCorreo(request.correo());
+		nuevoUsuario.setContraseña(request.contraseña());
 		nuevoUsuario.setRol("cliente");
 		serviceUsuario.subirUsuario(nuevoUsuario);
-		nuevoCliente.setApellido(request.getApellido());
-		nuevoCliente.setDni(request.getDni());
-		nuevoCliente.setFechaNac(request.getFechaNac());
+		nuevoCliente.setApellido(request.apellido());
+		nuevoCliente.setDni(request.dni());
+		nuevoCliente.setFechaNac(request.fechaNac());
 		nuevoCliente.setFechaRegistro(LocalDate.now());
-		nuevoCliente.setNombre(request.getNombre());
-		nuevoCliente.setTelefono(request.getTelefono());
+		nuevoCliente.setNombre(request.nombre());
+		nuevoCliente.setTelefono(request.telefono());
 		nuevoCliente.setIdUsuario(nuevoUsuario);
 		serviceCliente.subirCliente(nuevoCliente);
 		response.put("message", "Registro exitoso.");
 		return ResponseEntity
 	            .status(HttpStatus.CREATED) // 201 Created
 	            .body(response);
-	
 		
 	}
 }

@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.grupo56.proyectoIngeBackend.model.Cliente;
+import com.grupo56.proyectoIngeBackend.model.PerfilClienteResponseDTO;
 import com.grupo56.proyectoIngeBackend.model.SecurityUser;
 import com.grupo56.proyectoIngeBackend.model.Usuario;
 import com.grupo56.proyectoIngeBackend.service.ClienteService;
@@ -38,12 +40,13 @@ public class UsuarioController {
 	        }
 
 	        Usuario usuario = ((SecurityUser) authentication.getPrincipal()).getUsuario();
-
-	        return ResponseEntity.ok(Map.of(
-	            "correo", usuario.getCorreo(),
-	            "rol", usuario.getRol(),
-	            "cliente",clienteService.obtenerPorUsuario(usuario)
-	        ));
+	        Cliente cliente = clienteService.obtenerPorUsuario(usuario);
+	        PerfilClienteResponseDTO perfilResponse= new PerfilClienteResponseDTO(cliente.getNombre(),
+	        		cliente.getApellido(),
+	        		usuario.getCorreo(),
+	        		cliente.getFechaNac(),
+	        		cliente.getFechaRegistro());
+	        return ResponseEntity.ok(perfilResponse);
 	    }
 	
 

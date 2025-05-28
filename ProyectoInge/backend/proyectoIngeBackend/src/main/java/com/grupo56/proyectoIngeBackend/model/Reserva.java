@@ -74,12 +74,6 @@ public class Reserva {
 	public void setCliente(Cliente cliente) {
 		this.cliente = cliente;
 	}
-	public LocalDateTime getFecheEntrega() {
-		return fechaEntrega;
-	}
-	public void setFecheEntrega(LocalDateTime fecheEntrega) {
-		this.fechaEntrega = fecheEntrega;
-	}
 	public LocalDateTime getFechaRegreso() {
 		return fechaRegreso;
 	}
