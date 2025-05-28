@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.grupo56.proyectoIngeBackend.model.AutoPatentesAdminDTO;
@@ -50,10 +51,18 @@ public class ReservaController {
         	return ResponseEntity.status(HttpStatus.OK).body(reservas);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}
-	/*@PostMapping("/cancelarReserva")
-	public ResponseEntity<?> cancelarReserva(Integer idReserva){
-		Reserva reserva= service.obtenerReservaPorId(idReserva);
+	@PostMapping("/cancelarReserva")
+	public ResponseEntity<?> cancelarReserva(Integer idReserva,Authentication authentication){
+		Usuario usuario = ((SecurityUser) authentication.getPrincipal()).getUsuario();
+        Cliente cliente= clienteService.obtenerPorUsuario(usuario);
+        Reserva reserva= service.obtenerReservaPorId(idReserva);
+		if(reserva!=null && service.reservaPerteneceAusuario(reserva, cliente)){
+			reserva.setEstado("cancelado");
+			service.actualizarReserva(reserva);
+			return ResponseEntity.status(HttpStatus.OK).body("reserva cancelada");
+		}
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("reserva cancelada");
 		
 		
-	} */
+	} 
 }

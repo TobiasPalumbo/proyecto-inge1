@@ -63,12 +63,6 @@ public class Reserva {
 	public void setCliente(Cliente cliente) {
 		this.cliente = cliente;
 	}
-	public LocalDateTime getFecheEntrega() {
-		return fechaEntrega;
-	}
-	public void setFecheEntrega(LocalDateTime fecheEntrega) {
-		this.fechaEntrega = fecheEntrega;
-	}
 	public LocalDateTime getFechaRegreso() {
 		return fechaRegreso;
 	}
@@ -80,6 +74,18 @@ public class Reserva {
 	}
 	public void setPrecio(double precio) {
 		this.precio = precio;
+	}
+	public String getEstado() {
+		return estado;
+	}
+	public void setEstado(String estado) {
+		this.estado = estado;
+	}
+	public LocalDateTime getFechaEntrega() {
+		return fechaEntrega;
+	}
+	public void setFechaEntrega(LocalDateTime fechaEntrega) {
+		this.fechaEntrega = fechaEntrega;
 	}
 	
 	

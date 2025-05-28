@@ -96,11 +96,14 @@ public class ReservaService {
 		reserva.setAutoPatente(autoPatenteService.obtenerAutoPatentePorPatente(request.patente()));
 		reserva.setCliente(cliente);
 		reserva.setSucursal(reserva.getAutoPatente().getSucursal());
-		reserva.setFecheEntrega(LocalDateTime.of(request.fechaEntrega(), request.horaEntrega()));
+		reserva.setFechaEntrega(LocalDateTime.of(request.fechaEntrega(), request.horaEntrega()));
 		reserva.setFechaRegreso(LocalDateTime.of(request.fechaRegreso(), request.horaRegreso()));
 		reserva.setPrecio(monto);
 		repository.save(reserva);
-	} 
+	}
+	public void actualizarReserva(Reserva reserva) {
+		repository.save(reserva);
+	}
 	public List<Reserva> obtenerReservasPorCliente(Cliente cliente){
 		
 		return repository.findAllByCliente(cliente);
@@ -111,6 +114,16 @@ public class ReservaService {
 		if(reserva.isPresent())
 			return reserva.get();
 		return null;
+	}
+	public boolean reservaPerteneceAusuario(Reserva reserva, Cliente cliente ) {
+		List<Reserva> reservas= repository.findAllByCliente(cliente);
+		if(!reservas.isEmpty()) {
+			
+			return reservas.contains(reservas);
+			
+		}
+		return false;
+		
 	}
 	
 	

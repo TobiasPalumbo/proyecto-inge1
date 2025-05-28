@@ -38,14 +38,14 @@ public class AutenticacionController {
 	
 	@PostMapping("/public/login")
 	public ResponseEntity<?> login(@RequestBody LoginRequest request, HttpServletRequest httpRequest) {
-		Usuario usuario1= usuarioService.obtenerUsuarioPorCorreo(request.getCorreo());
-		if(usuario1==null || !usuario1.getContraseña().equals(request.getContraseña())) {
+		Usuario usuario1= usuarioService.obtenerUsuarioPorCorreo(request.correo());
+		if(usuario1==null || !usuario1.getContraseña().equals(request.contraseña())) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message","Credenciales invalidas"));
 		}
 		if(!usuario1.getRol().equals("admin")) {
 			Authentication authentication = authenticationManager.authenticate(
 					new UsernamePasswordAuthenticationToken(
-			                request.getCorreo(), request.getContraseña()
+			                request.correo(), request.contraseña()
 			            )
 			 );
 			SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -64,12 +64,12 @@ public class AutenticacionController {
 
 	@PostMapping("/public/verificarAdmin")
 	public ResponseEntity<?> verifAdmin(@RequestBody VerificacionRequest request, HttpServletRequest httpRequest){
-		String codigoCorrecto= codigos.get(request.getCorreo());
-		if (codigoCorrecto==null || !codigoCorrecto.equals(request.getCodigo())) {
+		String codigoCorrecto= codigos.get(request.correo());
+		if (codigoCorrecto==null || !codigoCorrecto.equals(request.codigo())) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Codigo invalido");
 		}
-		codigos.remove(request.getCorreo());
-		Usuario usuario = usuarioService.obtenerUsuarioPorCorreo(request.getCorreo());
+		codigos.remove(request.correo());
+		Usuario usuario = usuarioService.obtenerUsuarioPorCorreo(request.correo());
 		Authentication authentication = authenticationManager.authenticate(
 	            new UsernamePasswordAuthenticationToken(
 	                usuario.getCorreo(), usuario.getContraseña()
