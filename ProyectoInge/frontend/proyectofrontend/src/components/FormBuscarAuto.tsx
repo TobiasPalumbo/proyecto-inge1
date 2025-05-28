@@ -84,39 +84,6 @@ export function FormBuscarAuto() {
       .finally(() => setMounted(true));
   }, []);
 
-  // Efecto para cargar marcas
-  useEffect(() => {
-    if (mounted && sucursales.length > 0) {
-      fetch("http://localhost:8080/subirauto", {
-        credentials: "include",
-      })
-        .then(parseJsonResponse)
-        .then((data: MarcasSucursalesResponse | null) => {
-            if (data && data.marcas) setMarcas(data.marcas);
-            else setMarcas([]);
-        })
-        .catch((err) => console.error("Error al traer marcas:", err));
-    }
-  }, [mounted, sucursales]);
-
-  // Efecto para cargar modelos cuando se selecciona una marca
-  useEffect(() => {
-    if (marcaSeleccionada) {
-      fetch(`http://localhost:8080/subirauto/marca/${marcaSeleccionada}`, {
-        credentials: "include",
-      })
-        .then(parseJsonResponse)
-        .then((data: string[] | null) => {
-            if (data) setModelos(data);
-            else setModelos([]);
-        })
-        .catch((err) => console.error("Error al traer modelos:", err));
-    } else {
-      setModelos([]);
-      setModeloSeleccionado("");
-    }
-  }, [marcaSeleccionada]);
-
   // Efecto: Controla la visibilidad de los filtros de auto automáticamente
   useEffect(() => {
     const isMainFormComplete =
@@ -133,91 +100,59 @@ export function FormBuscarAuto() {
 
   if (!mounted || sucursales.length === 0) return null;
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
 
-    const now = new Date();
-    if (!horaRetiro || !horaDevolucion) {
-        alert("Por favor, ingresa la hora de retiro y devolución.");
-        return;
-    }
+  const now = new Date();
+  if (!horaRetiro || !horaDevolucion) {
+    alert("Por favor, ingresa la hora de retiro y devolución.");
+    return;
+  }
 
-    const [retrievalHour, retrievalMinute] = horaRetiro.split(':').map(Number);
-    const retrievalDateTime = new Date(rangoFechas!.from!);
-    retrievalDateTime.setHours(retrievalHour, retrievalMinute, 0, 0);
+  const [retrievalHour, retrievalMinute] = horaRetiro.split(':').map(Number);
+  const retrievalDateTime = new Date(rangoFechas!.from!);
+  retrievalDateTime.setHours(retrievalHour, retrievalMinute, 0, 0);
 
-    const [returnHour, returnMinute] = horaDevolucion.split(':').map(Number);
-    const returnDateTime = new Date(rangoFechas!.to!);
-    returnDateTime.setHours(returnHour, returnMinute, 0, 0);
+  const [returnHour, returnMinute] = horaDevolucion.split(':').map(Number);
+  const returnDateTime = new Date(rangoFechas!.to!);
+  returnDateTime.setHours(returnHour, returnMinute, 0, 0);
 
-    if (!rangoFechas?.from || !rangoFechas?.to) {
-      alert("Seleccioná un rango de fechas válido.");
-      return;
-    }
-    if (!sucursalRetiro) {
-        alert("Seleccioná una sucursal de retiro.");
-        return;
-    }
-    if (!mismaSucursal && !sucursalDevolucion) {
-        alert("Seleccioná una sucursal de devolución.");
-        return;
-    }
+  if (!rangoFechas?.from || !rangoFechas?.to) {
+    alert("Seleccioná un rango de fechas válido.");
+    return;
+  }
+  if (!sucursalRetiro) {
+    alert("Seleccioná una sucursal de retiro.");
+    return;
+  }
+  if (!mismaSucursal && !sucursalDevolucion) {
+    alert("Seleccioná una sucursal de devolución.");
+    return;
+  }
 
-    if (retrievalDateTime < now) {
-      alert("La fecha y hora de retiro no pueden ser anteriores al momento actual.");
-      return;
-    }
-    if (returnDateTime <= retrievalDateTime) {
-      alert("La fecha y hora de devolución deben ser posteriores a la de retiro.");
-      return;
-    }
+  if (retrievalDateTime < now) {
+    alert("La fecha y hora de retiro no pueden ser anteriores al momento actual.");
+    return;
+  }
+  if (returnDateTime <= retrievalDateTime) {
+    alert("La fecha y hora de devolución deben ser posteriores a la de retiro.");
+    return;
+  }
 
-    // Validaciones: Marca y Modelo son obligatorios
-    if (!marcaSeleccionada) {
-        alert("Por favor, seleccioná una marca de auto.");
-        return;
-    }
-    if (!modeloSeleccionado) {
-        alert("Por favor, seleccioná un modelo de auto.");
-        return;
-    }
+  // Redirigir con parámetros en la URL
+  const params = new URLSearchParams({
+    sucursalRetiro,
+    sucursalDevolucion: mismaSucursal ? sucursalRetiro : sucursalDevolucion,
+    fechaRetiro: rangoFechas.from!.toISOString().split("T")[0],
+    fechaDevolucion: rangoFechas.to!.toISOString().split("T")[0],
+    horaRetiro,
+    horaDevolucion
+  });
 
-    const datosParaEnviar = {
-      sucursalRetiro,
-      sucursalDevolucion: mismaSucursal ? sucursalRetiro : sucursalDevolucion,
-      horaRetiro,
-      horaDevolucion,
-      fechaRetiro: rangoFechas?.from?.toISOString().split("T")[0],
-      fechaDevolucion: rangoFechas?.to?.toISOString().split("T")[0],
-      marca: marcaSeleccionada,
-      modelo: modeloSeleccionado,
-    };
+  router.push(`/flota-disponible?${params.toString()}`);
+};
 
-    console.log("Datos a enviar para presupuesto:", datosParaEnviar);
 
-    try {
-      const response = await fetch("http://localhost:8080/public/presupuesto", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(datosParaEnviar),
-        credentials: "include",
-      });
-
-      if (!response.ok) {
-        try {
-            const errorData = await response.json();
-            throw new Error(errorData.message || `Error del servidor: ${response.status}`);
-        } catch (e) {
-            throw new Error(`Error en la búsqueda de autos. Código: ${response.status}`);
-        }
-      } else {
-        router.push("/presupuesto");
-      }
-    } catch (error: any) {
-      console.error("Error en la búsqueda:", error);
-      alert("Ocurrió un error al generar presupuesto: " + error.message);
-    }
-  };
 
   return (
     <div className="w-full flex justify-center px-2">
@@ -232,67 +167,12 @@ export function FormBuscarAuto() {
             <div className="flex flex-col gap-4">
               <div>
                 <Label className="text-black mb-2 font-normal text-sm">
-                  Rango de fechas
+                  Rango de fechas <span className="text-red-600">*</span>
                 </Label>
                 <FechaRangoNuevo value={rangoFechas} onChange={setRangoFechas} />
               </div>
 
-              {/* Sección de filtros de Marca y Modelo - APARECE DENTRO DE ESTA COLUMNA */}
-              {mostrarFiltrosAuto && (
-                <>
-                  <div className="mt-w"> {/* Un poco de margen superior */}
-                    <Label className="text-black mb-2 font-normal text-sm">
-                      Marca de Auto
-                    </Label>
-                    <Select
-                      onValueChange={(value) => {
-                        setMarcaSeleccionada(value);
-                        setModeloSeleccionado("");
-                      }}
-                      value={marcaSeleccionada}
-                    >
-                      <SelectTrigger className="w-full bg-white text-black border-gray-400">
-                        <SelectValue placeholder="Seleccioná una marca" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-white">
-                        <SelectGroup>
-                          {marcas.map((nombreMarca) => (
-                            <SelectItem key={nombreMarca} value={nombreMarca}>
-                              {nombreMarca}
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {marcaSeleccionada && (
-                    <div className="mt-2">
-                      <Label className="text-black mb-2 font-normal text-sm">
-                        Modelo de Auto
-                      </Label>
-                      <Select
-                        onValueChange={setModeloSeleccionado}
-                        value={modeloSeleccionado}
-                      >
-                        <SelectTrigger className="w-full bg-white text-black border-gray-400">
-                          <SelectValue placeholder="Seleccioná un modelo" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-white">
-                          <SelectGroup>
-                            {modelos.map((nombreModelo) => (
-                              <SelectItem key={nombreModelo} value={nombreModelo}>
-                                {nombreModelo}
-                              </SelectItem>
-                            ))}
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  )}
-                </>
-              )}
-            </div>
+              </div>
 
             {/* Columna de Sucursales */}
             <div className="flex flex-col gap-2">
@@ -307,7 +187,7 @@ export function FormBuscarAuto() {
                     }
                   }}
                   className="bg-white border-gray-800"
-                />
+                />  
                 <label
                   htmlFor="distintaSucursalCheckbox"
                   className="text-black font-normal text-sm select-none"
@@ -315,7 +195,6 @@ export function FormBuscarAuto() {
                   Devolver en distinta sucursal
                 </label>
               </div>
-
               <Select
                 onValueChange={setSucursalRetiro}
                 value={sucursalRetiro}
@@ -368,7 +247,7 @@ export function FormBuscarAuto() {
                   htmlFor="horaRetiro"
                   className="text-black mb-2 font-normal text-sm"
                 >
-                  Hora de Retiro
+                  Hora de Retiro<span className="text-red-600">*</span>
                 </Label>
                 <Input
                   type="time"
@@ -385,7 +264,7 @@ export function FormBuscarAuto() {
                   htmlFor="horaDevolucion"
                   className="text-black mb-2 font-normal text-sm"
                 >
-                  Hora de Devolución
+                  Hora de Devolución<span className="text-red-600">*</span>
                 </Label>
                 <Input
                   type="time"
@@ -406,17 +285,8 @@ export function FormBuscarAuto() {
               className="mt-1 mr-2 bg-amber-900 hover:bg-amber-800 text-white shadow-amber-950 w-full sm:w-auto"
               form="main-form"
             >
-              Generar presupuesto
+              Ver flota disponible
             </Button>
-            { correo && (
-            <Button
-              type="button"
-              className="mt-1 mr-2 bg-amber-900 hover:bg-amber-800 text-white w-full sm:w-auto"
-              // Agrega lógica para solo mostrar si el usuario está logueado
-            >
-              Reservar
-            </Button>
-            )}
           </div>
         </CardContent>
       </Card>

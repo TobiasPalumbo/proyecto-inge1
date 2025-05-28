@@ -77,9 +77,9 @@ export default function NavBar() {
               Sucursales
             </Link>
             <Link
-              href="/flota"
+              href="/verflota"
               className={`hover:text-amber-900 transition-colors ${
-                pathname.startsWith("/flota")
+                pathname.startsWith("/verflota")
                   ? "text-amber-800"
                   : "text-amber-900 hover:text-amber-800 hover:underline"
               }`}
