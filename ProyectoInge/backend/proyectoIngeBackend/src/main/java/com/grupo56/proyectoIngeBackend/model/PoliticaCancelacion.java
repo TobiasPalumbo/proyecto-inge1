@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PoliticaCancelacion {
-		
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int idPoliticaCancelacion;
