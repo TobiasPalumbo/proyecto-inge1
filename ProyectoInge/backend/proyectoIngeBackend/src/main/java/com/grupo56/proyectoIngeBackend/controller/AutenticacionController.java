@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.grupo56.proyectoIngeBackend.model.LoginRequest;
-import com.grupo56.proyectoIngeBackend.model.VerificacionRequest;
+import com.grupo56.proyectoIngeBackend.model.LoginRequestDTO;
+import com.grupo56.proyectoIngeBackend.model.VerificacionRequestDTO;
 import com.grupo56.proyectoIngeBackend.model.Usuario;
 import com.grupo56.proyectoIngeBackend.service.CorreoServiceImp;
 import com.grupo56.proyectoIngeBackend.service.UsuarioServiceImp;
@@ -37,7 +37,7 @@ public class AutenticacionController {
 	private AuthenticationManager authenticationManager;
 	
 	@PostMapping("/public/login")
-	public ResponseEntity<?> login(@RequestBody LoginRequest request, HttpServletRequest httpRequest) {
+	public ResponseEntity<?> login(@RequestBody LoginRequestDTO request, HttpServletRequest httpRequest) {
 		Usuario usuario1= usuarioService.obtenerUsuarioPorCorreo(request.correo());
 		if(usuario1==null || !usuario1.getContraseña().equals(request.contraseña())) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message","Credenciales invalidas"));
@@ -63,7 +63,7 @@ public class AutenticacionController {
 	}
 
 	@PostMapping("/public/verificarAdmin")
-	public ResponseEntity<?> verifAdmin(@RequestBody VerificacionRequest request, HttpServletRequest httpRequest){
+	public ResponseEntity<?> verifAdmin(@RequestBody VerificacionRequestDTO request, HttpServletRequest httpRequest){
 		String codigoCorrecto= codigos.get(request.correo());
 		if (codigoCorrecto==null || !codigoCorrecto.equals(request.codigo())) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Codigo invalido");
