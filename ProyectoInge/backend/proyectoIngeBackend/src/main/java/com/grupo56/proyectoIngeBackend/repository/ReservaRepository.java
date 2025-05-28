@@ -1,6 +1,7 @@
 package com.grupo56.proyectoIngeBackend.repository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -30,8 +31,8 @@ public interface ReservaRepository extends JpaRepository<Reserva, Integer> {
 		       "  WHERE (r.fechaEntrega <= :fechaRegreso AND r.fechaRegreso >= :fechaEntrega)" +
 		       ")")
 	public List<AutoPatente> autosPatenteDiponibles(
-			@Param("fechaEntrega") LocalDate fechaEntrega,
-		    @Param("fechaRegreso") LocalDate fechaRegreso,
+			@Param("fechaEntrega") LocalDateTime fechaEntrega,
+		    @Param("fechaRegreso") LocalDateTime fechaRegreso,
 		    @Param("idSucursal") Integer idSucursal
 		);
 	

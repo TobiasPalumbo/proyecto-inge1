@@ -1,6 +1,8 @@
 package com.grupo56.proyectoIngeBackend.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -46,7 +48,7 @@ public class ReservaService {
 	public List<AutoPatente> autosPatentesNoReservados(List<AutoPatente> autosPatentes, Integer idSucursal){
 		return repository.autosPatentesNoReservados(autosPatentes, idSucursal);
 	}
-	public List<AutoPatente> autosPatenteDiponibles(LocalDate fechaEntrega, LocalDate fechaRegreso, Integer idSucursal){
+	public List<AutoPatente> autosPatenteDiponibles(LocalDateTime fechaEntrega, LocalDateTime fechaRegreso, Integer idSucursal){
 		return repository.autosPatenteDiponibles(fechaEntrega, fechaRegreso, idSucursal);
 	}
 	
@@ -55,7 +57,7 @@ public class ReservaService {
 	}
 	
 	public List<AutoPatentesDTO> obtenerAutosDisponibles(RequestSucursalFechaDTO request){
-		List<AutoPatente> autosPatentesDisponibles = autosPatenteDiponibles(request.fechaEntrega(), request.fechaRegreso(), request.sucursal());
+		List<AutoPatente> autosPatentesDisponibles = autosPatenteDiponibles(request.fechaEntrega().atStartOfDay(), request.fechaRegreso().atTime(LocalTime.MAX), request.sucursal());
 		List<AutoDTO> autosDTOSDisponibles = autosDTODisponibles(autosPatentesDisponibles);
 		System.out.print(autosDTOSDisponibles.size());
 		List<AutoPatentesDTO> autoPatentesDTO = new ArrayList();
@@ -94,8 +96,8 @@ public class ReservaService {
 		reserva.setAutoPatente(autoPatenteService.obtenerAutoPatentePorPatente(request.patente()));
 		reserva.setCliente(cliente);
 		reserva.setSucursal(reserva.getAutoPatente().getSucursal());
-		reserva.setFecheEntrega(request.fechaEntrega());
-		reserva.setFechaRegreso(request.fechaRegreso());
+		reserva.setFecheEntrega(LocalDateTime.of(request.fechaEntrega(), request.horaEntrega()));
+		reserva.setFechaRegreso(LocalDateTime.of(request.fechaRegreso(), request.horaRegreso()));
 		reserva.setPrecio(monto);
 		repository.save(reserva);
 	} 

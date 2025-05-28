@@ -1,6 +1,7 @@
 package com.grupo56.proyectoIngeBackend.model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -33,8 +34,8 @@ public class Reserva {
 	@Column(length = 20)
 	private String estado="confirmado";
 	
-	private LocalDate fechaEntrega;
-	private LocalDate fechaRegreso;
+	private LocalDateTime fechaEntrega;
+	private LocalDateTime fechaRegreso;
 	private double precio;
 	
 	
@@ -62,16 +63,16 @@ public class Reserva {
 	public void setCliente(Cliente cliente) {
 		this.cliente = cliente;
 	}
-	public LocalDate getFecheEntrega() {
+	public LocalDateTime getFecheEntrega() {
 		return fechaEntrega;
 	}
-	public void setFecheEntrega(LocalDate fecheEntrega) {
+	public void setFecheEntrega(LocalDateTime fecheEntrega) {
 		this.fechaEntrega = fecheEntrega;
 	}
-	public LocalDate getFechaRegreso() {
+	public LocalDateTime getFechaRegreso() {
 		return fechaRegreso;
 	}
-	public void setFechaRegreso(LocalDate fechaRegreso) {
+	public void setFechaRegreso(LocalDateTime fechaRegreso) {
 		this.fechaRegreso = fechaRegreso;
 	}
 	public double getPrecio() {

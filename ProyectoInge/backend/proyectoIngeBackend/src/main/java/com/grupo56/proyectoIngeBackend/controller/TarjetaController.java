@@ -35,7 +35,7 @@ public class TarjetaController {
 	private ClienteService clienteService;
 	@Autowired
 	private ReservaService reservaService;
-	@PostMapping("/public/pagarConTarjeta")
+	@PostMapping("/pagarConTarjeta")
 	public ResponseEntity<String> pagarConTarjeta(@Valid @RequestBody TarjetaDTO tarjetaDTO,Authentication authentication){
 		if (tarjetaDTO.CVV().isBlank() || tarjetaDTO.numero().isBlank() || tarjetaDTO.nombreTitular().isBlank() || tarjetaDTO.fechaVencimiento() == null || tarjetaDTO.tipo().isBlank()) 
 			 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Campo/s obligarotorio vacios"); 

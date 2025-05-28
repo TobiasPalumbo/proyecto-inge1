@@ -94,7 +94,9 @@ public class AutoController {
 	
 	@GetMapping("/public/simularPresupuesto")
 	public ResponseEntity<Map<String, Double>> generarPresupuesto(@RequestBody AutoPresupuestoDTO request){
+		System.out.println(request);
 		Auto auto = service.obtenerAutoPorId(request.id());
+		System.out.println(request.id());
 		System.out.println(auto);
 		Map<String, Double> presupesto = new HashMap<String, Double>();
 		if (auto == null)
