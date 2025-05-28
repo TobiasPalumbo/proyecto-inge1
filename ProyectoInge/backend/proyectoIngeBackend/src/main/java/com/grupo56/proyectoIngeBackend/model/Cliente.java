@@ -34,7 +34,7 @@ public class Cliente {
 	private LocalDate fechaNac;
 	@OneToOne
 	@JoinColumn(name = "idUsuario")
-	private Usuario idUsuario;
+	private Usuario usuario;
 	public Integer getIdCliente() {
 		return idCliente;
 	}
@@ -78,10 +78,10 @@ public class Cliente {
 		this.fechaNac = fechaNac;
 	}
 	public Usuario getIdUsuario() {
-		return idUsuario;
+		return usuario;
 	}
 	public void setIdUsuario(Usuario idUsuario) {
-		this.idUsuario = idUsuario;
+		this.usuario = idUsuario;
 	}
 
 	

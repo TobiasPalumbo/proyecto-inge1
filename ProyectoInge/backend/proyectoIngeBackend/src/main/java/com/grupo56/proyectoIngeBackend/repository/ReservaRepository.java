@@ -8,8 +8,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.grupo56.proyectoIngeBackend.model.AutoAdminDTO;
 import com.grupo56.proyectoIngeBackend.model.AutoDTO;
 import com.grupo56.proyectoIngeBackend.model.AutoPatente;
+import com.grupo56.proyectoIngeBackend.model.Cliente;
 import com.grupo56.proyectoIngeBackend.model.Reserva;
 import com.grupo56.proyectoIngeBackend.model.Sucursal;
 @Repository
@@ -27,15 +29,45 @@ public interface ReservaRepository extends JpaRepository<Reserva, Integer> {
 		       "  SELECT r.autoPatente.patente FROM Reserva r " +
 		       "  WHERE (r.fechaEntrega <= :fechaRegreso AND r.fechaRegreso >= :fechaEntrega)" +
 		       ")")
-		public List<AutoPatente> autosPatenteDiponibles(
-		    @Param("fechaEntrega") LocalDate fechaEntrega,
+	public List<AutoPatente> autosPatenteDiponibles(
+			@Param("fechaEntrega") LocalDate fechaEntrega,
 		    @Param("fechaRegreso") LocalDate fechaRegreso,
 		    @Param("idSucursal") Integer idSucursal
 		);
 	
 	
 	
-	@Query("SELECT DISTINCT new  com.grupo56.proyectoIngeBackend.model.AutoDTO(aP.auto.idAuto, aP.categoria.idCategoria, aP.auto.marca, aP.auto.modelo, aP.auto.precioDia, aP.auto.cantidadAsientos, aP.categoria.descripcion, aP.auto.politicaCancelacion.idPoliticaCancelacion, aP.auto.politicaCancelacion.porcentaje)"
-			+ " FROM AutoPatente aP WHERE aP.patente IN :autosPatentesDisponibles")
+	@Query("SELECT DISTINCT new  com.grupo56.proyectoIngeBackend.model.AutoDTO("
+			+ "aP.auto.idAuto, "
+			+ "aP.categoria.idCategoria, "
+			+ "aP.auto.marca, aP.auto.modelo, "
+			+ "aP.auto.precioDia, "
+			+ "aP.auto.cantidadAsientos, "
+			+ "aP.categoria.descripcion, "
+			+ "aP.auto.politicaCancelacion.idPoliticaCancelacion, "
+			+ "aP.auto.politicaCancelacion.porcentaje) "
+			+ "FROM AutoPatente aP "
+			+ "WHERE aP.patente "
+			+ "IN :autosPatentesDisponibles")
 	public List<AutoDTO> autosDTODisponibles(@Param("autosPatentesDisponibles") List<String> autosPatentesDisponibles);
+	
+	
+	
+	@Query("SELECT DISTINCT new com.grupo56.proyectoIngeBackend.model.AutoAdminDTO" +
+		       "(aP.auto.idAuto, "
+		       + "aP.categoria.idCategoria, "
+		       + "aP.auto.marca, "
+		       + "aP.auto.modelo, "
+		       + "aP.auto.precioDia, "
+		       + "aP.auto.cantidadAsientos, "
+		       + "aP.categoria.descripcion, "
+		       + "aP.sucursal.idSucursal, "
+		       + "aP.sucursal.localidad, "
+		       + "aP.auto.politicaCancelacion.idPoliticaCancelacion, "
+		       + "aP.auto.politicaCancelacion.porcentaje) " 
+		       + "FROM AutoPatente aP")
+	public List<AutoAdminDTO> autosAdminDTO();
+	
+	public List<Reserva> findAllByCliente(Cliente cliente);
+
 }

@@ -3,4 +3,8 @@ package com.grupo56.proyectoIngeBackend.model;
 
 import java.time.LocalDate;
 
-public record  AutoPatenteBodyRequestDTO (String patente, Sucursal sucursal, MarcaModeloRequestDTO marcaModelo, PoliticaCancelacion politica, LocalDate anio, Integer idCategoria) {}
+
+import jakarta.validation.constraints.NotBlank;
+
+public record  AutoPatenteBodyRequestDTO (@NotBlank String patente, Sucursal sucursal, MarcaModeloRequestDTO marcaModelo, PoliticaCancelacion politica, LocalDate anio, Integer idCategoria) {}
+

@@ -1,36 +1,27 @@
 package com.grupo56.proyectoIngeBackend.controller;
 
-import java.time.LocalDate;
+
+
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.grupo56.proyectoIngeBackend.model.Auto;
-import com.grupo56.proyectoIngeBackend.model.AutoCategoria;
-import com.grupo56.proyectoIngeBackend.model.AutoCompletoResponse;
 import com.grupo56.proyectoIngeBackend.model.AutoDTO;
-import com.grupo56.proyectoIngeBackend.model.AutoPatentesDTO;
 import com.grupo56.proyectoIngeBackend.model.AutoPresupuestoDTO;
-import com.grupo56.proyectoIngeBackend.model.Categoria;
-import com.grupo56.proyectoIngeBackend.model.MarcaModeloRequestDTO;
 import com.grupo56.proyectoIngeBackend.model.MarcaModeloRequestDTO;
 import com.grupo56.proyectoIngeBackend.model.MarcasSucursalesResponseDTO;
 import com.grupo56.proyectoIngeBackend.model.PoliticaCancelacion;
 import com.grupo56.proyectoIngeBackend.model.Sucursal;
-import com.grupo56.proyectoIngeBackend.model.TarjetaDTO;
 import com.grupo56.proyectoIngeBackend.service.AutoCategoriaService;
 import com.grupo56.proyectoIngeBackend.service.AutoService;
 import com.grupo56.proyectoIngeBackend.service.CategoriaService;
