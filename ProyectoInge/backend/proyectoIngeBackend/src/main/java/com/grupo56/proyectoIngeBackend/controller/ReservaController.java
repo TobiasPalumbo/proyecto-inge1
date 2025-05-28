@@ -53,7 +53,7 @@ public class ReservaController {
         List<Reserva> reservas= service.obtenerReservasPorCliente(cliente);
         if(reservas.isEmpty())
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        List<ReservaDTO> reservasDTO = new ArrayList();
+        List<ReservaDTO> reservasDTO = new ArrayList<ReservaDTO>();
         reservas.stream().forEach(r -> 
         reservasDTO.add(new ReservaDTO(
             r.getIdReserva(),
