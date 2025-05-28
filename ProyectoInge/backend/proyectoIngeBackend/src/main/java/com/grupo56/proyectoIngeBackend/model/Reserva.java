@@ -23,9 +23,13 @@ public class Reserva {
 	@JoinColumn(name = "patente", referencedColumnName = "patente")
 	private AutoPatente autoPatente;
 	
-	@JoinColumn(name = "idSucursal")
+	@JoinColumn(name = "idSucursalEntrega")
 	@ManyToOne
-	private Sucursal sucursal;
+	private Sucursal sucursalEntrega;
+	
+	@JoinColumn(name = "idSucursalRegreso")
+	@ManyToOne	
+	private Sucursal sucursalRegreso;
 	
 	@JoinColumn(name = "idCliente")
 	@ManyToOne
@@ -51,11 +55,18 @@ public class Reserva {
 	public void setAutoPatente(AutoPatente autoPatente) {
 		this.autoPatente = autoPatente;
 	}
-	public Sucursal getSucursal() {
-		return sucursal;
+
+	public Sucursal getSucursalEntrega() {
+		return sucursalEntrega;
 	}
-	public void setSucursal(Sucursal sucursal) {
-		this.sucursal = sucursal;
+	public void setSucursalEntrega(Sucursal sucursalEntrega) {
+		this.sucursalEntrega = sucursalEntrega;
+	}
+	public Sucursal getSucursalRegreso() {
+		return sucursalRegreso;
+	}
+	public void setSucursalRegreso(Sucursal sucursalRegreso) {
+		this.sucursalRegreso = sucursalRegreso;
 	}
 	public Cliente getCliente() {
 		return cliente;

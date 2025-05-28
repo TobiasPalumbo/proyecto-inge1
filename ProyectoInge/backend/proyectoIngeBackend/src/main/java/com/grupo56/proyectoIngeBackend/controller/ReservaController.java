@@ -1,4 +1,5 @@
-	package com.grupo56.proyectoIngeBackend.controller;
+package com.grupo56.proyectoIngeBackend.controller;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -8,11 +9,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.grupo56.proyectoIngeBackend.model.AutoDTO;
 import com.grupo56.proyectoIngeBackend.model.AutoPatentesAdminDTO;
 import com.grupo56.proyectoIngeBackend.model.AutoPatentesDTO;
 import com.grupo56.proyectoIngeBackend.model.Cliente;
 import com.grupo56.proyectoIngeBackend.model.RequestSucursalFechaDTO;
 import com.grupo56.proyectoIngeBackend.model.Reserva;
+import com.grupo56.proyectoIngeBackend.model.ReservaDTO;
 import com.grupo56.proyectoIngeBackend.model.SecurityUser;
 import com.grupo56.proyectoIngeBackend.model.Usuario;
 import com.grupo56.proyectoIngeBackend.service.AutoService;
@@ -43,13 +47,39 @@ public class ReservaController {
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 	@GetMapping("/misReservas")
-	public ResponseEntity<List<Reserva>> obtenerReservas(Authentication authentication){
+	public ResponseEntity<List<ReservaDTO>> obtenerReservas(Authentication authentication){
 		Usuario usuario = ((SecurityUser) authentication.getPrincipal()).getUsuario();
         Cliente cliente= clienteService.obtenerPorUsuario(usuario);
         List<Reserva> reservas= service.obtenerReservasPorCliente(cliente);
-        if(!reservas.isEmpty())
-        	return ResponseEntity.status(HttpStatus.OK).body(reservas);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        if(reservas.isEmpty())
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        List<ReservaDTO> reservasDTO = new ArrayList();
+        reservas.stream().forEach(r -> 
+        reservasDTO.add(new ReservaDTO(
+            r.getIdReserva(),
+            r.getSucursalEntrega(),
+            r.getSucursalRegreso(),
+            new AutoDTO(
+                r.getAutoPatente().getAuto().getIdAuto(),
+                r.getAutoPatente().getCategoria().getId(),
+                r.getAutoPatente().getAuto().getMarca(),
+                r.getAutoPatente().getAuto().getModelo(),
+                r.getAutoPatente().getAuto().getPrecioDia(),
+                r.getAutoPatente().getAuto().getCantidadAsientos(),
+                r.getAutoPatente().getCategoria().getDescripcion(),
+                r.getAutoPatente().getAuto().getPoliticaCancelacion().getIdPoliticaCancelacion(),
+                r.getAutoPatente().getAuto().getPoliticaCancelacion().getPorcentaje()
+            ),
+            r.getEstado(),
+            r.getFechaEntrega().toLocalDate(),
+            r.getFechaRegreso().toLocalDate(),
+            r.getFechaEntrega().toLocalTime(),
+            r.getFechaRegreso().toLocalTime()
+        ))
+    );
+
+        return ResponseEntity.status(HttpStatus.OK).body(reservasDTO);
+        
 	}
 	@PostMapping("/cancelarReserva")
 	public ResponseEntity<?> cancelarReserva(Integer idReserva,Authentication authentication){

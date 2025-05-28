@@ -39,10 +39,13 @@ public class ReservaService {
 	@Autowired
 	AutoPatenteService autoPatenteService;
 	@Autowired
+	SucursalService sucursalService;
+	@Autowired
 	ClienteService clienteService;
 	
+
 	public List<Reserva> obtenerReservaDeSucursal(Sucursal sucursal){
-		return repository.findBySucursal(sucursal);
+		return repository.findBySucursalEntrega(sucursal);
 	}
 	
 	public List<AutoPatente> autosPatentesNoReservados(List<AutoPatente> autosPatentes, Integer idSucursal){
@@ -95,7 +98,8 @@ public class ReservaService {
 		Reserva reserva= new Reserva();
 		reserva.setAutoPatente(autoPatenteService.obtenerAutoPatentePorPatente(request.patente()));
 		reserva.setCliente(cliente);
-		reserva.setSucursal(reserva.getAutoPatente().getSucursal());
+		reserva.setSucursalEntrega(reserva.getAutoPatente().getSucursal());
+		reserva.setSucursalRegreso(sucursalService.obtenerSucursalPorId(request.sucursalEntregaId()));
 		reserva.setFechaEntrega(LocalDateTime.of(request.fechaEntrega(), request.horaEntrega()));
 		reserva.setFechaRegreso(LocalDateTime.of(request.fechaRegreso(), request.horaRegreso()));
 		reserva.setPrecio(monto);
