@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.grupo56.proyectoIngeBackend.model.AutoDTO;
 import com.grupo56.proyectoIngeBackend.model.AutoPatentesAdminDTO;
 import com.grupo56.proyectoIngeBackend.model.AutoPatentesDTO;
@@ -53,7 +52,7 @@ public class ReservaController {
         List<Reserva> reservas= service.obtenerReservasPorCliente(cliente);
         if(reservas.isEmpty())
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        List<ReservaDTO> reservasDTO = new ArrayList();
+        List<ReservaDTO> reservasDTO = new ArrayList<ReservaDTO>();
         reservas.stream().forEach(r -> 
         reservasDTO.add(new ReservaDTO(
             r.getIdReserva(),

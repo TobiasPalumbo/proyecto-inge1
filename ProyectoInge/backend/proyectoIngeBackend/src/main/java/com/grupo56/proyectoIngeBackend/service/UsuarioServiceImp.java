@@ -21,6 +21,7 @@ public class UsuarioServiceImp implements UserDetailsService{
 	private static final String Optional = null;
 	@Autowired
 	private UsuarioRepository usuarioRepository;
+	
 	public List <Usuario> obtenerUsuarios(){
 		return usuarioRepository.findAll();
 	}

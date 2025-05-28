@@ -1,23 +1,12 @@
 package com.grupo56.proyectoIngeBackend.service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
-
 import com.grupo56.proyectoIngeBackend.model.AutoAdminDTO;
 import com.grupo56.proyectoIngeBackend.model.AutoDTO;
 import com.grupo56.proyectoIngeBackend.model.AutoPatente;
@@ -27,10 +16,9 @@ import com.grupo56.proyectoIngeBackend.model.Cliente;
 import com.grupo56.proyectoIngeBackend.model.RequestSucursalFechaDTO;
 import com.grupo56.proyectoIngeBackend.model.Reserva;
 import com.grupo56.proyectoIngeBackend.model.ReservaRequestDTO;
-import com.grupo56.proyectoIngeBackend.model.SecurityUser;
 import com.grupo56.proyectoIngeBackend.model.Sucursal;
-import com.grupo56.proyectoIngeBackend.model.Usuario;
 import com.grupo56.proyectoIngeBackend.repository.ReservaRepository;
+
 @Service
 public class ReservaService {
 	
@@ -63,7 +51,7 @@ public class ReservaService {
 		List<AutoPatente> autosPatentesDisponibles = autosPatenteDiponibles(request.fechaEntrega().atStartOfDay(), request.fechaRegreso().atTime(LocalTime.MAX), request.sucursal());
 		List<AutoDTO> autosDTOSDisponibles = autosDTODisponibles(autosPatentesDisponibles);
 		System.out.print(autosDTOSDisponibles.size());
-		List<AutoPatentesDTO> autoPatentesDTO = new ArrayList();
+		List<AutoPatentesDTO> autoPatentesDTO = new ArrayList<AutoPatentesDTO>();
 		autosDTOSDisponibles.stream().forEach(dto -> autoPatentesDTO.add(new AutoPatentesDTO(dto, new ArrayList<String>())));	
 		for (AutoPatente p : autosPatentesDisponibles) {
 		    for (AutoPatentesDTO dto : autoPatentesDTO) {
@@ -80,7 +68,7 @@ public class ReservaService {
 	public List<AutoPatentesAdminDTO> obtenerAutosPatentes(){
 		List<AutoPatente> autosPatentes= autoPatenteService.obtenerAutosPatente();
 		List<AutoAdminDTO> autoAdminDTO= repository.autosAdminDTO();
-		List<AutoPatentesAdminDTO> autoPatentesAdminDTO= new ArrayList();
+		List<AutoPatentesAdminDTO> autoPatentesAdminDTO= new ArrayList<AutoPatentesAdminDTO>();
 		autoAdminDTO.stream().forEach(dto -> autoPatentesAdminDTO.add(new AutoPatentesAdminDTO (dto,new ArrayList<String>())));
 		for(AutoPatente p : autosPatentes ) {
 			for(AutoPatentesAdminDTO dto : autoPatentesAdminDTO){
@@ -119,15 +107,12 @@ public class ReservaService {
 			return reserva.get();
 		return null;
 	}
+	
 	public boolean reservaPerteneceAusuario(Reserva reserva, Cliente cliente ) {
 		List<Reserva> reservas= repository.findAllByCliente(cliente);
-		if(!reservas.isEmpty()) {
-			
+		if(!reservas.isEmpty())
 			return reservas.contains(reservas);
-			
-		}
 		return false;
-		
 	}
 	
 	
