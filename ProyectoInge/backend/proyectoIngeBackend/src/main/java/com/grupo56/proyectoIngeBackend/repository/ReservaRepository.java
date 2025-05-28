@@ -18,17 +18,20 @@ import com.grupo56.proyectoIngeBackend.model.Sucursal;
 @Repository
 public interface ReservaRepository extends JpaRepository<Reserva, Integer> {
 	
-	public List<Reserva> findBySucursal(Sucursal sucursal);
+	List<Reserva> findBySucursalEntrega(Sucursal sucursal);
 	
 	@Query("SELECT aP FROM AutoPatente aP WHERE aP.sucursal = :idSucursal AND aP.patente NOT IN :patentes")
 	public List<AutoPatente> autosPatentesNoReservados(@Param("patentes") List<AutoPatente> patentes, @Param("idSucursal") Integer idSucursal);
 	
-	@Query("SELECT aP FROM AutoPatente aP " +
-		       "WHERE aP.sucursal.idSucursal = :idSucursal " +
-		       "AND aP.borrado = false " +
-		       "AND aP.patente NOT IN (" +
-		       "  SELECT r.autoPatente.patente FROM Reserva r " +
-		       "  WHERE (r.fechaEntrega <= :fechaRegreso AND r.fechaRegreso >= :fechaEntrega)" +
+	@Query("SELECT aP FROM AutoPatente aP" 
+			   + " WHERE aP.sucursal.idSucursal = :idSucursal" 
+		       + " AND aP.borrado = false" 
+		       + " AND aP.patente NOT IN (" 
+		       + "SELECT r.autoPatente.patente"
+		       + " FROM Reserva r" 
+		       + " WHERE"
+		       + " r.estado != 'cancelado'"
+		       + " AND (r.fechaEntrega <= :fechaRegreso AND r.fechaRegreso >= :fechaEntrega)" +
 		       ")")
 	public List<AutoPatente> autosPatenteDiponibles(
 			@Param("fechaEntrega") LocalDateTime fechaEntrega,
