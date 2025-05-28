@@ -45,6 +45,7 @@ public class ReservaService {
 	public List<AutoPatentesDTO> obtenerAutosDisponibles(RequestSucursalFechaDTO request){
 		List<AutoPatente> autosPatentesDisponibles = autosPatenteDiponibles(request.fechaEntrega(), request.fechaRegreso(), request.sucursal());
 		List<AutoDTO> autosDTOSDisponibles = autosDTODisponibles(autosPatentesDisponibles);
+		System.out.print(autosDTOSDisponibles.size());
 		List<AutoPatentesDTO> autoPatentesDTO = new ArrayList();
 		autosDTOSDisponibles.stream().forEach(dto -> autoPatentesDTO.add(new AutoPatentesDTO(dto, new ArrayList<String>())));	
 		for (AutoPatente p : autosPatentesDisponibles) {

@@ -16,7 +16,7 @@ public class PoliticaCancelacion {
 		
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int idPoliticaCancelacion;
+	private Integer idPoliticaCancelacion;
 	private double porcentaje;
 	public int getIdPoliticaCancelacion() {
 		return idPoliticaCancelacion;

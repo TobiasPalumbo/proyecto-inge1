@@ -24,6 +24,9 @@ public class Auto {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer idAuto;
+	@ManyToOne
+	@JoinColumn(name = "idPoliticaCancelacion")
+	private PoliticaCancelacion politicaCancelacion;
 	@NotBlank(message = "La marca es obligatoria")
 	private String marca;
 	@NotBlank(message = "El modelo es obligatorio")
@@ -36,6 +39,16 @@ public class Auto {
 	private boolean borrado;
 
 	
+	public PoliticaCancelacion getPoliticaCancelacion() {
+		return politicaCancelacion;
+	}
+
+
+	public void setPoliticaCancelacion(PoliticaCancelacion politicaCancelacion) {
+		this.politicaCancelacion = politicaCancelacion;
+	}
+
+
 	public Integer getIdAuto() {
 		return idAuto;
 	}

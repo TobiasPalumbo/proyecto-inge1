@@ -32,7 +32,7 @@ public class ReservaController {
 	@Autowired
 	private AutoCategoriaService autoCategoriaService;
 	
-	@GetMapping("/public/autoDisponibles")
+	@GetMapping("/public/autosDisponibles")
 	public ResponseEntity<List<AutoPatentesDTO>> obtenerAutosDisponibles(@RequestBody RequestSucursalFechaDTO request){
 		List<AutoPatentesDTO> response = service.obtenerAutosDisponibles(request);
 		if (response.isEmpty()) 

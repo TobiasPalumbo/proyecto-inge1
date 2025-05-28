@@ -34,9 +34,8 @@ public interface ReservaRepository extends JpaRepository<Reserva, Integer> {
 		);
 	
 	
-	@Query("SELECT DISTINCT new com.grupo56.proyectoIngeBackend.model.AutoDTO(aP.auto.idAuto, aP.categoria.idCategoria, aP.auto.marca, aP.auto.modelo, aP.auto.precioDia, aP.auto.cantidadAsientos, aP.categoria.descripcion)"
+	
+	@Query("SELECT DISTINCT new  com.grupo56.proyectoIngeBackend.model.AutoDTO(aP.auto.idAuto, aP.categoria.idCategoria, aP.auto.marca, aP.auto.modelo, aP.auto.precioDia, aP.auto.cantidadAsientos, aP.categoria.descripcion, aP.auto.politicaCancelacion.idPoliticaCancelacion, aP.auto.politicaCancelacion.porcentaje)"
 			+ " FROM AutoPatente aP WHERE aP.patente IN :autosPatentesDisponibles")
 	public List<AutoDTO> autosDTODisponibles(@Param("autosPatentesDisponibles") List<String> autosPatentesDisponibles);
-	
-
 }

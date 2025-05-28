@@ -34,7 +34,7 @@ public class AutoCategoriaService {
 	public AutoDTO obtenerMatch(Auto auto, Categoria categoria){
 		AutoDTO autoCompleto = null;
 		if (repository.findById(new AutoCategoriaId(auto.getIdAuto(), categoria.getId())).orElse(null) != null) {
-			autoCompleto = new AutoDTO(auto.getIdAuto(), categoria.getId(), auto.getMarca(), auto.getModelo(), auto.getPrecioDia(), auto.getCantidadAsientos(), categoria.getDescripcion());
+			autoCompleto = new AutoDTO(auto.getIdAuto(), categoria.getId(), auto.getMarca(), auto.getModelo(), auto.getPrecioDia(), auto.getCantidadAsientos(), categoria.getDescripcion(), auto.getPoliticaCancelacion().getIdPoliticaCancelacion(), auto.getPoliticaCancelacion().getPorcentaje());
 		}
 		return autoCompleto;
 	}
