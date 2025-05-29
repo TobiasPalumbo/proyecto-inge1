@@ -99,7 +99,7 @@ public class ReservaController {
 			Tarjeta tarjeta = reserva.getTarjeta();
 			tarjeta.setMonto(reserva.getTarjeta().getMonto() + reserva.getPrecio() * devolucionPorcentaje);
 			tarjetaService.subirTarjeta(tarjeta);
-			return ResponseEntity.status(HttpStatus.OK).body("Reserva cancelada, se reintegro el " + (devolucionPorcentaje * 100) + " del precio de la reserva");
+			return ResponseEntity.status(HttpStatus.OK).body("Reserva cancelada, se reintegro el " + (devolucionPorcentaje * 100)  + "% del precio de la reserva");
 		}
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No es tu reserva");
 	}
