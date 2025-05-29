@@ -47,7 +47,6 @@ public class AutoPatenteController {
 			nuevoAuto.setBorrado(false);
 			nuevoAuto.setAuto(serviceAuto.obtenerAutoPorId(serviceAuto.obtenerIdAuto(autoPatenteBody.marcaModelo())));
 			nuevoAuto.setSucursal(autoPatenteBody.sucursal());
-			nuevoAuto.setPoliticaCancelacion(servicePoliticas.obteneerPoliticaCancelacionPorId(autoPatenteBody.politica().getIdPoliticaCancelacion()));
 			nuevoAuto.setCategoria(serviceCategoria.obtenerCategoriaPorId(autoPatenteBody.idCategoria()));
 			service.subirAutoPatente(nuevoAuto);
 			return ResponseEntity.status(HttpStatus.CREATED).body("El auto se ha subido");}
@@ -60,7 +59,6 @@ public class AutoPatenteController {
 			autoViejo.setAnio(request.anio());
 			autoViejo.setBorrado(request.borrado());
 			autoViejo.setCategoria(serviceCategoria.obtenerCategoriaPorId(request.idCategoria()));
-			autoViejo.setPoliticaCancelacion(servicePoliticas.obteneerPoliticaCancelacionPorId(request.idPoliticaCancelacion()));
 			autoViejo.setSucursal(serviceSucursal.obtenerSucursalPorId(request.idSucursal()));
 			autoViejo.setAuto(serviceAuto.obtenerAutoPorId(serviceAuto.obtenerIdAuto(request.marcaModelo())));
 			service.subirAutoPatente(autoViejo);
@@ -73,7 +71,6 @@ public class AutoPatenteController {
 		nuevoAuto.setBorrado(false);
 		nuevoAuto.setAuto(serviceAuto.obtenerAutoPorId(serviceAuto.obtenerIdAuto(request.marcaModelo())));
 		nuevoAuto.setSucursal(serviceSucursal.obtenerSucursalPorId(request.idSucursal()));
-		nuevoAuto.setPoliticaCancelacion(servicePoliticas.obteneerPoliticaCancelacionPorId(request.idPoliticaCancelacion()));
 		nuevoAuto.setCategoria(serviceCategoria.obtenerCategoriaPorId(request.idCategoria()));
 		service.subirAutoPatente(nuevoAuto);
 		return ResponseEntity.status(HttpStatus.CREATED).body("Auto modificado correctamente");
