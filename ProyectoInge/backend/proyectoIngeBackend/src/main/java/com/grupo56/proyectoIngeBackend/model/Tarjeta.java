@@ -12,11 +12,13 @@ public class Tarjeta {
 	 	@Id
 	  	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	    private Integer idTarjeta;
+	 
 	 	private String numero;
 	 	private String nombreTitular;
 	 	private LocalDate fechaVencimiento;
 	 	private String CVV;
 	 	private double monto;
+	 	
 		public Integer getIdTarjeta() {
 			return idTarjeta;
 		}

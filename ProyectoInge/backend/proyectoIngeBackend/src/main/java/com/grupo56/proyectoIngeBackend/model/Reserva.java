@@ -36,6 +36,10 @@ public class Reserva {
 	@Column(length = 20)
 	private String estado="confirmado";
 	
+	@ManyToOne
+	@JoinColumn(name = "idTarjeta")
+ 	private Tarjeta tarjeta;
+	
 	private LocalDateTime fechaEntrega;
 	private LocalDateTime fechaRegreso;
 	private double precio;
