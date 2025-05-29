@@ -16,7 +16,6 @@ public class Tarjeta {
 	 	private String nombreTitular;
 	 	private LocalDate fechaVencimiento;
 	 	private String CVV;
-	 	private String tipo;
 	 	private double monto;
 		public Integer getIdTarjeta() {
 			return idTarjeta;
@@ -47,12 +46,6 @@ public class Tarjeta {
 		}
 		public void setCVV(String cVV) {
 			CVV = cVV;
-		}
-		public String getTipo() {
-			return tipo;
-		}
-		public void setTipo(String tipo) {
-			this.tipo = tipo;
 		}
 		public double getMonto() {
 			return monto;

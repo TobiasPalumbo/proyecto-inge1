@@ -33,9 +33,9 @@ public class TarjetaController {
 	private ReservaService reservaService;
 	@PostMapping("/pagarConTarjeta")
 	public ResponseEntity<String> pagarConTarjeta(@Valid @RequestBody TarjetaDTO tarjetaDTO,Authentication authentication){
-		if (tarjetaDTO.CVV().isBlank() || tarjetaDTO.numero().isBlank() || tarjetaDTO.nombreTitular().isBlank() || tarjetaDTO.fechaVencimiento() == null || tarjetaDTO.tipo().isBlank()) 
+		if (tarjetaDTO.CVV().isBlank() || tarjetaDTO.numero().isBlank() || tarjetaDTO.nombreTitular().isBlank() || tarjetaDTO.fechaVencimiento() == null) 
 			 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Campo/s obligarotorio vacios"); 
-		Tarjeta tarjeta = service.obtenerTarjetaPorNumero(tarjetaDTO.numero(), tarjetaDTO.CVV(), tarjetaDTO.fechaVencimiento(), tarjetaDTO.nombreTitular(), tarjetaDTO.tipo());
+		Tarjeta tarjeta = service.obtenerTarjetaPorNumero(tarjetaDTO.numero(), tarjetaDTO.CVV(), tarjetaDTO.fechaVencimiento(), tarjetaDTO.nombreTitular());
 		if (tarjeta == null) 
             return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Credenciales de tarjeta invalida");
 		if (tarjetaDTO.fechaVencimiento().isBefore(LocalDate.now()) || tarjetaDTO.fechaVencimiento().isEqual(LocalDate.now())) 
@@ -43,11 +43,8 @@ public class TarjetaController {
 		if (tarjeta.getMonto() - tarjetaDTO.monto() < 0)
 			return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Saldo en la tarjeta insuficiente");
 		service.acutilizarMontoTarjeta(tarjeta, tarjeta.getMonto() - tarjetaDTO.monto());
-		
-		if (authentication == null || !authentication.isAuthenticated()) {
+		if (authentication == null || !authentication.isAuthenticated()) 
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
         Usuario usuario = ((SecurityUser) authentication.getPrincipal()).getUsuario();
         Cliente cliente= clienteService.obtenerPorUsuario(usuario);
 		reservaService.subirReserva(tarjetaDTO.reservaRequest(), cliente, tarjetaDTO.monto());

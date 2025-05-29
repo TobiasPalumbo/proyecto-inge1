@@ -13,8 +13,8 @@ public class TarjetaService {
 	@Autowired
 	private TarjetaRepository repository;
 	
-	public Tarjeta obtenerTarjetaPorNumero(String numero, String CVV, LocalDate fechaVencimiento, String nombreTitular, String tipo) {
-		return repository.obtenerTarjetaPorNumero(numero, CVV, fechaVencimiento, nombreTitular, tipo);
+	public Tarjeta obtenerTarjetaPorNumero(String numero, String CVV, LocalDate fechaVencimiento, String nombreTitular) {
+		return repository.obtenerTarjetaPorNumero(numero, CVV, fechaVencimiento, nombreTitular);
 	}
 	
 	public void acutilizarMontoTarjeta(Tarjeta tarjeta, double nuevoMonto) {
