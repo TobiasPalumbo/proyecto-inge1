@@ -31,9 +31,6 @@ public class AutoPatente {
 	@ManyToOne
 	@JoinColumn(name = "idSucursal")
 	private Sucursal sucursal;
-	@ManyToOne
-	@JoinColumn(name = "idPoliticaCancelacion")
-	private PoliticaCancelacion politicaCancelacion;
 	private LocalDate anio;
 	private boolean borrado = false;
 	
@@ -57,15 +54,6 @@ public class AutoPatente {
 	public void setSucursal(Sucursal sucursal) {
 		this.sucursal = sucursal;
 	}
-
-	public PoliticaCancelacion getPoliticaCancelacion() {
-		return politicaCancelacion;
-	}
-
-	public void setPoliticaCancelacion(PoliticaCancelacion politicaCancelacion) {
-		this.politicaCancelacion = politicaCancelacion;
-	}
-
 	public LocalDate getAnio() {
 		return anio;
 	}

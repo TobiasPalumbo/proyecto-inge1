@@ -36,7 +36,7 @@ public class AutenticacionController {
 	@Autowired
 	private AuthenticationManager authenticationManager;
 	
-	@PostMapping("/public/login")
+	@PostMapping("/public/login") //Endpoint para loguearse 
 	public ResponseEntity<?> login(@RequestBody LoginRequestDTO request, HttpServletRequest httpRequest) {
 		Usuario usuario1= usuarioService.obtenerUsuarioPorCorreo(request.correo());
 		if(usuario1==null || !usuario1.getContraseña().equals(request.contraseña())) {
@@ -86,8 +86,9 @@ public class AutenticacionController {
 		
 	}
 	
-	@PostMapping("/logout")
+	@PostMapping("/custom-logout")
 	public ResponseEntity<?> logout(HttpServletRequest request) {
+		System.out.print("ENTRE EN EL LOGOUT");
 	    HttpSession session = request.getSession(false);
 	    if (session != null) {
 	        session.invalidate();  // invalida la sesión en el servidor

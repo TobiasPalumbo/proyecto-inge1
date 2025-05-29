@@ -15,6 +15,7 @@ import com.grupo56.proyectoIngeBackend.model.AutoPatentesDTO;
 import com.grupo56.proyectoIngeBackend.model.Cliente;
 import com.grupo56.proyectoIngeBackend.model.RequestSucursalFechaDTO;
 import com.grupo56.proyectoIngeBackend.model.Reserva;
+import com.grupo56.proyectoIngeBackend.model.ReservaDTO;
 import com.grupo56.proyectoIngeBackend.model.ReservaRequestDTO;
 import com.grupo56.proyectoIngeBackend.model.Sucursal;
 import com.grupo56.proyectoIngeBackend.repository.ReservaRepository;
@@ -30,6 +31,7 @@ public class ReservaService {
 	SucursalService sucursalService;
 	@Autowired
 	ClienteService clienteService;
+	
 	
 
 	public List<Reserva> obtenerReservaDeSucursal(Sucursal sucursal){
@@ -84,7 +86,8 @@ public class ReservaService {
 	
 	public void subirReserva(ReservaRequestDTO request,Cliente cliente, double monto){
 		Reserva reserva= new Reserva();
-		reserva.setAutoPatente(autoPatenteService.obtenerAutoPatentePorPatente(request.patente()));
+		List<String> patentes= request.patentes();
+		reserva.setAutoPatente(autoPatenteService.obtenerAutoPatentePorPatente(patentes.getFirst()));
 		reserva.setCliente(cliente);
 		reserva.setSucursalEntrega(reserva.getAutoPatente().getSucursal());
 		reserva.setSucursalRegreso(sucursalService.obtenerSucursalPorId(request.sucursalEntregaId()));
@@ -110,9 +113,39 @@ public class ReservaService {
 	
 	public boolean reservaPerteneceAusuario(Reserva reserva, Cliente cliente ) {
 		List<Reserva> reservas= repository.findAllByCliente(cliente);
-		if(!reservas.isEmpty())
-			return reservas.contains(reservas);
+		if(!reservas.isEmpty()) {
+			return reservas.contains(reserva);}
 		return false;
+	}
+	public List<ReservaDTO> obtenerReservasDeSucursal(Integer idSucursal){
+	    List<ReservaDTO> reservasDTO = new ArrayList<ReservaDTO>();
+	    List<Reserva> reservas = repository.reservasSucursalId(idSucursal);    
+        reservas.stream().forEach(r -> 
+        reservasDTO.add(new ReservaDTO(
+            r.getIdReserva(),
+            r.getSucursalEntrega(),
+            r.getSucursalRegreso(),
+            new AutoDTO(
+                r.getAutoPatente().getAuto().getIdAuto(),
+                r.getAutoPatente().getCategoria().getId(),
+                r.getAutoPatente().getAuto().getMarca(),
+                r.getAutoPatente().getAuto().getModelo(),
+                r.getAutoPatente().getAuto().getPrecioDia(),
+                r.getAutoPatente().getAuto().getCantidadAsientos(),
+                r.getAutoPatente().getCategoria().getDescripcion(),
+                r.getAutoPatente().getAuto().getPoliticaCancelacion().getIdPoliticaCancelacion(),
+                r.getAutoPatente().getAuto().getPoliticaCancelacion().getPorcentaje()
+            ),
+            r.getEstado(),
+            r.getFechaEntrega().toLocalDate(),
+            r.getFechaRegreso().toLocalDate(),
+            r.getFechaEntrega().toLocalTime(),
+            r.getFechaRegreso().toLocalTime()
+        ))
+    );
+		return reservasDTO;
+		
+		
 	}
 	
 	

@@ -6,5 +6,10 @@ import java.time.LocalDate;
 
 import jakarta.validation.constraints.NotBlank;
 
-public record  AutoPatenteBodyRequestDTO (@NotBlank String patente, Sucursal sucursal, MarcaModeloRequestDTO marcaModelo, PoliticaCancelacion politica, LocalDate anio, Integer idCategoria) {}
+public record  AutoPatenteBodyRequestDTO (
+		@NotBlank String patente,
+		Integer idSucursal,
+		MarcaModeloRequestDTO marcaModelo,
+		LocalDate anio,
+		Integer idCategoria) {}
 

@@ -13,6 +13,8 @@ import com.grupo56.proyectoIngeBackend.model.AutoDTO;
 import com.grupo56.proyectoIngeBackend.model.AutoPatentesAdminDTO;
 import com.grupo56.proyectoIngeBackend.model.AutoPatentesDTO;
 import com.grupo56.proyectoIngeBackend.model.Cliente;
+import com.grupo56.proyectoIngeBackend.model.IdReservaDTO;
+import com.grupo56.proyectoIngeBackend.model.IdSucursalDTO;
 import com.grupo56.proyectoIngeBackend.model.RequestSucursalFechaDTO;
 import com.grupo56.proyectoIngeBackend.model.Reserva;
 import com.grupo56.proyectoIngeBackend.model.ReservaDTO;
@@ -38,7 +40,7 @@ public class ReservaController {
 			return ResponseEntity.noContent().build();;
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
-	@GetMapping("/public/autosPatentes")
+	@GetMapping("/admin/autosPatentes")
 	public ResponseEntity<List<AutoPatentesAdminDTO>> obtenerAutosPatentes(){
 		List<AutoPatentesAdminDTO> response = service.obtenerAutosPatentes();
 		if (response.isEmpty()) 
@@ -81,17 +83,24 @@ public class ReservaController {
         
 	}
 	@PostMapping("/cancelarReserva")
-	public ResponseEntity<?> cancelarReserva(Integer idReserva,Authentication authentication){
+	public ResponseEntity<?> cancelarReserva(@RequestBody IdReservaDTO Reserva,Authentication authentication){
 		Usuario usuario = ((SecurityUser) authentication.getPrincipal()).getUsuario();
         Cliente cliente= clienteService.obtenerPorUsuario(usuario);
-        Reserva reserva= service.obtenerReservaPorId(idReserva);
+        Reserva reserva= service.obtenerReservaPorId(Reserva.idReserva());
 		if(reserva!=null && service.reservaPerteneceAusuario(reserva, cliente)){
 			reserva.setEstado("cancelado");
 			service.actualizarReserva(reserva);
 			return ResponseEntity.status(HttpStatus.OK).body("reserva cancelada");
 		}
-		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("reserva cancelada");
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No es tu reserva");
 		
 		
-	} 
+	}
+	@GetMapping("/empleado/verReservasSucursal")
+	public ResponseEntity<List<ReservaDTO>> obtenerReservasSucursal(@RequestBody IdSucursalDTO idSucursalDTO){
+		List<ReservaDTO> reservasDTO = service.obtenerReservasDeSucursal(idSucursalDTO.idSucursal());
+		if(reservasDTO.isEmpty())
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+		return ResponseEntity.status(HttpStatus.OK).body(reservasDTO);
+	}
 }

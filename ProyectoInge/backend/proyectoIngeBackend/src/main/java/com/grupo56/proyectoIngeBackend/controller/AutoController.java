@@ -59,8 +59,7 @@ public class AutoController {
 		public ResponseEntity <MarcasSucursalesResponseDTO> mandarMarcas(){
 		List<String> marcas = service.obtenerMarcas();
 		List<Sucursal> sucursales= serviceSucursal.obtenerSucursales();
-		List<PoliticaCancelacion> politicas= servicePoliticas.obtenerPoliticas();
-		MarcasSucursalesResponseDTO respuesta = new MarcasSucursalesResponseDTO(marcas,sucursales,politicas);
+		MarcasSucursalesResponseDTO respuesta = new MarcasSucursalesResponseDTO(marcas,sucursales);
 		return ResponseEntity.status(HttpStatus.OK).body(respuesta);
 	}
 	
