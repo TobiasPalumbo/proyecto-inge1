@@ -54,7 +54,6 @@ public class AutoPatente {
 	public void setSucursal(Sucursal sucursal) {
 		this.sucursal = sucursal;
 	}
-
 	public LocalDate getAnio() {
 		return anio;
 	}

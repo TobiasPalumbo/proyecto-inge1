@@ -13,6 +13,7 @@ import com.grupo56.proyectoIngeBackend.model.AutoDTO;
 import com.grupo56.proyectoIngeBackend.model.AutoPatente;
 import com.grupo56.proyectoIngeBackend.model.Cliente;
 import com.grupo56.proyectoIngeBackend.model.Reserva;
+import com.grupo56.proyectoIngeBackend.model.ReservaDTO;
 import com.grupo56.proyectoIngeBackend.model.Sucursal;
 @Repository
 public interface ReservaRepository extends JpaRepository<Reserva, Integer> {
@@ -35,6 +36,13 @@ public interface ReservaRepository extends JpaRepository<Reserva, Integer> {
 	public List<AutoPatente> autosPatenteDiponibles(
 			@Param("fechaEntrega") LocalDateTime fechaEntrega,
 		    @Param("fechaRegreso") LocalDateTime fechaRegreso,
+		    @Param("idSucursal") Integer idSucursal
+		);
+	
+	@Query("SELECT r FROM Reserva r "
+			+ "WHERE r.sucursalEntrega.idSucursal = :idSucursal "
+			+ "OR r.sucursalRegreso.idSucursal = :idSucursal ")
+	public List<Reserva> reservasSucursalId(
 		    @Param("idSucursal") Integer idSucursal
 		);
 	
