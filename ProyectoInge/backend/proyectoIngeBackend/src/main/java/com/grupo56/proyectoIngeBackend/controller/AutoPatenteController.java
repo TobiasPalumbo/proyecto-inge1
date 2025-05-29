@@ -15,7 +15,6 @@ import com.grupo56.proyectoIngeBackend.model.AutoPatenteModRequestDTO;
 import com.grupo56.proyectoIngeBackend.service.AutoPatenteService;
 import com.grupo56.proyectoIngeBackend.service.AutoService;
 import com.grupo56.proyectoIngeBackend.service.CategoriaService;
-import com.grupo56.proyectoIngeBackend.service.PoliticaCancelacionService;
 import com.grupo56.proyectoIngeBackend.service.SucursalService;
 
 import jakarta.validation.Valid;

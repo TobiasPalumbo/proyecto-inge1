@@ -20,12 +20,10 @@ import com.grupo56.proyectoIngeBackend.model.AutoDTO;
 import com.grupo56.proyectoIngeBackend.model.AutoPresupuestoDTO;
 import com.grupo56.proyectoIngeBackend.model.MarcaModeloRequestDTO;
 import com.grupo56.proyectoIngeBackend.model.MarcasSucursalesResponseDTO;
-import com.grupo56.proyectoIngeBackend.model.PoliticaCancelacion;
 import com.grupo56.proyectoIngeBackend.model.Sucursal;
 import com.grupo56.proyectoIngeBackend.service.AutoCategoriaService;
 import com.grupo56.proyectoIngeBackend.service.AutoService;
 import com.grupo56.proyectoIngeBackend.service.CategoriaService;
-import com.grupo56.proyectoIngeBackend.service.PoliticaCancelacionService;
 import com.grupo56.proyectoIngeBackend.service.SucursalService;
 
 import jakarta.validation.Valid;
@@ -41,8 +39,6 @@ public class AutoController {
 	private CategoriaService serviceCategoria;
 	@Autowired
 	private SucursalService serviceSucursal;
-	@Autowired
-	private PoliticaCancelacionService servicePoliticas;
 	
 	
 

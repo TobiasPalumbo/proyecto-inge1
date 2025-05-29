@@ -100,6 +100,12 @@ public class Reserva {
 	public void setFechaEntrega(LocalDateTime fechaEntrega) {
 		this.fechaEntrega = fechaEntrega;
 	}
+	public Tarjeta getTarjeta() {
+		return tarjeta;
+	}
+	public void setTarjeta(Tarjeta tarjeta) {
+		this.tarjeta = tarjeta;
+	}
 	
 	
 }

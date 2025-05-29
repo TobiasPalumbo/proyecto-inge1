@@ -18,6 +18,7 @@ import com.grupo56.proyectoIngeBackend.model.Reserva;
 import com.grupo56.proyectoIngeBackend.model.ReservaDTO;
 import com.grupo56.proyectoIngeBackend.model.ReservaRequestDTO;
 import com.grupo56.proyectoIngeBackend.model.Sucursal;
+import com.grupo56.proyectoIngeBackend.model.Tarjeta;
 import com.grupo56.proyectoIngeBackend.repository.ReservaRepository;
 
 @Service
@@ -84,7 +85,7 @@ public class ReservaService {
 		return autoPatentesAdminDTO;
 	}
 	
-	public void subirReserva(ReservaRequestDTO request,Cliente cliente, double monto){
+	public void subirReserva(ReservaRequestDTO request,Cliente cliente, double monto, Tarjeta tarjeta){
 		Reserva reserva= new Reserva();
 		List<String> patentes= request.patentes();
 		reserva.setAutoPatente(autoPatenteService.obtenerAutoPatentePorPatente(patentes.getFirst()));
@@ -94,6 +95,7 @@ public class ReservaService {
 		reserva.setFechaEntrega(LocalDateTime.of(request.fechaEntrega(), request.horaEntrega()));
 		reserva.setFechaRegreso(LocalDateTime.of(request.fechaRegreso(), request.horaRegreso()));
 		reserva.setPrecio(monto);
+		reserva.setTarjeta(tarjeta);
 		repository.save(reserva);
 	}
 	public void actualizarReserva(Reserva reserva) {

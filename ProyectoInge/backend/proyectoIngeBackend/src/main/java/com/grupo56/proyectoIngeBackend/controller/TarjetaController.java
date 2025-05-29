@@ -47,7 +47,7 @@ public class TarjetaController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         Usuario usuario = ((SecurityUser) authentication.getPrincipal()).getUsuario();
         Cliente cliente= clienteService.obtenerPorUsuario(usuario);
-		reservaService.subirReserva(tarjetaDTO.reservaRequest(), cliente, tarjetaDTO.monto());
+		reservaService.subirReserva(tarjetaDTO.reservaRequest(), cliente, tarjetaDTO.monto(), tarjeta);
 		
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body("Pago realizado exitosamente y reserva creada"); 
 	}

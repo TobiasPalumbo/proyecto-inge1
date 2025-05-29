@@ -13,8 +13,8 @@ public interface TarjetaRepository extends JpaRepository<Tarjeta, Integer> {
 	@Query("SELECT t FROM Tarjeta t "
 			+ "WHERE t.numero = :numero "
 			+ "AND t.CVV = :CVV "
-			+ "AND t.fechaVencimiento = :fechaVencimiento"
-			+ "AND t.nombreTitular = :nombreTitular "
+			+ "AND t.fechaVencimiento = :fechaVencimiento "
+			+ "AND t.nombreTitular = :nombreTitular"
 			)
 	public Tarjeta obtenerTarjetaPorNumero(@Param("numero") String numero, @Param("CVV") String CVV, @Param("fechaVencimiento") LocalDate fechaVencimiento, @Param("nombreTitular") String nombreTitular);
 }

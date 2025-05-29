@@ -23,4 +23,8 @@ public class TarjetaService {
 			repository.save(tarjeta);
 		}
 	}
+	
+	public void subirTarjeta(Tarjeta tarjeta) {
+		repository.save(tarjeta);
+	}
 }

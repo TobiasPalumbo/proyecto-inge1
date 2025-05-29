@@ -1,4 +1,5 @@
 package com.grupo56.proyectoIngeBackend.controller;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,19 +20,20 @@ import com.grupo56.proyectoIngeBackend.model.RequestSucursalFechaDTO;
 import com.grupo56.proyectoIngeBackend.model.Reserva;
 import com.grupo56.proyectoIngeBackend.model.ReservaDTO;
 import com.grupo56.proyectoIngeBackend.model.SecurityUser;
+import com.grupo56.proyectoIngeBackend.model.Tarjeta;
 import com.grupo56.proyectoIngeBackend.model.Usuario;
-import com.grupo56.proyectoIngeBackend.service.AutoService;
 import com.grupo56.proyectoIngeBackend.service.ClienteService;
 import com.grupo56.proyectoIngeBackend.service.ReservaService;
+import com.grupo56.proyectoIngeBackend.service.TarjetaService;
 
 @RestController
 public class ReservaController {
 	@Autowired
 	private ReservaService service;
 	@Autowired
-	AutoService autoService;
-	@Autowired
-	ClienteService clienteService;
+	private ClienteService clienteService;
+	@Autowired 
+	private TarjetaService tarjetaService;
 	
 	@GetMapping("/public/autosDisponibles")
 	public ResponseEntity<List<AutoPatentesDTO>> obtenerAutosDisponibles(@RequestBody RequestSucursalFechaDTO request){
@@ -40,6 +42,7 @@ public class ReservaController {
 			return ResponseEntity.noContent().build();;
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
+	
 	@GetMapping("/admin/autosPatentes")
 	public ResponseEntity<List<AutoPatentesAdminDTO>> obtenerAutosPatentes(){
 		List<AutoPatentesAdminDTO> response = service.obtenerAutosPatentes();
@@ -47,6 +50,7 @@ public class ReservaController {
 			return ResponseEntity.noContent().build();;
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
+	
 	@GetMapping("/misReservas")
 	public ResponseEntity<List<ReservaDTO>> obtenerReservas(Authentication authentication){
 		Usuario usuario = ((SecurityUser) authentication.getPrincipal()).getUsuario();
@@ -78,24 +82,28 @@ public class ReservaController {
             r.getFechaRegreso().toLocalTime()
         ))
     );
-
         return ResponseEntity.status(HttpStatus.OK).body(reservasDTO);
-        
 	}
+	
 	@PostMapping("/cancelarReserva")
 	public ResponseEntity<?> cancelarReserva(@RequestBody IdReservaDTO Reserva,Authentication authentication){
 		Usuario usuario = ((SecurityUser) authentication.getPrincipal()).getUsuario();
         Cliente cliente= clienteService.obtenerPorUsuario(usuario);
         Reserva reserva= service.obtenerReservaPorId(Reserva.idReserva());
 		if(reserva!=null && service.reservaPerteneceAusuario(reserva, cliente)){
+			if (reserva.getFechaEntrega().toLocalDate().isBefore(LocalDate.now()))
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("El tiempo de cancelacion expiro");
 			reserva.setEstado("cancelado");
 			service.actualizarReserva(reserva);
-			return ResponseEntity.status(HttpStatus.OK).body("reserva cancelada");
+			double devolucionPorcentaje  = reserva.getAutoPatente().getAuto().getPoliticaCancelacion().getPorcentaje();
+			Tarjeta tarjeta = reserva.getTarjeta();
+			tarjeta.setMonto(reserva.getTarjeta().getMonto() + reserva.getPrecio() * devolucionPorcentaje);
+			tarjetaService.subirTarjeta(tarjeta);
+			return ResponseEntity.status(HttpStatus.OK).body("Reserva cancelada, se reintegro el " + (devolucionPorcentaje * 100) + " del precio de la reserva");
 		}
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No es tu reserva");
-		
-		
 	}
+	
 	@GetMapping("/empleado/verReservasSucursal")
 	public ResponseEntity<List<ReservaDTO>> obtenerReservasSucursal(@RequestBody IdSucursalDTO idSucursalDTO){
 		List<ReservaDTO> reservasDTO = service.obtenerReservasDeSucursal(idSucursalDTO.idSucursal());
