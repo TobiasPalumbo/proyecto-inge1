@@ -49,6 +49,7 @@ public class AutoPatenteController {
 			return ResponseEntity.status(HttpStatus.CREATED).body("El auto se ha subido");}
 		return ResponseEntity.status(HttpStatus.CONFLICT).body("La patente ya se encuentra registrada");
 		}
+	
 	@PostMapping("/modificarAuto")
 	public ResponseEntity<String> modificarAutoPatente(@RequestBody @Valid AutoPatenteModRequestDTO request){
 		AutoPatente autoViejo= serviceAutoPatente.obtenerAutoPatentePorPatente(request.patenteVieja());

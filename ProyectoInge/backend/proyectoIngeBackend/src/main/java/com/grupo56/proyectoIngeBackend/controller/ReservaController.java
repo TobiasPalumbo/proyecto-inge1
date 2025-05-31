@@ -35,7 +35,7 @@ public class ReservaController {
 	@Autowired 
 	private TarjetaService tarjetaService;
 	
-	@GetMapping("/public/autosDisponibles")
+	@PostMapping("/public/autosDisponibles")
 	public ResponseEntity<List<AutoPatentesDTO>> obtenerAutosDisponibles(@RequestBody RequestSucursalFechaDTO request){
 		List<AutoPatentesDTO> response = service.obtenerAutosDisponibles(request);
 		if (response.isEmpty()) 

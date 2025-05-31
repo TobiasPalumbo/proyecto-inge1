@@ -17,7 +17,7 @@ public class TarjetaService {
 		return repository.obtenerTarjetaPorNumero(numero, CVV, fechaVencimiento, nombreTitular);
 	}
 	
-	public void acutilizarMontoTarjeta(Tarjeta tarjeta, double nuevoMonto) {
+	public void actualizarMontoTarjeta(Tarjeta tarjeta, double nuevoMonto) {
 		if(tarjeta != null) {
 			tarjeta.setMonto(nuevoMonto);
 			repository.save(tarjeta);

@@ -31,8 +31,11 @@ public class TarjetaController {
 	private ClienteService clienteService;
 	@Autowired
 	private ReservaService reservaService;
-	@PostMapping("/pagarConTarjeta")//REALIZA EL PAGO Y CARGA LA RESERVA
+	
+	@PostMapping("/pagarConTarjeta")
 	public ResponseEntity<String> pagarConTarjeta(@Valid @RequestBody TarjetaDTO tarjetaDTO,Authentication authentication){
+		if (authentication == null || !authentication.isAuthenticated()) 
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		if (tarjetaDTO.CVV().isBlank() || tarjetaDTO.numero().isBlank() || tarjetaDTO.nombreTitular().isBlank() || tarjetaDTO.fechaVencimiento() == null) 
 			 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Campo/s obligarotorio vacios"); 
 		Tarjeta tarjeta = service.obtenerTarjetaPorNumero(tarjetaDTO.numero(), tarjetaDTO.CVV(), tarjetaDTO.fechaVencimiento(), tarjetaDTO.nombreTitular());
@@ -42,9 +45,8 @@ public class TarjetaController {
 			return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("La tarjeta se encunetra vencida");
 		if (tarjeta.getMonto() - tarjetaDTO.monto() < 0)
 			return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Saldo en la tarjeta insuficiente");
-		service.acutilizarMontoTarjeta(tarjeta, tarjeta.getMonto() - tarjetaDTO.monto());
-		if (authentication == null || !authentication.isAuthenticated()) 
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		service.actualizarMontoTarjeta(tarjeta, tarjeta.getMonto() - tarjetaDTO.monto());
+		
         Usuario usuario = ((SecurityUser) authentication.getPrincipal()).getUsuario();
         Cliente cliente= clienteService.obtenerPorUsuario(usuario);
 		reservaService.subirReserva(tarjetaDTO.reservaRequest(), cliente, tarjetaDTO.monto(), tarjeta);

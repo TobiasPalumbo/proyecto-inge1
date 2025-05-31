@@ -65,7 +65,7 @@ public class AutoController {
 		return ResponseEntity.status(HttpStatus.OK).body(modelos);
 	}
 	
-	@GetMapping("/admin/subirAuto/bodyAuto")
+	@PostMapping("/admin/subirAuto/bodyAuto")
     public ResponseEntity <Map<Integer,String>> mandar(@RequestBody MarcaModeloRequestDTO marcaModelo){
          Integer idAuto = service.obtenerIdAuto(marcaModelo);
          List<Integer> ids = serviceAutoCategoria.obtenerIdCategorias(idAuto);
@@ -87,18 +87,18 @@ public class AutoController {
 		return ResponseEntity.status(HttpStatus.OK).body(autoCompleto);
 	}
 	
-	@GetMapping("/public/simularPresupuesto")
+	@PostMapping("/public/simularPresupuesto")
 	public ResponseEntity<Map<String, Double>> generarPresupuesto(@RequestBody AutoPresupuestoDTO request){
 		System.out.println(request);
 		Auto auto = service.obtenerAutoPorId(request.id());
 		System.out.println(request.id());
 		System.out.println(auto);
-		Map<String, Double> presupesto = new HashMap<String, Double>();
+		Map<String, Double> presupuesto = new HashMap<String, Double>();
 		if (auto == null)
 			 return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		double total = ChronoUnit.DAYS.between(request.fechaEntrega(), request.fechaRegreso()) * auto.getPrecioDia();
-		presupesto.put("presuesto", total);
-		return ResponseEntity.status(HttpStatus.OK).body(presupesto);
+		presupuesto.put("presupuesto", total);
+		return ResponseEntity.status(HttpStatus.OK).body(presupuesto);
 	}
 	
 }
