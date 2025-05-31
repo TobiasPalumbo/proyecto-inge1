@@ -22,6 +22,17 @@ public class CorreoServiceImp {
         mailSender.send(mensaje);
 		
 		
+	}public void enviarCodigoReserva(String mail, Integer codigo) {
+		
+		//ACA EL METODO PARA ENVIAR EL MAIL, PERO NO ANDA PORQUE JAVA NO VALIDA EL CERTIFICADO SSL DE GMAIL TOCA ARREGLARLO 
+		
+		SimpleMailMessage mensaje = new SimpleMailMessage();
+        mensaje.setTo(mail);
+        mensaje.setSubject("Código de Reserva");
+        mensaje.setText("Tu código de Reserva es: " + codigo);
+        mailSender.send(mensaje);
+		
+		
 	}
 
 }

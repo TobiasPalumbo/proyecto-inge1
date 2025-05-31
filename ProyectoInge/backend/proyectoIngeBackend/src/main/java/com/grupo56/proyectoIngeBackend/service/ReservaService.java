@@ -32,7 +32,8 @@ public class ReservaService {
 	SucursalService sucursalService;
 	@Autowired
 	ClienteService clienteService;
-	
+	@Autowired
+	CorreoServiceImp correoService;
 	
 
 	public List<Reserva> obtenerReservaDeSucursal(Sucursal sucursal){
@@ -97,6 +98,8 @@ public class ReservaService {
 		reserva.setPrecio(monto);
 		reserva.setTarjeta(tarjeta);
 		repository.save(reserva);
+		correoService.enviarCodigoReserva("carlos_andres01.10@hotmail.com", reserva.getIdReserva());
+		
 	}
 	public void actualizarReserva(Reserva reserva) {
 		repository.save(reserva);

@@ -51,6 +51,6 @@ public class TarjetaController {
         Cliente cliente= clienteService.obtenerPorUsuario(usuario);
 		reservaService.subirReserva(tarjetaDTO.reservaRequest(), cliente, tarjetaDTO.monto(), tarjeta);
 		
-		return ResponseEntity.status(HttpStatus.ACCEPTED).body("Pago realizado exitosamente y reserva creada"); 
+		return ResponseEntity.status(HttpStatus.ACCEPTED).body("Pago realizado exitosamente, reserva creada y codigo enviado al mail"); 
 	}
 }
