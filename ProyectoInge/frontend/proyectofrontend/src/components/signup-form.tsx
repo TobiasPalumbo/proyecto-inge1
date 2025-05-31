@@ -30,7 +30,7 @@ export function SignUpForm({ className }: RegistrarCuentaProps) {
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [registroExitoso, setRegistroExitoso] = useState(false);
-
+ 
   const { login } = useAuth();
   const router = useRouter();
 
@@ -106,8 +106,6 @@ export function SignUpForm({ className }: RegistrarCuentaProps) {
       setErrors({ general: "Ocurrió un error en el registro." });
     }
   };
-
-  // NO useEffect para redirigir al detectar correo, para no interferir con la espera del cartel.
 
   return (
     <div className={cn("flex justify-center py-10 relative", className)}>
@@ -228,7 +226,6 @@ export function SignUpForm({ className }: RegistrarCuentaProps) {
         </CardContent>
       </Card>
 
-      {/* Cartel de éxito centrado */}
       {registroExitoso && (
         <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-50 z-50">
           <Alert className="max-w-sm">

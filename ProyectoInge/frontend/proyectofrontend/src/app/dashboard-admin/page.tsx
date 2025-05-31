@@ -23,8 +23,7 @@ export default function Dashboard() {
 
   return (
     <div>
-      <h1>Dashboard Admin - Acceso autorizado</h1>
-      {/* Contenido exclusivo para admin verificado */}
+      <h1>Bienvenido al panel de administración de Alquilapp Car</h1>
     </div>
   );
 }

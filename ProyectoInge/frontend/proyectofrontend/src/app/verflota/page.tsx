@@ -3,14 +3,13 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import Footer from "@/components/Footer";
 
 type Auto = {
-    id: number;
+    idAuto: number;
     marca: string;
     modelo: string;
     cantidadAsientos: number;
-    precioDia: number;
+    precio: number;
 };
 
 function useAutos() {
@@ -39,28 +38,29 @@ function useAutos() {
 }
 
 function AutoCard({ auto }: { auto: Auto }) {
-    return (
-        <div className="border-4 border-amber-900 rounded-xl p-4 shadow-md hover:shadow-lg transition bg-white/90 animate-fadeIn">
-        <div className="mb-3 w-full h-40 relative rounded overflow-hidden">
+  return (
+    <div className="border-4 border-amber-900 rounded-xl p-4 shadow-md hover:shadow-lg transition bg-white/90 animate-fadeIn">
+      <div className="mb-3 w-full h-40 relative rounded overflow-hidden">
         <Image
-            src={`/flota-imagenes/${auto.modelo.toLowerCase()}.jpg`}
-            alt={`${auto.marca} ${auto.modelo}`}
-            fill
-            className="object-cover rounded"
-            sizes="(max-width: 768px) 100vw, 33vw"
+          src={`/flota-imagenes/${auto.modelo.toLowerCase()}.jpg`}
+          alt={`${auto.marca} ${auto.modelo}`}
+          fill
+          className="object-cover rounded"
+          sizes="(max-width: 768px) 100vw, 33vw"
         />
-        </div>
+      </div>
 
       <h2 className="text-lg font-semibold text-amber-800 mb-1">
         {auto.marca} {auto.modelo}
       </h2>
       <p className="text-gray-800 text-sm">Asientos: {auto.cantidadAsientos}</p>
       <p className="text-gray-800 text-sm">
-        Precio por día: ${auto.precioDia.toLocaleString("es-AR")}
+        Precio por día: ${auto.precio?.toLocaleString("es-AR") ?? "N/A"}
       </p>
     </div>
   );
 }
+
 
 function SkeletonCard() {
   return (
@@ -93,9 +93,9 @@ export default function FlotaPage() {
   const autosOrdenados = [...autosFiltrados].sort((a, b) => {
     switch (orden) {
       case "precio-asc":
-        return a.precioDia - b.precioDia;
+        return a.precio - b.precio;
       case "precio-desc":
-        return b.precioDia - a.precioDia;
+        return b.precio - a.precio;
       case "asientos-asc":
         return a.cantidadAsientos - b.cantidadAsientos;
       case "asientos-desc":
@@ -176,11 +176,13 @@ export default function FlotaPage() {
 
         {/* Grid de autos */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {loading ? (
-            Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)
-          ) : autosPaginados.length > 0 ? (
-            autosPaginados.map((auto) => <AutoCard key={auto.id} auto={auto} />)
-          ) : (
+           {loading ? (
+    Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)
+  ) : autosPaginados.length > 0 ? (
+    autosPaginados.map((auto, index) => (
+      <AutoCard key={`${auto.idAuto}-${index}`} auto={auto} />
+    ))
+  ) :  (
             <p className="col-span-full text-center text-white font-semibold">
               No se encontraron autos para tu búsqueda.
             </p>
@@ -212,7 +214,6 @@ export default function FlotaPage() {
           </div>
         )}
 
-        {/* Footer */}
         
       </div>
         
@@ -231,7 +232,7 @@ export default function FlotaPage() {
         }
         }
     `}</style>
-    <Footer />
+    
     </div>
     
   );

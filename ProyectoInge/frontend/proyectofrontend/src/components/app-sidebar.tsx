@@ -58,7 +58,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <a href="/autos" className="flex items-center gap-2">
+              <a href="dashboard-admin/flota" className="flex items-center gap-2">
                 <Car className="size-4" />
                 Ver Automóviles
               </a>

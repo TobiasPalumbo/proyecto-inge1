@@ -27,7 +27,7 @@ export function LoginForm({
         setError(""); // Limpiar cualquier error previo al intentar enviar el formulario
 
         try {
-            const response = await fetch("http://localhost:8080/public/autenticacion/login", { 
+            const response = await fetch("http://localhost:8080/public/login", { 
             method: "POST",
             credentials: "include",
             headers: {

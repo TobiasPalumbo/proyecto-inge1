@@ -23,14 +23,14 @@ export default function VerificacionCodigo() {
     console.log("Enviando verificación con:", { codigo: codigoLimpio, correo });
 
     try {
-      const res = await fetch('http://localhost:8080/public/autenticacion/verif-admin', { 
-        method: 'POST',  
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ codigo: codigoLimpio, correo }),
-      });
-
+     const res = await fetch('http://localhost:8080/public/verificarAdmin', { 
+  method: 'POST',  
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  credentials: 'include', // <--- esta línea es fundamental si usás cookies
+  body: JSON.stringify({ codigo: codigoLimpio, correo }),
+});
       if (res.ok) {
         console.log("Código verificado correctamente.");
         login(correo, "admin", true);
