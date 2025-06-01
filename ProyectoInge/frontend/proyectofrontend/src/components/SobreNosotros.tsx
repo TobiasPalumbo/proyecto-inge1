@@ -6,7 +6,7 @@ export default function SobreNosotros() {
         Desde 2005, Alquilapp Car se dedica a ofrecer el mejor servicio de alquiler de autos por todo Buenos Aires. Fundada por María y Mario, nuestra empresa nació con la visión de brindar una experiencia sencilla, confiable y accesible para todos aquellos que necesitan movilidad.
       </p>
       <p className="text-gray-700 leading-relaxed mt-4">
-        Con varias sucursales estratégicamente ubicadas en la provincia, hemos crecido junto a nuestros clientes y nos adaptamos constantemente a sus necesidades, implementando tecnologías y mejoras para hacer tus reservas más rápidas y seguras.
+        Con varias sucursales estratégicamente ubicadas en la provincia de Buenos Aires, hemos crecido junto a nuestros clientes y nos adaptamos constantemente a sus necesidades, implementando tecnologías y mejoras para hacer sus reservas más rápidas y seguras.
       </p>
       <p className="text-gray-700 leading-relaxed mt-4">
         En Alquilapp Car, valoramos la confianza que depositan en nosotros miles de usuarios y trabajamos cada día para mantener la calidad y cercanía que nos caracterizan.

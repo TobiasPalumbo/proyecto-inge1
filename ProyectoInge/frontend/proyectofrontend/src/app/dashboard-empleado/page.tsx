@@ -1,6 +1,6 @@
 "use client"
 import { useAuth } from "@/context/AuthContext";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 export default function DashboardEmpleado()
@@ -12,17 +12,19 @@ export default function DashboardEmpleado()
       useEffect(() => {
         if (!loading) {
           if (rol !== "empleado") {
-            router.push("/pagina-inicio"); // o "/login"
+            router.push("/pagina-inicio"); 
           }
         }
         }, [rol, loading, router]);
     
     
         if (loading || rol !== "empleado") {
-        return null; // o un spinner si querés
+        return null;
       }
     
     return (
-        <div>Hola empleado</div>
+        <div> 
+          <h1>Bienvenido al panel de empleados de Alquilapp Car</h1>
+        </div>
     );
 }

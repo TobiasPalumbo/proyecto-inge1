@@ -109,7 +109,17 @@ export default function FlotaDisponiblePage() {
           body: JSON.stringify(body),
         });
 
-        if (!res.ok) throw new Error("Error al obtener la flota disponible");
+          if (res.status === 204) {
+      console.log("No se encontraron autos disponibles (204 No Content).");
+      setFlotaFiltrada([]); 
+      return; // Sale de la función, no hay más que hacer
+    }
+
+        if (!res.ok) {
+        throw new Error("Error al obtener la flota disponible");
+        setFlotaFiltrada([])
+        return;
+  }
         const data = await res.json();
         setFlotaFiltrada(data); 
       } catch (error) {
@@ -220,7 +230,7 @@ export default function FlotaDisponiblePage() {
                   fill
                   className="object-cover"
                 />
-              </div>
+              </div> 
 
               <div className="flex flex-col w-full">
                 <p className="text-lg font-semibold mb-2">

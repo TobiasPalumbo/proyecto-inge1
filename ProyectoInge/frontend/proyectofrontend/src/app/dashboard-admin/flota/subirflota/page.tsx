@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/context/AuthContext';
-import { CheckCircle } from 'lucide-react'; // Asumo que usás lucide-react para iconos
+import { CheckCircle } from 'lucide-react';
 
 interface UploadCarFormProps {
   onSuccess?: () => void;
@@ -220,7 +220,6 @@ const UploadCarForm: React.FC<UploadCarFormProps> = ({
 
       onSuccess();
 
-      // Después de 2.5s esconder modal y redirigir
       setTimeout(() => {
         setAutoSubido(false);
         router.push('/dashboard-admin/flota');
@@ -236,11 +235,10 @@ const UploadCarForm: React.FC<UploadCarFormProps> = ({
 
   return (
     <>
-      <div className="w-full flex justify-center">
-        <div className="w-full max-w-xl p-6 bg-white shadow-md rounded-lg">
+      <div className="w-full flex justify-center ">
+        <div className="w-full max-w-xl p-6 bg-white shadow-md rounded-lg border border-amber-500">
           <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Subir Nuevo Vehículo a Flota</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Campo Patente */}
             <div>
               <label htmlFor="patente" className="block text-sm font-medium text-gray-700">Patente</label>
               <input
