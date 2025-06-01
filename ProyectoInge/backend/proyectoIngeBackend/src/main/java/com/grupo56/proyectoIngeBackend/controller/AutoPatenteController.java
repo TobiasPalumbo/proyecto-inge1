@@ -73,6 +73,7 @@ public class AutoPatenteController {
 		service.subirAutoPatente(nuevoAuto);
 		return ResponseEntity.status(HttpStatus.CREATED).body("Auto modificado correctamente");
 	}
+	
 	@GetMapping("/{patente}")
 	public AutoPatente autoPatentePorPatente(@PathVariable String patente) {
 		return service.obtenerAutoPatentePorPatente(patente);

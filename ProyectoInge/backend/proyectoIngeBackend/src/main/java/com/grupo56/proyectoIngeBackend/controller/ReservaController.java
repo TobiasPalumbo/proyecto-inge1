@@ -104,11 +104,21 @@ public class ReservaController {
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No es tu reserva");
 	}
 	
-	@GetMapping("/empleado/verReservasSucursal")
+	@PostMapping("/empleado/verReservasSucursal")
 	public ResponseEntity<List<ReservaDTO>> obtenerReservasSucursal(@RequestBody IdSucursalDTO idSucursalDTO){
 		List<ReservaDTO> reservasDTO = service.obtenerReservasDeSucursal(idSucursalDTO.idSucursal());
 		if(reservasDTO.isEmpty())
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 		return ResponseEntity.status(HttpStatus.OK).body(reservasDTO);
 	}
+	
+	@PostMapping("/admin/verReservasSucursal")
+	public ResponseEntity<List<ReservaDTO>> obtenerReservasSucursalAdmin(@RequestBody IdSucursalDTO idSucursalDTO){
+		List<ReservaDTO> reservasDTO = service.obtenerReservasDeSucursal(idSucursalDTO.idSucursal());
+		if(reservasDTO.isEmpty())
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+		return ResponseEntity.status(HttpStatus.OK).body(reservasDTO);
+	}
+	
+	
 }
