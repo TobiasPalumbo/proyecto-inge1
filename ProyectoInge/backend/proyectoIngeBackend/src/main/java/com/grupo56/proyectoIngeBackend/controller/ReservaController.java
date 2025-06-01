@@ -1,7 +1,10 @@
 package com.grupo56.proyectoIngeBackend.controller;
 import java.time.LocalDate;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +28,8 @@ import com.grupo56.proyectoIngeBackend.model.Usuario;
 import com.grupo56.proyectoIngeBackend.service.ClienteService;
 import com.grupo56.proyectoIngeBackend.service.ReservaService;
 import com.grupo56.proyectoIngeBackend.service.TarjetaService;
+import java.util.Collections; // Para Map.of si usas Java 9+
+
 
 @RestController
 public class ReservaController {
@@ -86,23 +91,40 @@ public class ReservaController {
 	}
 	
 	@PostMapping("/cancelarReserva")
-	public ResponseEntity<?> cancelarReserva(@RequestBody IdReservaDTO Reserva,Authentication authentication){
-		Usuario usuario = ((SecurityUser) authentication.getPrincipal()).getUsuario();
-        Cliente cliente= clienteService.obtenerPorUsuario(usuario);
-        Reserva reserva= service.obtenerReservaPorId(Reserva.idReserva());
-		if(reserva!=null && service.reservaPerteneceAusuario(reserva, cliente)){
-			if (reserva.getFechaEntrega().toLocalDate().isBefore(LocalDate.now()))
-					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("El tiempo de cancelacion expiro");
-			reserva.setEstado("cancelado");
-			service.actualizarReserva(reserva);
-			double devolucionPorcentaje  = reserva.getAutoPatente().getAuto().getPoliticaCancelacion().getPorcentaje();
-			Tarjeta tarjeta = reserva.getTarjeta();
-			tarjeta.setMonto(reserva.getTarjeta().getMonto() + reserva.getPrecio() * devolucionPorcentaje);
-			tarjetaService.subirTarjeta(tarjeta);
-			return ResponseEntity.status(HttpStatus.OK).body("Reserva cancelada, se reintegro el " + (devolucionPorcentaje * 100)  + "% del precio de la reserva");
-		}
-		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No es tu reserva");
-	}
+    public ResponseEntity<?> cancelarReserva(@RequestBody IdReservaDTO Reserva, Authentication authentication){
+        Usuario usuario = ((SecurityUser) authentication.getPrincipal()).getUsuario();
+        Cliente cliente = clienteService.obtenerPorUsuario(usuario);
+
+        if (Reserva == null || Reserva.idReserva() == null || Reserva.idReserva() <= 0) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "El código de reserva no es válido."));
+        }
+
+         Reserva reserva = service.obtenerReservaPorId(Reserva.idReserva());
+
+        if(reserva != null && service.reservaPerteneceAusuario(reserva, cliente)){
+            if (reserva.getFechaEntrega().toLocalDate().isBefore(LocalDate.now())) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "El tiempo de cancelacion expiro"));
+            }
+
+            if ("cancelado".equals(reserva.getEstado())) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "La reserva ya está cancelada."));
+            }
+            
+            reserva.setEstado("cancelado");
+            service.actualizarReserva(reserva);
+
+            double devolucionPorcentaje  = reserva.getAutoPatente().getAuto().getPoliticaCancelacion().getPorcentaje();
+            Tarjeta tarjeta = reserva.getTarjeta();
+            tarjeta.setMonto(reserva.getTarjeta().getMonto() + reserva.getPrecio() * devolucionPorcentaje);
+            tarjetaService.subirTarjeta(tarjeta);
+
+            String mensajeExito = "Reserva cancelada, se reintegro el " + (devolucionPorcentaje * 100)  + "% del precio de la reserva";
+            return ResponseEntity.status(HttpStatus.OK).body(Map.of("message", mensajeExito));
+        }
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "No es tu reserva o el código es inválido."));
+    }
+
 	
 	@PostMapping("/empleado/verReservasSucursal")
 	public ResponseEntity<List<ReservaDTO>> obtenerReservasSucursal(@RequestBody IdSucursalDTO idSucursalDTO){
