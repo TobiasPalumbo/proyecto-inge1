@@ -49,7 +49,7 @@ function useAutos() {
 function AutoCard({ auto }: { auto: Auto }) {
   return (
     <div className="border-4 border-amber-900 rounded-xl p-4 shadow-md hover:shadow-lg transition bg-white/90 animate-fadeIn">
-      <div className="mb-3 w-full h-40 relative rounded overflow-hidden">
+      <div className="mb-3 w-full h-[200px] relative rounded overflow-hidden">
         <Image
           src={`/flota-imagenes/${auto.modelo.toLowerCase()}.jpg`}
           alt={`${auto.marca} ${auto.modelo}`}

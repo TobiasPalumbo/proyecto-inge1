@@ -374,7 +374,7 @@ const ModificarAutoPatente = () => {
     // Mensaje de error general
     if (error && !showNoChangesNotification) { // No mostrar error si la notificación de "sin cambios" está activa
         return (
-            <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75 z-50 p-4">
+            <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-75 z-50 p-4">
                 <div className="bg-white p-8 rounded-lg shadow-lg text-red-700 text-center max-w-md w-full border border-red-300">
                     <h2 className="text-2xl font-bold mb-4">¡Error!</h2>
                     <p className="text-lg mb-6">{error}</p>

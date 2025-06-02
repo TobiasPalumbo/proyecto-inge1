@@ -143,7 +143,7 @@ export default function CancelarReservaPage() {
                 disabled={isCancelling}
                 className="bg-amber-800 hover:bg-amber-900 text-white shadow-md w-full sm:w-auto"
               >
-                {isCancelling ? "Cancelando..." : "Continuar"}
+                {isCancelling ? "Cancelando..." : "Cancelar"}
               </Button>
             </div>
           </form>
