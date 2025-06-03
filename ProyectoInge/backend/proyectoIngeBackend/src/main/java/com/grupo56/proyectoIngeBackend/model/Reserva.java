@@ -41,7 +41,6 @@ public class Reserva {
 	@ManyToOne
 	@JoinColumn(name = "idTarjeta")
  	private Tarjeta tarjeta;
-	
 	private LocalDateTime fechaEntrega;
 	private LocalDateTime fechaRegreso;
 	private double precio;
