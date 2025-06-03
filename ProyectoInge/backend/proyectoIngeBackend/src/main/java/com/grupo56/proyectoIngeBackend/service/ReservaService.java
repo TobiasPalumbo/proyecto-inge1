@@ -97,6 +97,7 @@ public class ReservaService {
 		reserva.setFechaRegreso(LocalDateTime.of(request.fechaRegreso(), request.horaRegreso()));
 		reserva.setPrecio(monto);
 		reserva.setTarjeta(tarjeta);
+		reserva.setPatente(patentes.getFirst());
 		repository.save(reserva);
 		correoService.enviarCodigoReserva("carlos_andres01.10@hotmail.com", reserva.getIdReserva());
 		

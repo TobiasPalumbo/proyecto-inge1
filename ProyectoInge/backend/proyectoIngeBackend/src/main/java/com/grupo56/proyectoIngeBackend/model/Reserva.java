@@ -17,9 +17,11 @@ public class Reserva {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer idReserva;
 	
+	
 	@ManyToOne
-	@JoinColumn(name = "patente", referencedColumnName = "patente")
+	@JoinColumn(name = "id_auto_patente", referencedColumnName = "id_auto_patente")
 	private AutoPatente autoPatente;
+	private String patente;
 	
 	@JoinColumn(name = "idSucursalEntrega")
 	@ManyToOne
@@ -105,6 +107,12 @@ public class Reserva {
 	}
 	public void setTarjeta(Tarjeta tarjeta) {
 		this.tarjeta = tarjeta;
+	}
+	public String getPatente() {
+		return patente;
+	}
+	public void setPatente(String patente) {
+		this.patente = patente;
 	}
 	
 	

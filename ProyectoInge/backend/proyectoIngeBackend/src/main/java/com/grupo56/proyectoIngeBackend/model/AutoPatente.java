@@ -4,6 +4,8 @@ import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -19,9 +21,11 @@ import lombok.NoArgsConstructor;
 @Table(name="auto_patente")
 public class AutoPatente {
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id_auto_patente")
+	private Integer idAutoPatente;
 	@Column(length = 20)
 	private String patente;
-	
 	@JoinColumn(name = "idCategoria")
 	@ManyToOne
 	private Categoria categoria;
@@ -34,11 +38,10 @@ public class AutoPatente {
 	private LocalDate anio;
 	private boolean borrado = false;
 	
-	
 	public String getPatente() {
 		return patente;
 	}
-
+	
 	public Auto getAuto() {
 		return auto;
 	}
@@ -84,6 +87,14 @@ public class AutoPatente {
 
 	public Sucursal getSucursal() {
 		return sucursal;
+	}
+
+	public Integer getIdAutoPatente() {
+		return idAutoPatente;
+	}
+
+	public void setIdAutoPatente(Integer idAutoPatente) {
+		this.idAutoPatente = idAutoPatente;
 	}
 	
 	

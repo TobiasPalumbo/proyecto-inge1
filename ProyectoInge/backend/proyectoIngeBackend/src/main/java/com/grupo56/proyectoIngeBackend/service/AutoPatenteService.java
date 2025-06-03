@@ -25,14 +25,14 @@ public class AutoPatenteService {
 	}
 	
 	public boolean patenteExiste(String patente) {
-		return repository.existsById(patente);
+		return repository.existsByPatente(patente);
 	}
 	
 	public List<AutoPatente> obtenerAutoPatenteSucurusal(Sucursal sucursal){
 		return repository.findBySucursal(sucursal);
 	}
 	public AutoPatente obtenerAutoPatentePorPatente(String patente) {
-		Optional<AutoPatente> autoPatente= repository.findById(patente);
+		Optional<AutoPatente> autoPatente= repository.findByPatente(patente);
 		if(autoPatente.isPresent())
 			return autoPatente.get();
 		return null;

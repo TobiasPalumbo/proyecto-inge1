@@ -62,6 +62,8 @@ public class AutoPatenteController {
 			service.subirAutoPatente(autoViejo);
 			return ResponseEntity.status(HttpStatus.ACCEPTED).body("Auto modificado correctamente");
 		}
+		if(serviceAutoPatente.patenteExiste(request.patenteNueva()))
+			return ResponseEntity.status(HttpStatus.CONFLICT).body("La patente ya se encuentra registrada");
 		autoViejo.setBorrado(true);
 		AutoPatente nuevoAuto= new AutoPatente();
 		nuevoAuto.setPatente(request.patenteNueva());
