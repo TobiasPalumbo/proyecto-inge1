@@ -26,24 +26,31 @@ public class Empleado {
 	private Usuario usuario;
 	private String nombre;
 	private String apellido;
-	private Integer dni;
+	private String cuil;
 	@ManyToOne
 	@JoinColumn(name = "idSucursal")
-	private Sucursal idSucursal;
+	private Sucursal sucursal;
 	private boolean borrado=false;
 	
 	
+	public String getCuil() {
+		return cuil;
+	}
+	public void setCuil(String cuil) {
+		this.cuil = cuil;
+	}
 	public boolean isBorrado() {
 		return borrado;
 	}
 	public void setBorrado(boolean borrado) {
 		this.borrado = borrado;
 	}
-	public Sucursal getIdSucursal() {
-		return idSucursal;
+	
+	public Sucursal getSucursal() {
+		return sucursal;
 	}
-	public void setIdSucursal(Sucursal idSucursal) {
-		this.idSucursal = idSucursal;
+	public void setSucursal(Sucursal sucursal) {
+		this.sucursal = sucursal;
 	}
 	public Integer getId_empleado() {
 		return id_empleado;
@@ -69,11 +76,4 @@ public class Empleado {
 	public void setApellido(String apellido) {
 		this.apellido = apellido;
 	}
-	public Integer getDni() {
-		return dni;
-	}
-	public void setDni(Integer dni) {
-		this.dni = dni;
-	}
-	
 }

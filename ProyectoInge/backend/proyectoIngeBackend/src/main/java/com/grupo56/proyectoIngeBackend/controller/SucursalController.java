@@ -38,7 +38,7 @@ public class SucursalController {
 		return ResponseEntity.status(HttpStatus.CONFLICT).body("Ya hay una sucursal en esa localidad y direccion");
 
 		}
-	@PostMapping("/public/darDeBajaSucursal")
+	@PostMapping("/admin/darDeBajaSucursal")
 	public ResponseEntity<String> darDeBajaSucursal(@RequestBody IdSucursalDTO idSucursalDTO){
 		if(service.borrarSucursal(idSucursalDTO.idSucursal()))
 			return ResponseEntity.status(HttpStatus.CREATED).body("La sucursal se a dado de baja");

@@ -35,7 +35,7 @@ public class AutoPatenteController {
 	private AutoPatenteService serviceAutoPatente;
 
 	
-	@PostMapping("/subirAutoPatente")
+	@PostMapping("/admin/subirAutoPatente")
 	public ResponseEntity<String> subirAutoPatente(@RequestBody @Valid AutoPatenteBodyRequestDTO request){
 		if(!service.patenteExiste(request.patente())) {
 			AutoPatente nuevoAuto= new AutoPatente();
@@ -50,7 +50,7 @@ public class AutoPatenteController {
 		return ResponseEntity.status(HttpStatus.CONFLICT).body("La patente ya se encuentra registrada");
 		}
 	
-	@PostMapping("/modificarAuto")
+	@PostMapping("/admin/modificarAuto")
 	public ResponseEntity<String> modificarAutoPatente(@RequestBody @Valid AutoPatenteModRequestDTO request){
 		AutoPatente autoViejo= serviceAutoPatente.obtenerAutoPatentePorPatente(request.patenteVieja());
 		if(request.patenteVieja().equals(request.patenteNueva())) {
