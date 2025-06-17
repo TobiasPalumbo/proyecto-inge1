@@ -33,6 +33,7 @@ import java.util.Collections; // Para Map.of si usas Java 9+
 
 @RestController
 public class ReservaController {
+	
 	@Autowired
 	private ReservaService service;
 	@Autowired
@@ -124,7 +125,6 @@ public class ReservaController {
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "No es tu reserva o el código es inválido."));
     }
-
 	
 	@PostMapping("/empleado/verReservasSucursal")
 	public ResponseEntity<List<ReservaDTO>> obtenerReservasSucursal(@RequestBody IdSucursalDTO idSucursalDTO){
@@ -142,5 +142,13 @@ public class ReservaController {
 		return ResponseEntity.status(HttpStatus.OK).body(reservasDTO);
 	}
 	
+	@PostMapping("/empleado/verEntregas")
+	public ResponseEntity<List<ReservaDTO>> obtenerEntregas(@RequestBody IdSucursalDTO idSucursalDTO) {
+		List<ReservaDTO> reservasDTO = service.obtenerReservasDeSucursal(idSucursalDTO.idSucursal());
+		if(reservasDTO.isEmpty())
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+		List<ReservaDTO> reservasDTOfitradas = reservasDTO.stream().filter(r -> r.fechaEntrega().isEqual(LocalDate.now())).toList();
+		return ResponseEntity.status(HttpStatus.OK).body(reservasDTOfitradas);
+	}
 	
 }
