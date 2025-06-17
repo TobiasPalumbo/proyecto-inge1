@@ -46,7 +46,7 @@ public class AutoPatenteController {
 			nuevoAuto.setSucursal(serviceSucursal.obtenerSucursalPorId(request.idSucursal()));
 			nuevoAuto.setCategoria(serviceCategoria.obtenerCategoriaPorId(request.idCategoria()));
 			service.subirAutoPatente(nuevoAuto);
-			return ResponseEntity.status(HttpStatus.CREATED).body("El auto se ha subido");}
+			return ResponseEntity.status(HttpStatus.CREATED).body("El auto se a subido");}
 		return ResponseEntity.status(HttpStatus.CONFLICT).body("La patente ya se encuentra registrada");
 		}
 	

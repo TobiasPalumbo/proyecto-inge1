@@ -16,5 +16,6 @@ public interface AutoPatenteRepository extends JpaRepository<AutoPatente, String
 	public boolean existsByPatente(String patente);
 
     Optional<AutoPatente> findByPatente(String patente);
-
+    
+    boolean existsBySucursalAndBorradoFalse(Sucursal sucursal);
 }

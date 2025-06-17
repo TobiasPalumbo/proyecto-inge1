@@ -39,7 +39,7 @@ public class AutenticacionController {
 	@PostMapping("/public/login") //Endpoint para loguearse 
 	public ResponseEntity<?> login(@RequestBody LoginRequestDTO request, HttpServletRequest httpRequest) {
 		Usuario usuario1= usuarioService.obtenerUsuarioPorCorreo(request.correo());
-		if(usuario1==null || !usuario1.getContraseña().equals(request.contraseña())) {
+		if(usuario1==null || !usuario1.getContraseña().equals(request.contraseña())|| usuario1.isBorrado()) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message","Credenciales invalidas"));
 		}
 		if(!usuario1.getRol().equals("admin")) {
