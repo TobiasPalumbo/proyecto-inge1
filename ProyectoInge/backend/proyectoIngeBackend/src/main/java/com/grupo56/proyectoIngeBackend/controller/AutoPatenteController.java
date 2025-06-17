@@ -79,7 +79,6 @@ public class AutoPatenteController {
 	@GetMapping("/{patente}")
 	public AutoPatente autoPatentePorPatente(@PathVariable String patente) {
 		return service.obtenerAutoPatentePorPatente(patente);
-		
 	} 
 	
 	}
