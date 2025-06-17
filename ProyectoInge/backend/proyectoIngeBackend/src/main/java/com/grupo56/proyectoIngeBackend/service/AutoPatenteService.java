@@ -38,4 +38,7 @@ public class AutoPatenteService {
 		return null;
 		
 	}
+	public boolean existenAutosEnSucursal(Sucursal sucursal) {
+		return repository.existsBySucursalAndBorradoFalse(sucursal);
+	}
 }

@@ -79,5 +79,6 @@ public interface ReservaRepository extends JpaRepository<Reserva, Integer> {
 	public List<AutoAdminDTO> autosAdminDTO();
 	
 	public List<Reserva> findAllByCliente(Cliente cliente);
+	boolean existsBySucursalEntregaOrSucursalRegresoAndEstadoNot(Sucursal entrega, Sucursal regreso, String estado);
 
 }

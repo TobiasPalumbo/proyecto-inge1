@@ -27,6 +27,16 @@ public class Usuario {
 	
 	@Column(name = "rol")
 	private String rol;
+	private boolean borrado=false;
+
+	
+	public boolean isBorrado() {
+		return borrado;
+	}
+
+	public void setBorrado(boolean borrado) {
+		this.borrado = borrado;
+	}
 
 	public Integer getIdUsuario() {
 		return idUsuario;

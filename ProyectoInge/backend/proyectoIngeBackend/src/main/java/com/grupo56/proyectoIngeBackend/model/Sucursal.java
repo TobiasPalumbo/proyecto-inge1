@@ -19,6 +19,14 @@ public class Sucursal {
 		private Integer idSucursal;
 		private String localidad;
 		private String direccion;
+		private boolean borrado=false;
+		
+		public boolean isBorrado() {
+			return borrado;
+		}
+		public void setBorrado(boolean borrado) {
+			this.borrado = borrado;
+		}
 		public Integer getIdSucursal() {
 			return idSucursal;
 		}
