@@ -9,10 +9,14 @@ import org.springframework.stereotype.Repository;
 
 import com.grupo56.proyectoIngeBackend.model.Alquiler;
 import com.grupo56.proyectoIngeBackend.model.AlquilerPaqueteExtra;
+import com.grupo56.proyectoIngeBackend.model.Reserva;
+import com.grupo56.proyectoIngeBackend.model.Sucursal;
 
 @Repository
 public interface AlquilerRepository extends JpaRepository<Alquiler, Integer> {
 	
 	List<Alquiler> findByReservaIdReservaIn(List<Integer> idReservas);
+	
+	boolean existsByReserva(Reserva reserva);
 
 }

@@ -134,14 +134,6 @@ public class ReservaController {
 		return ResponseEntity.status(HttpStatus.OK).body(reservasDTO);
 	}
 	
-	@PostMapping("/admin/verReservasSucursal")
-	public ResponseEntity<List<ReservaDTO>> obtenerReservasSucursalAdmin(@RequestBody IdSucursalDTO idSucursalDTO){
-		List<ReservaDTO> reservasDTO = service.obtenerReservasDeSucursal(idSucursalDTO.idSucursal());
-		if(reservasDTO.isEmpty())
-			return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-		return ResponseEntity.status(HttpStatus.OK).body(reservasDTO);
-	}
-	
 	@PostMapping("/empleado/verEntregas")
 	public ResponseEntity<List<ReservaDTO>> obtenerEntregas(@RequestBody IdSucursalDTO idSucursalDTO) {
 		List<ReservaDTO> reservasDTO = service.obtenerReservasDeSucursal(idSucursalDTO.idSucursal());
@@ -152,6 +144,13 @@ public class ReservaController {
 															.toList();
 		return ResponseEntity.status(HttpStatus.OK).body(reservasDTOfitradas);
 	}
+	/*@PostMapping("/empleado/cancelarReservaAdminEmpleado")
+	public ResponseEntity<?> cancelarReserva(@RequestBody IdReservaDTO request){
+		Reserva reserva= service.obtenerReservaPorId(request.idReserva());
+		
+		
+	}*/
+	
 	
 	
 }

@@ -25,6 +25,7 @@ public class EmpleadoController {
 			List<EmpleadoDTO> empleadosDTO= new ArrayList();
 			empleados.stream().forEach(e ->  
 				empleadosDTO.add(new EmpleadoDTO(
+						e.getId_empleado(),
 						e.getNombre(),
 						e.getApellido(),
 						e.getCuil(),
