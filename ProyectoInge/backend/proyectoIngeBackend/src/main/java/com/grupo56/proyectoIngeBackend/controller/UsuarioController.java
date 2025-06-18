@@ -28,10 +28,12 @@ public class UsuarioController {
 	public List<Usuario> listarUsuarios(){
 		return usuarioService.obtenerUsuarios();
 	}
+	
 	@GetMapping("/{correo}")
 	public Usuario obtenerUsuarioPorCorreo(@PathVariable String correo) {
 		return usuarioService.obtenerUsuarioPorCorreo(correo);
 	}
+	
     @GetMapping("/perfil")
     public ResponseEntity<?> obtenerPerfil(Authentication authentication) {
 	        if (authentication == null || !authentication.isAuthenticated()) {
@@ -48,5 +50,6 @@ public class UsuarioController {
 	        return ResponseEntity.ok(perfilResponse);
 	    }
 	
+    
 
 }

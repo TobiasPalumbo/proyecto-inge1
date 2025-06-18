@@ -147,8 +147,11 @@ public class ReservaController {
 		List<ReservaDTO> reservasDTO = service.obtenerReservasDeSucursal(idSucursalDTO.idSucursal());
 		if(reservasDTO.isEmpty())
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-		List<ReservaDTO> reservasDTOfitradas = reservasDTO.stream().filter(r -> r.fechaEntrega().isEqual(LocalDate.now())).toList();
+		List<ReservaDTO> reservasDTOfitradas = reservasDTO.stream()
+															.filter(r -> r.fechaEntrega().isEqual(LocalDate.now()) && r.estado().equals("confirmado"))
+															.toList();
 		return ResponseEntity.status(HttpStatus.OK).body(reservasDTOfitradas);
 	}
+	
 	
 }
