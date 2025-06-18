@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.grupo56.proyectoIngeBackend.model.AutoPatente;
 import com.grupo56.proyectoIngeBackend.model.AutoPatenteBodyRequestDTO;
 import com.grupo56.proyectoIngeBackend.model.AutoPatenteModRequestDTO;
+import com.grupo56.proyectoIngeBackend.model.PatenteDTO;
 import com.grupo56.proyectoIngeBackend.service.AutoPatenteService;
 import com.grupo56.proyectoIngeBackend.service.AutoService;
 import com.grupo56.proyectoIngeBackend.service.CategoriaService;
@@ -79,7 +80,17 @@ public class AutoPatenteController {
 	@GetMapping("/{patente}")
 	public AutoPatente autoPatentePorPatente(@PathVariable String patente) {
 		return service.obtenerAutoPatentePorPatente(patente);
-	} 
+	}
+	/*@PostMapping("/public/borrarAutoPatente")
+	public ResponseEntity<String> borrarAutoPatente(@RequestBody PatenteDTO request){
+		AutoPatente autoP= service.obtenerAutoPatentePorPatente(request.patente());
+		if(autoP.isBorrado())
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "El auto se encuentra borrado"));
+		if()
+
+		
+		
+	}*/
 	
 	}
 	

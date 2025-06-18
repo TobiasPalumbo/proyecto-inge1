@@ -20,4 +20,13 @@ public class EmpleadoService {
 	public List<Empleado> obtenerEmpleados(){
 		return repository.findByBorradoFalse();
 	}
+	public boolean empleadoExiste(String cuil) {
+		return repository.existsByCuil(cuil);
+	}
+	public void subirEmpleado(Empleado empleado) {
+		repository.save(empleado);
+	}
+	public Empleado obtenerEmpleadoPorId(Integer idEmpleado) {
+		return repository.findById(idEmpleado).get();
+	}
 }

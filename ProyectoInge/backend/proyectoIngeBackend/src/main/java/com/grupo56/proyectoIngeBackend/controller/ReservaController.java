@@ -25,6 +25,7 @@ import com.grupo56.proyectoIngeBackend.model.ReservaDTO;
 import com.grupo56.proyectoIngeBackend.model.SecurityUser;
 import com.grupo56.proyectoIngeBackend.model.Tarjeta;
 import com.grupo56.proyectoIngeBackend.model.Usuario;
+import com.grupo56.proyectoIngeBackend.repository.AlquilerRepository;
 import com.grupo56.proyectoIngeBackend.service.ClienteService;
 import com.grupo56.proyectoIngeBackend.service.ReservaService;
 import com.grupo56.proyectoIngeBackend.service.TarjetaService;
@@ -40,6 +41,8 @@ public class ReservaController {
 	private ClienteService clienteService;
 	@Autowired 
 	private TarjetaService tarjetaService;
+	@Autowired
+	private AlquilerRepository alquilerRepo;
 	
 	@PostMapping("/public/autosDisponibles")
 	public ResponseEntity<List<AutoPatentesDTO>> obtenerAutosDisponibles(@RequestBody RequestSucursalFechaDTO request){
@@ -108,7 +111,7 @@ public class ReservaController {
             }
 
             if ("cancelado".equals(reserva.getEstado())) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "La reserva ya está cancelada."));
+                return ResponseEntity.status(HttpStatus.OK).body(Map.of("message", "La reserva ya está cancelada."));
             }
             
             reserva.setEstado("cancelado");
@@ -142,12 +145,16 @@ public class ReservaController {
 		List<ReservaDTO> reservasDTOfitradas = reservasDTO.stream().filter(r -> r.fechaEntrega().isEqual(LocalDate.now())).toList();
 		return ResponseEntity.status(HttpStatus.OK).body(reservasDTOfitradas);
 	}
-	/*@PostMapping("/empleado/cancelarReservaAdminEmpleado")
+	@PostMapping("/empleado/cancelarReservaAdminEmpleado")
 	public ResponseEntity<?> cancelarReserva(@RequestBody IdReservaDTO request){
 		Reserva reserva= service.obtenerReservaPorId(request.idReserva());
-		
-		
-	}*/
+		if(reserva.getEstado().equals("cancelado")|| alquilerRepo.existsByReserva(reserva))
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "La reserva ya esta cancelada o le correspone un alquiler en curso"));
+		reserva.setEstado("cancelado");
+		service.actualizarReserva(reserva);
+        return ResponseEntity.status(HttpStatus.OK).body(Map.of("message", "Reserva cancelada"));
+
+	}
 	
 	
 }

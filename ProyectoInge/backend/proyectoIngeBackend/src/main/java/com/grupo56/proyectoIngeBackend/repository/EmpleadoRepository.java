@@ -15,6 +15,7 @@ public interface EmpleadoRepository extends JpaRepository<Empleado,Integer>{
 	
 	boolean existsBySucursalAndBorradoFalse(Sucursal sucursal);
 	List<Empleado> findByBorradoFalse();
+	boolean existsByCuil(String cuil);
 
 
 }
