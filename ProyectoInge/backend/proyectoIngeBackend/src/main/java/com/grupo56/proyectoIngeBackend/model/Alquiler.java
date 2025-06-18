@@ -20,7 +20,8 @@ public class Alquiler {
 	private LocalDateTime fechaRegreso;
 	
 	private double precio;
-	private String estado="pendiente";
+	
+	private String estado = "pendiente";
 	
 
 	public String getEstado() {
@@ -31,7 +32,6 @@ public class Alquiler {
 		this.estado = estado;
 	}
 
-	private String estado;
 	
 	public Integer getIdAlquiler() {
 		return idAlquiler;
@@ -65,14 +65,7 @@ public class Alquiler {
 		this.fechaRegreso = fechaRegreso;
 	}
 
-	public String getEstado() {
-		return estado;
-	}
-
-	public void setEstado(String estado) {
-		this.estado = estado;
-	}
-
+	
 	
 	
 }
