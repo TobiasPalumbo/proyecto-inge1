@@ -8,13 +8,20 @@ import org.springframework.stereotype.Service;
 
 import com.grupo56.proyectoIngeBackend.model.AutoPatente;
 import com.grupo56.proyectoIngeBackend.model.Sucursal;
+import com.grupo56.proyectoIngeBackend.repository.AlquilerRepository;
 import com.grupo56.proyectoIngeBackend.repository.AutoPatenteRepository;
+import com.grupo56.proyectoIngeBackend.repository.ReservaRepository;
 
 @Service
 public class AutoPatenteService {
 	
 	@Autowired
 	private AutoPatenteRepository repository;
+	@Autowired
+	private ReservaRepository reservaRepo;
+	@Autowired
+	private AlquilerRepository alquilerRepo;
+	
 	
 	public void subirAutoPatente(AutoPatente autoPatente) {
 			repository.save(autoPatente);
@@ -40,5 +47,14 @@ public class AutoPatenteService {
 	}
 	public boolean existenAutosEnSucursal(Sucursal sucursal) {
 		return repository.existsBySucursalAndBorradoFalse(sucursal);
+	}
+	public boolean autoTieneReservasConfirmadasSinAlquiler(Integer autoId) {
+		System.out.println("ACAAAAAAAAAAA IMPRIMO");
+		System.out.println(reservaRepo.existsReservaConfirmadaSinAlquiler(autoId));
+	    return reservaRepo.existsReservaConfirmadaSinAlquiler(autoId);
+	}
+
+	public boolean autoTieneAlquileresPendientesPorReservaConfirmada(Integer autoId) {
+	    return alquilerRepo.existsAlquilerPendientePorAuto(autoId);
 	}
 }

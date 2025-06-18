@@ -1,5 +1,7 @@
 package com.grupo56.proyectoIngeBackend.controller;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +38,7 @@ public class AutoPatenteController {
 	private AutoPatenteService serviceAutoPatente;
 
 	
-	@PostMapping("/admin/subirAutoPatente")
+	@PostMapping("/subirAutoPatente")
 	public ResponseEntity<String> subirAutoPatente(@RequestBody @Valid AutoPatenteBodyRequestDTO request){
 		if(!service.patenteExiste(request.patente())) {
 			AutoPatente nuevoAuto= new AutoPatente();
@@ -51,7 +53,7 @@ public class AutoPatenteController {
 		return ResponseEntity.status(HttpStatus.CONFLICT).body("La patente ya se encuentra registrada");
 		}
 	
-	@PostMapping("/admin/modificarAuto")
+	@PostMapping("/modificarAuto")
 	public ResponseEntity<String> modificarAutoPatente(@RequestBody @Valid AutoPatenteModRequestDTO request){
 		AutoPatente autoViejo= serviceAutoPatente.obtenerAutoPatentePorPatente(request.patenteVieja());
 		if(request.patenteVieja().equals(request.patenteNueva())) {
@@ -81,16 +83,21 @@ public class AutoPatenteController {
 	public AutoPatente autoPatentePorPatente(@PathVariable String patente) {
 		return service.obtenerAutoPatentePorPatente(patente);
 	}
-	/*@PostMapping("/public/borrarAutoPatente")
-	public ResponseEntity<String> borrarAutoPatente(@RequestBody PatenteDTO request){
+	@PostMapping("/borrarAutoPatente")
+	public ResponseEntity<?> borrarAutoPatente(@RequestBody PatenteDTO request){
 		AutoPatente autoP= service.obtenerAutoPatentePorPatente(request.patente());
 		if(autoP.isBorrado())
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "El auto se encuentra borrado"));
-		if()
-
+		if(service.autoTieneReservasConfirmadasSinAlquiler(autoP.getIdAutoPatente()))
+	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "El auto tiene reservas confirmadas, cancelelas para continuar"));
+		if(service.autoTieneAlquileresPendientesPorReservaConfirmada(autoP.getIdAutoPatente()))
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "El auto tiene alquiler en curso"));
+     autoP.setBorrado(true);
+     service.subirAutoPatente(autoP);
+     return ResponseEntity.status(HttpStatus.OK).body(Map.of("message", "El auto fue borrado"));
+					
 		
-		
-	}*/
+	}
 	
 	}
 	

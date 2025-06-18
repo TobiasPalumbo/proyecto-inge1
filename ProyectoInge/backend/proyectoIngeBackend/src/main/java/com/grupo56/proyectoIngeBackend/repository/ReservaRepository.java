@@ -80,5 +80,18 @@ public interface ReservaRepository extends JpaRepository<Reserva, Integer> {
 	
 	public List<Reserva> findAllByCliente(Cliente cliente);
 	boolean existsBySucursalEntregaOrSucursalRegresoAndEstadoNot(Sucursal entrega, Sucursal regreso, String estado);
+	
+	@Query("""
+		    SELECT COUNT(r) > 0
+		    FROM Reserva r
+		    WHERE r.estado = 'confirmado'
+		    AND r.autoPatente.idAutoPatente = :autoId
+		    AND NOT EXISTS (
+		        SELECT a FROM Alquiler a WHERE a.reserva = r
+		    )
+		""")
+		boolean existsReservaConfirmadaSinAlquiler(Integer autoId);
+
+
 
 }
