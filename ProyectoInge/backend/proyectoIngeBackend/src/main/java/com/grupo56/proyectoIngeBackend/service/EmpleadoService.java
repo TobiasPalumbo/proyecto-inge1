@@ -21,7 +21,7 @@ public class EmpleadoService {
 		return repository.findByBorradoFalse();
 	}
 	public boolean empleadoExiste(String cuil) {
-		return repository.existsByCuil(cuil);
+		return repository.existsByCuilAndBorradoFalse(cuil);
 	}
 	public void subirEmpleado(Empleado empleado) {
 		repository.save(empleado);
