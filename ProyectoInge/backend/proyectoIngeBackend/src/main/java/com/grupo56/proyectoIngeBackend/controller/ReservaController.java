@@ -142,5 +142,12 @@ public class ReservaController {
 		List<ReservaDTO> reservasDTOfitradas = reservasDTO.stream().filter(r -> r.fechaEntrega().isEqual(LocalDate.now())).toList();
 		return ResponseEntity.status(HttpStatus.OK).body(reservasDTOfitradas);
 	}
+	/*@PostMapping("/empleado/cancelarReservaAdminEmpleado")
+	public ResponseEntity<?> cancelarReserva(@RequestBody IdReservaDTO request){
+		Reserva reserva= service.obtenerReservaPorId(request.idReserva());
+		
+		
+	}*/
+	
 	
 }
