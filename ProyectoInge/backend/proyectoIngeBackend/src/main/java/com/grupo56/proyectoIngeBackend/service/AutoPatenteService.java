@@ -21,7 +21,7 @@ public class AutoPatenteService {
 	}
 	
 	public List<AutoPatente> obtenerAutosPatente(){
-		return repository.findAll();
+		return repository.findByBorradoFalse();
 	}
 	
 	public boolean patenteExiste(String patente) {

@@ -42,6 +42,9 @@ public class UsuarioServiceImp implements UserDetailsService{
 		}
 	    return null;
 	}
+	public boolean exiteUsuario(String correo) {
+		return usuarioRepository.existsByCorreo(correo);
+	}
 	
 
 }

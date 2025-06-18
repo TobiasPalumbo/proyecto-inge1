@@ -134,7 +134,7 @@ public class AlquilerController {
 	}
 	
 	@PostMapping("/registrarDevolucion")
-	public ResponseEntity<?> registrarDevolucion(@RequestBody patenteDTO request){
-		
+	public ResponseEntity<?> registrarDevolucion(@RequestBody String request){
+		return ResponseEntity.status(null).build();
 	}
 }
