@@ -6,15 +6,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.grupo56.proyectoIngeBackend.model.Auto;
 import com.grupo56.proyectoIngeBackend.model.MarcaModeloRequestDTO;
+import com.grupo56.proyectoIngeBackend.repository.AlquilerRepository;
 import com.grupo56.proyectoIngeBackend.repository.AutoRepository;
+import com.grupo56.proyectoIngeBackend.repository.ReservaRepository;
 
 @Service
 public class AutoService {
 	
 	@Autowired
 	private AutoRepository repository;
-	
-	
 	public void subirAuto(Auto auto) {
 		repository.save(auto);
 	}
@@ -50,5 +50,4 @@ public class AutoService {
 	public List<Auto> obtenerAutosPorIds(List<Integer> ids){
 		return repository.findAllById(ids);
 	}
-	
 }

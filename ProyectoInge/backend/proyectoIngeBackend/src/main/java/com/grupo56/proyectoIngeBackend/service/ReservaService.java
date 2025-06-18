@@ -19,6 +19,7 @@ import com.grupo56.proyectoIngeBackend.model.ReservaDTO;
 import com.grupo56.proyectoIngeBackend.model.ReservaRequestDTO;
 import com.grupo56.proyectoIngeBackend.model.Sucursal;
 import com.grupo56.proyectoIngeBackend.model.Tarjeta;
+import com.grupo56.proyectoIngeBackend.repository.AlquilerRepository;
 import com.grupo56.proyectoIngeBackend.repository.ReservaRepository;
 
 @Service
@@ -34,6 +35,8 @@ public class ReservaService {
 	ClienteService clienteService;
 	@Autowired
 	CorreoServiceImp correoService;
+	@Autowired
+	AlquilerRepository alquilerRepo;
 	
 
 	public List<Reserva> obtenerReservaDeSucursal(Sucursal sucursal){
@@ -154,5 +157,6 @@ public class ReservaService {
 	public boolean existenReservasEnSucursal(Sucursal sucursal) {
 		return repository.existsBySucursalEntregaOrSucursalRegresoAndEstadoNot(sucursal, sucursal, "cancelado");
 	}
+
 	
 }
