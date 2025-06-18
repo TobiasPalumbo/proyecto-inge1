@@ -21,4 +21,7 @@ public class AlquilerService {
 		return repository.findAll();
 	}
 
+	public void guardarAlquiler(Alquiler a) {
+		repository.save(a);
+	}
 }
