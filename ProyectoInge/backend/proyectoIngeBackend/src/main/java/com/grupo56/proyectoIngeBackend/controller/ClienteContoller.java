@@ -42,6 +42,7 @@ public class ClienteContoller {
 							c.getTelefono(), 
 							c.getNombre(), 
 							c.getApellido(), 
+							c.getUsuario().getCorreo(),
 							c.getFechaRegistro(), 
 							c.getFechaNac())
 					);

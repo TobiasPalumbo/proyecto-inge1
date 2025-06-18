@@ -28,7 +28,6 @@ import com.grupo56.proyectoIngeBackend.model.Usuario;
 import com.grupo56.proyectoIngeBackend.service.ClienteService;
 import com.grupo56.proyectoIngeBackend.service.ReservaService;
 import com.grupo56.proyectoIngeBackend.service.TarjetaService;
-import java.util.Collections; // Para Map.of si usas Java 9+
 
 
 @RestController
@@ -144,6 +143,7 @@ public class ReservaController {
 															.toList();
 		return ResponseEntity.status(HttpStatus.OK).body(reservasDTOfitradas);
 	}
+	
 	/*@PostMapping("/empleado/cancelarReservaAdminEmpleado")
 	public ResponseEntity<?> cancelarReserva(@RequestBody IdReservaDTO request){
 		Reserva reserva= service.obtenerReservaPorId(request.idReserva());

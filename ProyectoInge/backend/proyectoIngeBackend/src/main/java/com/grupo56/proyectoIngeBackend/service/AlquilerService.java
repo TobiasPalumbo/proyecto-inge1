@@ -16,5 +16,9 @@ public class AlquilerService {
 	public List<Alquiler> obtenerAlquilerPorIdReserva(List<Integer> idsReserva){
 		return repository.findByReservaIdReservaIn(idsReserva);
 	}
+	
+	public List<Alquiler> obtenerAlquileres() {
+		return repository.findAll();
+	}
 
 }

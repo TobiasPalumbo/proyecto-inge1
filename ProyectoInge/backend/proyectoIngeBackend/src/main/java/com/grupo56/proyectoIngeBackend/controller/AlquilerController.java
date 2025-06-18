@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.grupo56.proyectoIngeBackend.model.Alquiler;
@@ -16,6 +18,7 @@ import com.grupo56.proyectoIngeBackend.model.AlquilerPaqueteExtra;
 import com.grupo56.proyectoIngeBackend.model.AutoDTO;
 import com.grupo56.proyectoIngeBackend.model.AutoPatente;
 import com.grupo56.proyectoIngeBackend.model.Cliente;
+import com.grupo56.proyectoIngeBackend.model.FechasRequestDTO;
 import com.grupo56.proyectoIngeBackend.model.PaqueteExtra;
 import com.grupo56.proyectoIngeBackend.model.PaqueteExtraDTO;
 import com.grupo56.proyectoIngeBackend.model.Reserva;
@@ -93,5 +96,45 @@ public class AlquilerController {
 		}
 
         return ResponseEntity.status(HttpStatus.OK).body(alquileresDTO);
+	}
+	
+	
+	@PostMapping("/empleado/verAutosAlquiladosEntreFechas")
+	public ResponseEntity<?> obtenerAlquileresEntreFechas(@RequestBody FechasRequestDTO request) {
+			List<Alquiler> alquileres = service.obtenerAlquileres();
+		    List<AutoDTO> autosDTO = new ArrayList<>();
+			if (alquileres.isEmpty())
+	        	return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+			List<Alquiler> alquileresFiltrados = alquileres.stream()	
+					.filter(a -> 
+							(request.fechaInicio().isEqual(a.getReserva().getFechaEntrega().toLocalDate()))
+							|| request.fechaInicio().isBefore(a.getReserva().getFechaEntrega().toLocalDate())
+							&& 
+							(request.fechaFin().isEqual(a.getFechaRegreso().toLocalDate()) 
+							|| request.fechaFin().isAfter(a.getFechaRegreso().toLocalDate())))
+							.toList();
+		        for (Alquiler a : alquileresFiltrados) {
+		        	Reserva r = a.getReserva();
+		        	AutoPatente aP = r.getAutoPatente();
+		        	AutoDTO autoDTO = new AutoDTO(
+		                    aP.getAuto().getIdAuto(),
+		                    aP.getCategoria().getId(),
+		                    aP.getAuto().getMarca(),
+		                    aP.getAuto().getModelo(),
+		                    aP.getAuto().getPrecioDia(),
+		                    aP.getAuto().getCantidadAsientos(),
+		                    aP.getCategoria().getDescripcion(),
+		                    aP.getAuto().getPoliticaCancelacion().getIdPoliticaCancelacion(),
+		                    aP.getAuto().getPoliticaCancelacion().getPorcentaje()
+		                );
+		        	if (!autosDTO.contains(autoDTO))
+		        		autosDTO.add(autoDTO);
+				}			
+			return ResponseEntity.status(HttpStatus.OK).body(autosDTO);
+	}
+	
+	@PostMapping("/registrarDevolucion")
+	public ResponseEntity<?> registrarDevolucion(@RequestBody patenteDTO request){
+		
 	}
 }

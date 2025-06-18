@@ -7,6 +7,7 @@ public record ClienteDTO(
 		String telefono, 
 		String nombre, 
 		String apellido, 
+		String correo,
 		LocalDate fechaRegistro, 
 		LocalDate fechaNacimiento
 		) {}

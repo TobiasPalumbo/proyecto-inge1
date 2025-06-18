@@ -21,7 +21,7 @@ public class ClienteService {
 		repository.save(cliente);
 	}
 	public Cliente obtenerPorUsuario(Usuario usuario) {
-		Optional<Cliente> cliente= repository.findByUsuario(usuario); 
+		Optional<Cliente> cliente = repository.findByUsuario(usuario); 
 		if(cliente.isPresent())
 			return cliente.get();
 		return null;

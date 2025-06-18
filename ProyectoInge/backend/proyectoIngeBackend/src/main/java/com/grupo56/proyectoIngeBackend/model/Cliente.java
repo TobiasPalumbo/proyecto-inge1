@@ -83,6 +83,12 @@ public class Cliente {
 	public void setIdUsuario(Usuario idUsuario) {
 		this.usuario = idUsuario;
 	}
+	public Usuario getUsuario() {
+		return usuario;
+	}
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
 
 	
 }
