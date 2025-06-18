@@ -29,7 +29,6 @@ import com.grupo56.proyectoIngeBackend.repository.AlquilerRepository;
 import com.grupo56.proyectoIngeBackend.service.ClienteService;
 import com.grupo56.proyectoIngeBackend.service.ReservaService;
 import com.grupo56.proyectoIngeBackend.service.TarjetaService;
-import java.util.Collections; // Para Map.of si usas Java 9+
 
 
 @RestController
@@ -142,9 +141,12 @@ public class ReservaController {
 		List<ReservaDTO> reservasDTO = service.obtenerReservasDeSucursal(idSucursalDTO.idSucursal());
 		if(reservasDTO.isEmpty())
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-		List<ReservaDTO> reservasDTOfitradas = reservasDTO.stream().filter(r -> r.fechaEntrega().isEqual(LocalDate.now())).toList();
+		List<ReservaDTO> reservasDTOfitradas = reservasDTO.stream()
+															.filter(r -> r.fechaEntrega().isEqual(LocalDate.now()) && r.estado().equals("confirmado"))
+															.toList();
 		return ResponseEntity.status(HttpStatus.OK).body(reservasDTOfitradas);
 	}
+
 	@PostMapping("/empleado/cancelarReservaAdminEmpleado")
 	public ResponseEntity<?> cancelarReserva(@RequestBody IdReservaDTO request){
 		Reserva reserva= service.obtenerReservaPorId(request.idReserva());
@@ -155,6 +157,7 @@ public class ReservaController {
         return ResponseEntity.status(HttpStatus.OK).body(Map.of("message", "Reserva cancelada"));
 
 	}
+	
 	
 	
 }
