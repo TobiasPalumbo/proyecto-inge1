@@ -60,7 +60,6 @@ type Reserva = {
 type PresupuestoResponse = {
   presupuesto: number;
 };
-// --- FIN TIPOS ---
 
 export default function ReservasSucursalTable() {
   const [sucursales, setSucursales] = useState<Sucursal[]>([]);
@@ -69,7 +68,6 @@ export default function ReservasSucursalTable() {
   const [cargando, setCargando] = useState(false);
   const [errorMensaje, setErrorMensaje] = useState<string | null>(null);
   const [mostrarHistorial, setMostrarHistorial] = useState<boolean>(false);
-  // Nuevo estado para almacenar los presupuestos
   const [presupuestos, setPresupuestos] = useState<{[idReserva: number]: number}>({});
 
   useEffect(() => {
@@ -322,9 +320,7 @@ export default function ReservasSucursalTable() {
                   <TableCell className="px-4 py-3 border-r border-yellow-200 text-gray-700 text-sm">
                     {reserva.auto.categoria}
                   </TableCell>
-                  {/* Celda para el Precio Total */}
                   <TableCell className="px-4 py-3 border-r border-yellow-200 text-gray-800 text-sm font-semibold">
-                     {/* Mostramos el precio total si está disponible, sino mostramos "Cargando..." */}
                     {presupuestos[reserva.idReserva] !== undefined ? `$${presupuestos[reserva.idReserva]?.toFixed(2)}` : "Cargando..."}
                   </TableCell>
                   <TableCell className="px-4 py-3 border-r border-yellow-200 text-gray-700 text-sm">

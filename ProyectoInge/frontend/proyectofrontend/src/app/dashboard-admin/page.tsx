@@ -11,14 +11,14 @@ export default function Dashboard() {
   useEffect(() => {
     if (!loading) {
       if (rol !== "admin" || !adminVerificado) {
-        router.push("/pagina-inicio"); // o "/login"
+        router.push("/pagina-inicio"); 
       }
     }
     }, [rol, loading, adminVerificado, router]);
 
 
     if (loading || rol !== "admin"|| !adminVerificado) {
-    return null; // o un spinner si querés
+    return null; 
   }
 
   return (

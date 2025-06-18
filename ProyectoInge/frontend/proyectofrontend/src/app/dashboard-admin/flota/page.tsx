@@ -36,15 +36,15 @@ interface CarDisplayData {
     precio: number;
     cantidadAsientos: number;
     politicaCancelacionPorcentaje: number;
-    patente: string; // Patente individual
-    anio: string;    // Año de esa patente
-    sucursalNombre: string; // Nombre de la sucursal de esa patente
-    sucursalId: number; // ID de la sucursal de esa patente
+    patente: string; 
+    anio: string;    
+    sucursalNombre: string;
+    sucursalId: number;
 }
 
 const MostrarTablaAutos = () => {
   const [error, setError] = useState<string>('');
-  const [carsToDisplay, setCarsToDisplay] = useState<CarDisplayData[]>([]); // Usaremos esta para la tabla
+  const [carsToDisplay, setCarsToDisplay] = useState<CarDisplayData[]>([]); 
   const [loading, setLoading] = useState(true);
   const router = useRouter(); 
 
@@ -54,7 +54,6 @@ const MostrarTablaAutos = () => {
       setError(''); 
 
       try {
-        // Paso 1: Obtener la lista general de autos y patentes
         const res = await fetch('http://localhost:8080/admin/autosPatentes', {
           method: 'GET',
           credentials: 'include',
@@ -70,11 +69,10 @@ const MostrarTablaAutos = () => {
         
         const allCarPatentesPromises: Promise<CarDisplayData | null>[] = [];
 
-        // Paso 2: Para cada patente, hacer una llamada individual para obtener sus detalles
         for (const carGroup of initialData) {
             for (const patente of carGroup.patentes) {
                 allCarPatentesPromises.push(
-                    fetch(`http://localhost:8080/admin/autoPatente/${patente}`, { // URL de la API de detalle por patente
+                    fetch(`http://localhost:8080/admin/autoPatente/${patente}`, {
                         method: 'GET',
                         credentials: 'include',
                         headers: { 'Content-Type': 'application/json' },
@@ -82,8 +80,8 @@ const MostrarTablaAutos = () => {
                     .then(detailRes => {
                         if (!detailRes.ok) {
                             console.error(`Error al cargar detalles para patente ${patente}: ${detailRes.status}`);
-                            return null; // Retorna null si hay error para esa patente específica
-                        }
+                            return null;
+                          }
                         return detailRes.json();
                     })
                     .then((patenteDetail: PatenteDetail) => {
@@ -91,7 +89,7 @@ const MostrarTablaAutos = () => {
                             idAuto: patenteDetail.auto.idAuto,
                             marca: patenteDetail.auto.marca,
                             modelo: patenteDetail.auto.modelo,
-                            categoria: patenteDetail.categoria.descripcion, // Usamos la descripción de la categoría
+                            categoria: patenteDetail.categoria.descripcion,
                             precio: patenteDetail.auto.precioDia,
                             cantidadAsientos: patenteDetail.auto.cantidadAsientos,
                             politicaCancelacionPorcentaje: patenteDetail.auto.politicaCancelacion?.porcentaje || 0, // Manejo de null

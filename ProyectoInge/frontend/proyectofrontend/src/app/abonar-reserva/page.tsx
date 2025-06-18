@@ -342,7 +342,7 @@ export default function AbonarReservaPage() {
             <CheckCircle className="w-6 h-6 text-green-600 mr-2" />
                 <AlertTitle>¡Reserva exitosa!</AlertTitle>
                 <AlertDescription>
-                  Serás redirigido a la página de inicio...
+                  Codigo de reserva enviado al mail, redirigiendo a pagina de inicio...
                 </AlertDescription>
           </Alert>
         </div>

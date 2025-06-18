@@ -60,9 +60,8 @@ const UploadCarForm: React.FC<UploadCarFormProps> = ({
     type: '',
   });
 
-  // Estado para mostrar el modal de auto subido
   const [autoSubido, setAutoSubido] = useState(false);
-
+  
   useEffect(() => {
     const fetchInitialData = async () => {
       setInitialDataLoading(true);
@@ -205,7 +204,6 @@ const UploadCarForm: React.FC<UploadCarFormProps> = ({
         return;
       }
 
-      // Mostrar modal y limpiar formulario
       setAutoSubido(true);
       setFeedback({ message: '', type: '' });
 
@@ -366,7 +364,6 @@ const UploadCarForm: React.FC<UploadCarFormProps> = ({
         </div>
       </div>
 
-      {/* Modal auto subido */}
       {autoSubido && (
         <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-50 z-50">
           <div className="max-w-sm bg-white rounded-lg shadow-lg p-6 flex items-center space-x-3">

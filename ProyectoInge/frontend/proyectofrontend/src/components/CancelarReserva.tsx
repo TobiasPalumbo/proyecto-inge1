@@ -11,14 +11,14 @@ import { Button } from "@/components/ui/button";
 export default function CancelarReservaPage() {
   const [codigoReserva, setCodigoReserva] = useState("");
   const [isCancelling, setIsCancelling] = useState(false);
-  const [cancelError, setCancelError] = useState<string | null>(null); // Para mostrar errores al usuario
-  const [cancelSuccess, setCancelSuccess] = useState<string | null>(null); // Para mostrar mensajes de éxito
+  const [cancelError, setCancelError] = useState<string | null>(null); 
+  const [cancelSuccess, setCancelSuccess] = useState<string | null>(null); 
   const router = useRouter();
 
   const handleSubmitCancel = async (e: React.FormEvent) => {
     e.preventDefault();
-    setCancelError(null); // Limpiar errores previos
-    setCancelSuccess(null); // Limpiar éxitos previos
+    setCancelError(null); 
+    setCancelSuccess(null);
 
     if (!codigoReserva) {
       setCancelError("Por favor, ingresa el código de reserva.");
@@ -51,17 +51,14 @@ export default function CancelarReservaPage() {
         try {
           data = await response.json();
         } catch (jsonError) {
-          // Si falla el parseo JSON, leemos como texto plano y registramos el error en consola
           console.error("Error al parsear JSON, leyendo como texto:", jsonError);
           data = await response.text();
         }
       } else {
-        // Si no es JSON, leemos siempre como texto
         data = await response.text();
       }
 
       if (!response.ok) {
-        // Si la respuesta NO es OK (ej. 4xx o 5xx)
         let errorMessage: string;
         if (typeof data === 'object' && data !== null && 'message' in data) {
           errorMessage = data.message || "Error desconocido del servidor.";
@@ -70,12 +67,8 @@ export default function CancelarReservaPage() {
         } else {
           errorMessage = `Error al cancelar la reserva: La petición falló con estado ${response.status}.`;
         }
-        // No lanzamos un error, simplemente actualizamos el estado para mostrar el mensaje al usuario.
         setCancelError(errorMessage);
-        // Opcional: podrías querer limpiar el código de reserva si es un error fatal.
-        // setCodigoReserva("");
-      } else {
-        // Si todo va bien (response.ok)
+        } else {
         let successMessage: string;
         if (typeof data === 'object' && data !== null && 'message' in data) {
           successMessage = data.message || "Reserva cancelada exitosamente.";
@@ -85,15 +78,10 @@ export default function CancelarReservaPage() {
           successMessage = "Reserva cancelada exitosamente.";
         }
 
-        setCancelSuccess(successMessage); // Muestra el mensaje de éxito
-        setCodigoReserva(""); // Limpia el campo después de una cancelación exitosa
-        // No redirigimos automáticamente, damos tiempo al usuario para leer el mensaje de éxito.
-        // Podrías añadir un setTimeout aquí para redirigir después de unos segundos.
-        // setTimeout(() => router.push("/"), 3000);
+        setCancelSuccess(successMessage); 
+        setCodigoReserva(""); 
       }
     } catch (err: any) {
-      // Este catch solo atrapará errores de red (ej. servidor no disponible) o errores de JS inesperados,
-      // no los errores de validación del servidor que ahora manejamos explícitamente.
       setCancelError(err.message || "Ocurrió un error inesperado al cancelar la reserva.");
       console.error("Error inesperado en fetch:", err);
     } finally {
@@ -126,14 +114,13 @@ export default function CancelarReservaPage() {
                 required
                 className="w-full max-w-sm bg-white text-black border-gray-400"
               />
-              {/* Mensajes de feedback para el usuario */}
               {cancelError && <p className="text-red-500 text-sm mt-2">{cancelError}</p>}
               {cancelSuccess && <p className="text-green-600 text-sm mt-2 font-semibold">{cancelSuccess}</p>}
             </div>
             <div className="flex justify-center gap-4 mt-6">
               <Button
                 type="button"
-                onClick={() => router.push("/miperfil")}
+                onClick={() => router.push("/mis-reservas")}
                 className="bg-gray-500 hover:bg-gray-600 text-white shadow-md w-full sm:w-auto"
               >
                 Volver

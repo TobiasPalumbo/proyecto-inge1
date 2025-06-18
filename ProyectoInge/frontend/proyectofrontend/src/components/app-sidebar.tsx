@@ -1,9 +1,9 @@
-'use client'; // ¡IMPORTANTE! Marca este componente como Client Component
+'use client'; 
 
 import * as React from "react";
-import { Car, CalendarCheck, BarChart2, Users } from "lucide-react";
-import Link from "next/link"; // Importa el componente Link de Next.js
-import { usePathname } from "next/navigation"; // Importa usePathname
+import { Car, CalendarCheck, BarChart2, Users, MapPin } from "lucide-react";
+import Link from "next/link"; 
+import { usePathname } from "next/navigation"; 
 
 import {
   Sidebar,
@@ -42,12 +42,17 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       url: "/dashboard-admin/empleados",
       icon: <Users className="size-4" />,
     },
+    {
+      title: "Sucursales",
+      url: "/dashboard-admin/sucursales",
+      icon: <MapPin className="size-4" />,
+    },
   ];
 
   return (
     <Sidebar {...props}>
       <SidebarHeader>
-        <Link href="/pagina-inicio"> {/* Cambia esto a tu página de inicio de dashboard si no es '/pagina-inicio' */}
+        <Link href="/pagina-inicio"> 
           <div className="flex items-center gap-2 px-4 py-3">
             <div className="flex flex-col leading-none">
               <span className="font-semibold">AlquilApp Car</span>
@@ -60,27 +65,24 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <SidebarMenu>
           {navLinks.map((item) => {
-            // Determina si el enlace actual está activo
             const isActive = pathname === item.url;
 
             const handleClick = (e: React.MouseEvent) => {
               if (isActive) {
-                e.preventDefault(); // Previene la navegación si ya estamos en la página
+                e.preventDefault(); 
                 console.log(`Ya estás en la página: ${item.title}`);
-                // Opcional: podrías agregar una pequeña notificación visual aquí.
               }
             };
 
             return (
               <SidebarMenuItem key={item.url}>
                 <SidebarMenuButton asChild>
-                  {/* Usa el componente Link de Next.js */}
                   <Link
                     href={item.url}
                     onClick={handleClick}
                     className={cn(
-                      "flex items-center gap-2", // Clases base
-                      isActive ? "bg-amber-100 text-amber-600 font-semibold" : "text-gray-900 hover:bg-gray-100 hover:text-amber-600" // Clases condicionales
+                      "flex items-center gap-2",
+                      isActive ? "bg-amber-100 text-amber-600 font-semibold" : "text-gray-900 hover:bg-gray-100 hover:text-amber-600"
                     )}
                   >
                     {item.icon}

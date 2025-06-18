@@ -223,22 +223,21 @@ const ModificarAutoPatente = () => {
                 setMarcas(initialData.marcas || []);
                 setSucursales(initialData.sucursales || []);
 
-                // Setear todos los campos del formulario con los datos iniciales
                 setPatenteNueva(fetchedPatenteDetail.patente);
                 setSelectedSucursalId(fetchedPatenteDetail.sucursal.idSucursal);
                 setAnio(fetchedPatenteDetail.anio.substring(0, 4));
                 setMarca(fetchedPatenteDetail.auto.marca);
-                setModelo(fetchedPatenteDetail.auto.modelo); // Setear modelo inicial aquí
-                setSelectedCategoriaId(fetchedPatenteDetail.categoria.id); // Setear categoría inicial aquí
+                setModelo(fetchedPatenteDetail.auto.modelo); 
+                setSelectedCategoriaId(fetchedPatenteDetail.categoria.id); 
 
-                hasInitialDataSetRef.current = true; // Indicar que los datos iniciales han sido establecidos
+                hasInitialDataSetRef.current = true;
 
             } catch (err: any) {
                 console.error("Error al cargar datos iniciales:", err);
                 setError(err.message);
             } finally {
-                setInitialDataLoading(false); // Indica que los datos base para el formulario han terminado de cargar
-                setLoading(false); // Indica que la carga general de la página ha terminado
+                setInitialDataLoading(false); 
+                setLoading(false); 
             }
         };
         fetchAllInitialData();
@@ -279,8 +278,8 @@ const ModificarAutoPatente = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setError(null); // Limpiar errores previos
-        setShowNoChangesNotification(false); // Ocultar notificación de "sin cambios" si estaba visible
+        setError(null); 
+        setShowNoChangesNotification(false); 
 
         if (!patenteOriginal || !patenteNueva || selectedSucursalId === undefined || !marca || !modelo || !anio || selectedCategoriaId === undefined) {
             setError('Por favor, completa todos los campos requeridos.');
@@ -336,12 +335,13 @@ const ModificarAutoPatente = () => {
                 const errorText = await res.text();
                 try {
                     const errorJson = JSON.parse(errorText);
-                    throw new Error(errorJson.message || `Error al modificar el auto: ${res.status} - ${errorText}`);
-                } catch {
-                    throw new Error(`Error al modificar el auto: ${res.status} - ${errorText}`);
+                    throw new Error(errorJson.message || `Error al modificar el auto: ${errorText}`);
+                } catch(err) {
+                    setError(`Error al modificar el auto: ${errorText}`);
                 }
+
             }
-            
+
             setShowSuccessNotification(true);
             setTimeout(() => {
                 router.push('/dashboard-admin/flota');
@@ -350,13 +350,10 @@ const ModificarAutoPatente = () => {
             console.error("Error al modificar auto:", err);
             setError(err.message);
         } finally {
-            setLoading(false); // Quitar loading después del intento de guardado
+            setLoading(false); 
         }
     };
 
-    // --- Renderizado Condicional ---
-    // Spinner principal: se muestra si loading es true Y initialDataLoading es true
-    // Esto asegura que el spinner grande solo aparezca durante la carga inicial de la página.
     if (loading && initialDataLoading) {
         return (
             <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -371,8 +368,7 @@ const ModificarAutoPatente = () => {
         );
     }
 
-    // Mensaje de error general
-    if (error && !showNoChangesNotification) { // No mostrar error si la notificación de "sin cambios" está activa
+    if (error && !showNoChangesNotification) {
         return (
             <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-75 z-50 p-4">
                 <div className="bg-white p-8 rounded-lg shadow-lg text-red-700 text-center max-w-md w-full border border-red-300">
@@ -384,7 +380,6 @@ const ModificarAutoPatente = () => {
         );
     }
 
-    // Si no se encontraron datos del auto y la carga inicial ya terminó
     if (!currentPatenteDetail && !initialDataLoading && !loading) {
         return (
             <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -550,7 +545,6 @@ const ModificarAutoPatente = () => {
                 </div>
             </form>
 
-            {/* Notificación de Éxito */}
             {showSuccessNotification && (
                 <div className="fixed inset-0 flex items-center justify-center bg-amber-950/40 bg-opacity-50 z-50 p-4">
                     <div className="max-w-sm bg-white rounded-lg shadow-lg p-6 flex items-center space-x-3 border border-green-300">

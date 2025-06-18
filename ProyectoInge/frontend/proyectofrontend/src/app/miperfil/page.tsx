@@ -140,19 +140,14 @@ export default function PaginaPerfil() {
               </div>
             </div>
           </div>
-
-          {/* Sección de Botones */}
           <div className="bg-gray-50 px-4 py-6 xs:px-8 flex flex-row gap-4 border-t border-gray-200 justify-center flex-wrap">            <Button
               onClick={handleVerReservas}
-              // Eliminamos w-full para que no ocupen todo el ancho
-              className="bg-amber-900 hover:bg-amber-800 text-white font-bold py-4 px-8 rounded-lg shadow-xl transition-all duration-300 transform hover:scale-105 tracking-wide max-w-sm" // max-w-sm para controlar el ancho máximo
-            >
+              className="bg-amber-900 hover:bg-amber-800 text-white font-bold py-4 px-8 rounded-lg shadow-xl transition-all duration-300 transform hover:scale-105 tracking-wide max-w-sm">
               Ver mis reservas
             </Button>
             <Button
               onClick={handleVerAlquileres}
-              // Eliminamos w-full para que no ocupen todo el ancho
-              className="bg-amber-900 hover:bg-amber-800 text-white font-bold py-4 px-8 rounded-lg shadow-xl transition-all duration-300 transform hover:scale-105 tracking-wide max-w-sm" // max-w-sm para controlar el ancho máximo
+              className="bg-amber-900 hover:bg-amber-800 text-white font-bold py-4 px-8 rounded-lg shadow-xl transition-all duration-300 transform hover:scale-105 tracking-wide max-w-sm" 
             >
               Ver mis alquileres
             </Button>
