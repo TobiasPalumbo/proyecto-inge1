@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { CheckCircle } from "lucide-react";
 import { Loader2 } from "lucide-react";
@@ -30,7 +29,7 @@ export default function SubirSucursalForm() {
 
     try {
       setLoading(true);
-      setFeedback({ message: "", type: "" }); // Resetea el feedback al inicio del envío
+      setFeedback({ message: "", type: "" }); 
 
       const res = await fetch("http://localhost:8080/admin/subirSucursal", {
         method: "POST",

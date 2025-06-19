@@ -1,7 +1,7 @@
 'use client'; 
 
 import * as React from "react";
-import { ClipboardList, Car, Home } from "lucide-react";
+import { ClipboardList, Car, Home, CalendarClock } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from '@/lib/utils'; 
@@ -28,13 +28,19 @@ export function EmployeeSidebar({ ...props }: React.ComponentProps<typeof Sideba
     },
     {
       title: "Ver Reservas",
-      url: "/dashboard-empleado/reservas", // Asegúrate de que esta URL sea la correcta
+      url: "/dashboard-empleado/reservas", 
       icon: <ClipboardList className="size-4" />,
     },
     {
       title: "Ver Alquileres",
-      url: "/alquileres", // Asegúrate de que esta URL sea la correcta
+      url: "/dashboard-empleado/alquileres", 
       icon: <Car className="size-4" />,
+    },
+    
+    {
+      title: "Ver entregas",
+      url: "/dashboard-empleado/entregas", 
+      icon: <CalendarClock className="size-4" />,
     },
   ];
 

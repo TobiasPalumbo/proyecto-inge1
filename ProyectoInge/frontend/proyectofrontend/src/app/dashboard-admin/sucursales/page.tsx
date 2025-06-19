@@ -68,7 +68,7 @@ export default function SucursalesPage() {
     setMostrarModalConfirmacion(false);
 
     try {
-      const response = await fetch('http://localhost:8080/public/darDeBajaSucursal', {
+      const response = await fetch('http://localhost:8080/admin/darDeBajaSucursal', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

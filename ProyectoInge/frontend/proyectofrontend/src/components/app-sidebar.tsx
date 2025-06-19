@@ -1,9 +1,19 @@
-'use client'; 
+"use client";
 
 import * as React from "react";
-import { Car, CalendarCheck, BarChart2, Users, MapPin } from "lucide-react";
-import Link from "next/link"; 
-import { usePathname } from "next/navigation"; 
+import {
+  Car,
+  CalendarCheck,
+  CalendarSearch,
+  Users,
+  MapPin,
+  BadgeDollarSign,
+  ChartNoAxesCombined,
+  CalendarClock,
+  ClipboardList,
+} from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 import {
   Sidebar,
@@ -15,27 +25,47 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 
-// Utilidad para concatenar clases condicionalmente (asumiendo que tienes una similar o puedes crearla)
-import { cn } from '@/lib/utils'; // Si tienes una utilidad como `clsx` o `classnames`
-
+import { cn } from "@/lib/utils";
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const pathname = usePathname(); // Obtiene la ruta actual
+  const pathname = usePathname();
 
   const navLinks = [
     {
       title: "Automóviles",
-      url: "/dashboard-admin/flota", // Asegúrate de que las URLs aquí coincidan con tus rutas reales
+      url: "/dashboard-admin/flota",
       icon: <Car className="size-4" />,
     },
     {
       title: "Reservas",
       url: "/dashboard-admin/reservas",
-      icon: <CalendarCheck className="size-4" />,
+      icon: <ClipboardList className="size-4" />,
+    },
+    {
+      title: "Entregas",
+      url: "/dashboard-admin/entregas",
+      icon: <CalendarClock className="size-4" />,
     },
     {
       title: "Estadísticas",
       url: "/dashboard-admin/estadisticas",
-      icon: <BarChart2 className="size-4" />,
+      icon: <ChartNoAxesCombined className="size-4" />,
+      children: [
+        {
+          title: "Autos Alquilados",
+          url: "/dashboard-admin/estadisticas/autosAlquilados",
+          icon: <CalendarSearch className="size-4" />
+        },
+        {
+          title: "Clientes Registrados",
+          url: "/dashboard-admin/estadisticas/clientesRegistrados",
+          icon : <Users className="size-4" />,
+        },
+        {
+          title: "Ingresos Semanales",
+          url: "/dashboard-admin/estadisticas/ingresosSemanales",
+          icon: <BadgeDollarSign className="size-4" />,
+        },
+      ],
     },
     {
       title: "Empleados",
@@ -52,7 +82,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar {...props}>
       <SidebarHeader>
-        <Link href="/pagina-inicio"> 
+        <Link href="/pagina-inicio">
           <div className="flex items-center gap-2 px-4 py-3">
             <div className="flex flex-col leading-none">
               <span className="font-semibold">AlquilApp Car</span>
@@ -66,30 +96,62 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarMenu>
           {navLinks.map((item) => {
             const isActive = pathname === item.url;
-
+            const isSectionActive = pathname.startsWith(item.url);
             const handleClick = (e: React.MouseEvent) => {
               if (isActive) {
-                e.preventDefault(); 
+                e.preventDefault();
                 console.log(`Ya estás en la página: ${item.title}`);
               }
             };
 
             return (
-              <SidebarMenuItem key={item.url}>
-                <SidebarMenuButton asChild>
-                  <Link
-                    href={item.url}
-                    onClick={handleClick}
-                    className={cn(
-                      "flex items-center gap-2",
-                      isActive ? "bg-amber-100 text-amber-600 font-semibold" : "text-gray-900 hover:bg-gray-100 hover:text-amber-600"
-                    )}
-                  >
-                    {item.icon}
-                    {item.title}
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+              <React.Fragment key={item.url}>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <Link
+                      href={item.url}
+                      onClick={handleClick}
+                      className={cn(
+                        "flex items-center gap-2",
+                        isActive
+                          ? "bg-amber-100 text-amber-600 font-semibold"
+                          : "text-gray-900 hover:bg-gray-100 hover:text-amber-600"
+                      )}
+                    >
+                      {item.icon}
+                      {item.title}
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+
+                {item.children &&
+                  isSectionActive &&
+                  item.children.map((child) => {
+                    const isChildActive = pathname === child.url;
+                    return (
+                      <SidebarMenuItem key={child.url} className="pl-10">
+                        <SidebarMenuButton asChild>
+                          <Link
+                            href={child.url}
+                            className={cn(
+                              "text-sm",
+                              isChildActive
+                                ? "bg-amber-100 text-amber-600 font-medium"
+                                : "text-gray-700 hover:bg-gray-100 hover:text-amber-600"
+                            )}
+                          >
+                            <>
+                              {child.icon && (
+                                <span>{child.icon}</span>
+                              )}
+                              {child.title}
+                            </>
+                          </Link>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    );
+                  })}
+              </React.Fragment>
             );
           })}
         </SidebarMenu>

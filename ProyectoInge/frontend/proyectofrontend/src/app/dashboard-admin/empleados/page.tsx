@@ -11,10 +11,10 @@ import {
   TableBody,
   TableCell,
 } from "@/components/ui/table";
-import { Loader2 } from "lucide-react";
+import { Loader2, CheckCircle, XCircle } from "lucide-react";
 
 interface EmpleadoDTO {
-  //idEmpleado: number;
+  idEmpleado: number;
   nombre: string;
   apellido: string;
   cuil: string;
@@ -29,36 +29,37 @@ export default function MisEmpleadosPage() {
   const [empleados, setEmpleados] = useState<EmpleadoDTO[]>([]);
   const [estaEliminando, setEstaEliminando] = useState(false);
   const [loading, setLoading] = useState(true);
-    const [mostrarModalConfirmacion, setMostrarModalConfirmacion] =
-        useState(false);
-    const [empleadoAEliminar, setEmpleadoAEliminar] = useState<EmpleadoDTO | null>(null);
-    const [showNotification, setShowNotification] = useState(false);
-    const [notificationMessage, setNotificationMessage] = useState("");
-    const [notificationType, setNotificationType] = useState<
-        "success" | "error" | ""
-    >("");
-    const [error, setError] = useState<string | null>(null);
- 
-    const handleAddEmpleado = () => {
+  const [mostrarModalConfirmacion, setMostrarModalConfirmacion] =
+    useState(false);
+  const [empleadoAEliminar, setEmpleadoAEliminar] =
+    useState<EmpleadoDTO | null>(null);
+  const [showNotification, setShowNotification] = useState(false);
+  const [notificationMessage, setNotificationMessage] = useState("");
+  const [notificationType, setNotificationType] = useState<
+    "success" | "error" | ""
+  >("");
+  const [error, setError] = useState<string | null>(null);
+
+  const handleAddEmpleado = () => {
     router.push("/dashboard-admin/empleados/subirEmpleado");
   };
 
-const fetchEmpleados = useCallback(async () => {
+  const fetchEmpleados = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
       const response = await fetch(
         "http://localhost:8080/admin/listarEmpleados",
-        {
-          credentials: "include",
-        }
+        { credentials: "include" }
       );
 
       if (response.status === 204) {
         setEmpleados([]);
       } else if (!response.ok) {
         const errorText = await response.text();
-        setError(`Error al cargar empleados: ${errorText || response.statusText}`);
+        setError(
+          `Error al cargar empleados: ${errorText || response.statusText}`
+        );
         return;
       } else {
         const data: EmpleadoDTO[] = await response.json();
@@ -73,47 +74,55 @@ const fetchEmpleados = useCallback(async () => {
     }
   }, []);
 
-    
+  useEffect(() => {
+    fetchEmpleados();
+  }, [fetchEmpleados]);
+
   const handleClickEliminar = (empleado: EmpleadoDTO) => {
     setEmpleadoAEliminar(empleado);
     setMostrarModalConfirmacion(true);
     setShowNotification(false);
-    setNotificationMessage('');
-    setNotificationType('');
+    setNotificationMessage("");
+    setNotificationType("");
   };
 
   const confirmarEliminacion = async () => {
     if (!empleadoAEliminar) return;
 
     setEstaEliminando(true);
-    setMostrarModalConfirmacion(false); 
+    setMostrarModalConfirmacion(false);
 
     try {
-      const response = await fetch('http://localhost:8080/public/darDeBajaEmpleado', {
-        method: 'POST',
+      const response = await fetch("http://localhost:8080/admin/bajaEmpleado", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ idEmpleado: empleadoAEliminar.idEmpleado }),
-        credentials: 'include',
+        credentials: "include",
       });
 
       if (!response.ok) {
         const errorText = await response.text();
-        setNotificationMessage(errorText || 'Error desconocido al dar de baja el empleado.');
-        setNotificationType('error');
+        setNotificationMessage(
+          errorText || "Error desconocido al dar de baja el empleado."
+        );
+        setNotificationType("error");
         setShowNotification(true);
         return;
       }
 
-      setNotificationMessage('¡El empleado ha sido dado de baja exitosamente!');
-      setNotificationType('success');
+      setNotificationMessage("¡El empleado ha sido dado de baja exitosamente!");
+      setNotificationType("success");
       setShowNotification(true);
-      fetchEmpleados(); // Vuelve a cargar la lista de empleados para reflejar el cambio
-
+      fetchEmpleados();
     } catch (err: any) {
-      setNotificationMessage(`Error de conexión: ${err.message || 'No se pudo conectar con el servidor.'}`);
-      setNotificationType('error');
+      setNotificationMessage(
+        `Error de conexión: ${
+          err.message || "No se pudo conectar con el servidor."
+        }`
+      );
+      setNotificationType("error");
       setShowNotification(true);
     } finally {
       setEstaEliminando(false);
@@ -121,8 +130,8 @@ const fetchEmpleados = useCallback(async () => {
 
       setTimeout(() => {
         setShowNotification(false);
-        setNotificationMessage('');
-        setNotificationType('');
+        setNotificationMessage("");
+        setNotificationType("");
       }, 3000);
     }
   };
@@ -130,11 +139,10 @@ const fetchEmpleados = useCallback(async () => {
   const cancelarEliminacion = () => {
     setMostrarModalConfirmacion(false);
     setEmpleadoAEliminar(null);
-    setShowNotification(false); 
-    setNotificationMessage('');
-    setNotificationType('');
+    setShowNotification(false);
+    setNotificationMessage("");
+    setNotificationType("");
   };
-
 
   return (
     <>
@@ -235,6 +243,78 @@ const fetchEmpleados = useCallback(async () => {
           </Table>
         </div>
       </div>
+
+      {mostrarModalConfirmacion && empleadoAEliminar && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 p-4 bg-amber-950/40 bg-opacity-50">
+          <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm text-center border-gray-500 border">
+            <h3 className="text-xl font-bold text-gray-800 mb-4">
+              Confirmar Eliminación
+            </h3>
+            <p className="text-gray-700 mb-6">
+              ¿Estás seguro de que deseas dar de baja al empleado:
+              <br />
+              <span className="font-semibold text-gray-800">
+                {empleadoAEliminar.nombre} {empleadoAEliminar.apellido}
+              </span>
+              ?
+            </p>
+
+            {estaEliminando && (
+              <div className="flex justify-center items-center py-4">
+                <Loader2 className="animate-spin mr-2" size={20} /> Procesando...
+              </div>
+            )}
+
+            <div className="flex justify-center gap-4">
+              <Button
+                onClick={cancelarEliminacion}
+                disabled={estaEliminando}
+                className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-md"
+              >
+                Cancelar
+              </Button>
+              <Button
+                onClick={confirmarEliminacion}
+                disabled={estaEliminando}
+                className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-md flex items-center justify-center gap-2"
+              >
+                {estaEliminando ? "Dando de baja..." : "Dar de Baja"}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* NOTIFICACIÓN */}
+      {showNotification && (
+        <div className="fixed inset-0 flex items-center justify-center bg-amber-950/40 bg-opacity-50 z-50 p-4">
+          <div
+            className={`max-w-sm bg-white rounded-lg shadow-lg p-6 flex items-center space-x-3 ${
+              notificationType === "success"
+                ? "border border-green-300"
+                : "border border-red-300"
+            }`}
+          >
+            {notificationType === "success" ? (
+              <CheckCircle className="w-8 h-8 text-green-600 flex-shrink-0" />
+            ) : (
+              <XCircle className="w-8 h-8 text-red-600 flex-shrink-0" />
+            )}
+            <div>
+              <h3
+                className={`font-semibold text-xl ${
+                  notificationType === "success"
+                    ? "text-green-700"
+                    : "text-red-700"
+                }`}
+              >
+                {notificationType === "success" ? "¡Éxito!" : "¡Error!"}
+              </h3>
+              <p className="text-md text-gray-700">{notificationMessage}</p>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

@@ -183,7 +183,7 @@ const UploadCarForm: React.FC<UploadCarFormProps> = ({
       patente,
       idSucursal: parseInt(sucursal),
       marcaModelo: { marca, modelo },
-      anio: `${anio}-01-01`,
+      anio: `${anio}-01-02`,
       idCategoria: parseInt(categoriaSeleccionada),
     };
 
