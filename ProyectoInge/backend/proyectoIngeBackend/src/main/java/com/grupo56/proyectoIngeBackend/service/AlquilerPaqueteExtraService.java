@@ -17,4 +17,8 @@ public class AlquilerPaqueteExtraService {
 	public List<AlquilerPaqueteExtra> obtenerAlquilerPaquetes(){
 		return repository.findAll();
 	}
+	
+	public void guardarAlquilerPaqueteExtra(AlquilerPaqueteExtra aPe) {
+		repository.save(aPe);
+	}
 }

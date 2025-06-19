@@ -105,16 +105,19 @@ public class ReservaService {
 		correoService.enviarCodigoReserva("carlos_andres01.10@hotmail.com", reserva.getIdReserva());
 		
 	}
+	
 	public void actualizarReserva(Reserva reserva) {
 		repository.save(reserva);
 	}
+	
 	public List<Reserva> obtenerReservasPorCliente(Cliente cliente){
 		
 		return repository.findAllByCliente(cliente);
 		
 	}
+	
 	public Reserva obtenerReservaPorId(Integer id) {
-		Optional<Reserva> reserva= repository.findById(id);
+		Optional<Reserva> reserva = repository.findById(id);
 		if(reserva.isPresent())
 			return reserva.get();
 		return null;

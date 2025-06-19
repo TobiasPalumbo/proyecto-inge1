@@ -49,8 +49,6 @@ public class AutoPatenteService {
 		return repository.existsBySucursalAndBorradoFalse(sucursal);
 	}
 	public boolean autoTieneReservasConfirmadasSinAlquiler(Integer autoId) {
-		System.out.println("ACAAAAAAAAAAA IMPRIMO");
-		System.out.println(reservaRepo.existsReservaConfirmadaSinAlquiler(autoId));
 	    return reservaRepo.existsReservaConfirmadaSinAlquiler(autoId);
 	}
 

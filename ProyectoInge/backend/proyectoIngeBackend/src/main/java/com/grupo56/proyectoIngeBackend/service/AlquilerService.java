@@ -24,4 +24,5 @@ public class AlquilerService {
 	public void guardarAlquiler(Alquiler a) {
 		repository.save(a);
 	}
+	
 }

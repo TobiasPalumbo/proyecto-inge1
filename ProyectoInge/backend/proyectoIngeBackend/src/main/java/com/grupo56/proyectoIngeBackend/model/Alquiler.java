@@ -3,6 +3,8 @@ package com.grupo56.proyectoIngeBackend.model;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
@@ -11,6 +13,7 @@ import jakarta.persistence.OneToOne;
 public class Alquiler {
 	
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer idAlquiler;
 	
 	@JoinColumn(name = "idReserva")
@@ -23,6 +26,14 @@ public class Alquiler {
 	
 	private String estado = "pendiente";
 	
+	public Alquiler() {}
+
+	public Alquiler(Reserva reserva, LocalDateTime fechaRegreso, double precio) {
+		super();
+		this.reserva = reserva;
+		this.fechaRegreso = fechaRegreso;
+		this.precio = precio;
+	}
 
 	public String getEstado() {
 		return estado;

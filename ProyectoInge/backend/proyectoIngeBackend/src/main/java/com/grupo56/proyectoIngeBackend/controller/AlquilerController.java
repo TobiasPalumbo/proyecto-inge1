@@ -3,11 +3,15 @@ package com.grupo56.proyectoIngeBackend.controller;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,8 +26,10 @@ import com.grupo56.proyectoIngeBackend.model.AutoDTO;
 import com.grupo56.proyectoIngeBackend.model.AutoPatente;
 import com.grupo56.proyectoIngeBackend.model.Cliente;
 import com.grupo56.proyectoIngeBackend.model.FechasRequestDTO;
+import com.grupo56.proyectoIngeBackend.model.PaqueteExtra;
 import com.grupo56.proyectoIngeBackend.model.PaqueteExtraDTO;
 import com.grupo56.proyectoIngeBackend.model.PatenteDTO;
+import com.grupo56.proyectoIngeBackend.model.RequestPaqueteExtraDTO;
 import com.grupo56.proyectoIngeBackend.model.Reserva;
 import com.grupo56.proyectoIngeBackend.model.ReservaDTO;
 import com.grupo56.proyectoIngeBackend.model.SecurityUser;
@@ -31,6 +37,7 @@ import com.grupo56.proyectoIngeBackend.model.Usuario;
 import com.grupo56.proyectoIngeBackend.service.AlquilerPaqueteExtraService;
 import com.grupo56.proyectoIngeBackend.service.AlquilerService;
 import com.grupo56.proyectoIngeBackend.service.ClienteService;
+import com.grupo56.proyectoIngeBackend.service.PaqueteExtraService;
 import com.grupo56.proyectoIngeBackend.service.ReservaService;
 
 @RestController
@@ -44,6 +51,8 @@ public class AlquilerController {
 	private ClienteService clienteService;
 	@Autowired
 	private AlquilerPaqueteExtraService alquilerPaqueteExtraService;
+	@Autowired
+	private PaqueteExtraService paqueteExtraService;
 	
 	@GetMapping("/misAlquileres")
 	public ResponseEntity<List<AlquilerDTO>> obetenerAlquiler(Authentication authentication) {
@@ -68,7 +77,6 @@ public class AlquilerController {
 								aP.getCantidad()
 								)
 							);
-					precioTotal+= (aP.getPaqueteExtra().getPrecio() * aP.getCantidad());
 				}
 			}	
         	Reserva r = a.getReserva();
@@ -134,6 +142,45 @@ public class AlquilerController {
 		        		autosDTO.add(autoDTO);
 				}			
 			return ResponseEntity.status(HttpStatus.OK).body(autosDTO);
+	}
+	
+	@GetMapping("/empleado/obternerPaquetesExtras")
+	public ResponseEntity<?> obternerPaquetesExtras(){
+		List<PaqueteExtra> paquetesExtras = paqueteExtraService.obtenerPaquetesExtras();
+		List<PaqueteExtraDTO> paquetesExtrasDTO = new ArrayList();
+		for (PaqueteExtra paqueteExtra : paquetesExtras) {
+			paquetesExtrasDTO.add(new PaqueteExtraDTO(paqueteExtra.getIdPaquete(), paqueteExtra.getTipoPaquete(), paqueteExtra.getPrecio(), 0));
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(paquetesExtrasDTO);
+	}
+	
+	@PostMapping("/empleado/registrarAlquiler")
+	public ResponseEntity<?> registrarAlquiler(@RequestBody GenerarAlquilerDTO request){
+		Reserva reserva = reservaService.obtenerReservaPorId(request.idReserva());
+		if (reserva == null || !reserva.getEstado().equals("pendiente"))
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "No se encontro una reserva"));
+		reserva.setEstado("confirmado");
+		reservaService.actualizarReserva(reserva);
+		List<Integer> idsPaquetes = request.paquetesExtras().stream().map(p -> p.idPaquete()).toList();
+		List<PaqueteExtra> paquetes = paqueteExtraService.obtenerPorIdsPaquetesExtras(idsPaquetes);
+		Map<Integer, PaqueteExtra> mapPaquetes = paquetes.stream().collect(Collectors.toMap(p -> p.getIdPaquete(), Function.identity()));
+		double total = request.paquetesExtras().stream().mapToDouble(p -> {
+			PaqueteExtra paquete = mapPaquetes.get(p.idPaquete());
+			return paquete.getPrecio() * p.cantidad();
+		})
+		.sum();
+		total += reserva.getPrecio();
+		Alquiler alquiler = new Alquiler(reserva, reserva.getFechaEntrega() , total);
+		service.guardarAlquiler(alquiler);
+		for (RequestPaqueteExtraDTO paqueteExtra : request.paquetesExtras()) {
+			alquilerPaqueteExtraService
+			.guardarAlquilerPaqueteExtra(new AlquilerPaqueteExtra(alquiler, mapPaquetes.get(paqueteExtra.idPaquete()), paqueteExtra.cantidad()));
+		}
+		return ResponseEntity
+				.status(HttpStatus.CREATED)
+				.body(Map.of("message", "Alquiler registrado",
+						"idAlquiler", alquiler.getIdAlquiler(),
+						"fechaRegreso", alquiler.getFechaRegreso()));
 	}
 	
 	@PostMapping("/empleado/registrarDevolucion")

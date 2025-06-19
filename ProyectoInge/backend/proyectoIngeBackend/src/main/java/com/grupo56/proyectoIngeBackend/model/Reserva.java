@@ -36,7 +36,7 @@ public class Reserva {
 	private Cliente cliente;
 	
 	@Column(length = 20)
-	private String estado="confirmado";
+	private String estado= "pendiente";
 	
 	@ManyToOne
 	@JoinColumn(name = "idTarjeta")
