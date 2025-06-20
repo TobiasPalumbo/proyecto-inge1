@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.grupo56.proyectoIngeBackend.model.Alquiler;
 import com.grupo56.proyectoIngeBackend.model.AlquilerDTO;
 import com.grupo56.proyectoIngeBackend.model.AlquilerPaqueteExtra;
+import com.grupo56.proyectoIngeBackend.model.AutoAlquiladoDTO;
 import com.grupo56.proyectoIngeBackend.model.AutoDTO;
 import com.grupo56.proyectoIngeBackend.model.AutoPatente;
 import com.grupo56.proyectoIngeBackend.model.Cliente;
@@ -91,6 +92,7 @@ public class AlquilerController {
 	@PostMapping("/empleado/verAutosAlquiladosEntreFechas")
 	public ResponseEntity<?> obtenerAlquileresEntreFechas(@RequestBody FechasRequestDTO request) {
 			List<Alquiler> alquileres = service.obtenerAlquileres();
+		    List<AutoAlquiladoDTO> autosAlquiladosDTO = new ArrayList<>();
 		    List<AutoDTO> autosDTO = new ArrayList<>();
 			if (alquileres.isEmpty())
 	        	return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
@@ -116,10 +118,17 @@ public class AlquilerController {
 		                    aP.getAuto().getPoliticaCancelacion().getIdPoliticaCancelacion(),
 		                    aP.getAuto().getPoliticaCancelacion().getPorcentaje()
 		                );
-		        	if (!autosDTO.contains(autoDTO))
+		        	if (!autosDTO.contains(autosDTO)) {
+		        		autosAlquiladosDTO.add(new AutoAlquiladoDTO(autoDTO, 1));
 		        		autosDTO.add(autoDTO);
+		        	} else {
+		            	for (AutoAlquiladoDTO autoAlquiladoDTO : autosAlquiladosDTO) {
+							if (autoAlquiladoDTO.getAuto().equals(autoDTO))
+								autoAlquiladoDTO.setCantida(autoAlquiladoDTO.getCantida() + 1);
+						}
+		        	}
 				}			
-			return ResponseEntity.status(HttpStatus.OK).body(autosDTO);
+			return ResponseEntity.status(HttpStatus.OK).body(autosAlquiladosDTO);
 	}
 	
 	@GetMapping("/empleado/obternerPaquetesExtras")

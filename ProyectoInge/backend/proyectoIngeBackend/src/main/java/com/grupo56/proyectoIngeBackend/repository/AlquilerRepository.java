@@ -13,7 +13,7 @@ public interface AlquilerRepository extends JpaRepository<Alquiler, Integer> {
 	
 	List<Alquiler> findByReservaIdReservaIn(List<Integer> idReservas);
 	
-	boolean existsByReserva(Reserva reserva);
+	public boolean existsByReserva(Reserva reserva);
 	
 	@Query("""
 		    SELECT COUNT(a) > 0
@@ -22,7 +22,7 @@ public interface AlquilerRepository extends JpaRepository<Alquiler, Integer> {
 		    AND a.reserva.estado = 'confirmado'
 		    AND a.reserva.autoPatente.idAutoPatente = :autoId
 		""")
-		boolean existsAlquilerPendientePorAuto(Integer autoId);
+	public boolean existsAlquilerPendientePorAuto(Integer autoId);
 
 
 }

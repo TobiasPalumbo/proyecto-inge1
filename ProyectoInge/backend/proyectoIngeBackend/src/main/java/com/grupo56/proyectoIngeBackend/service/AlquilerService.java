@@ -1,7 +1,10 @@
 package com.grupo56.proyectoIngeBackend.service;
 
+import java.time.LocalDate;
+import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +23,19 @@ public class AlquilerService {
 	@Autowired
 	private AlquilerRepository repository;
 	
+ 	public List<Alquiler> obtenerAlquieresDeSemana(LocalDate dia){
+		WeekFields semanaEstandar = WeekFields.of(Locale.getDefault());
+		int semana = dia.get(semanaEstandar.weekOfYear());	
+		int anio = dia.getYear();
+		return repository.findAll().stream()
+				.filter(a -> a.getReserva().getFechaEntrega().toLocalDate().get(semanaEstandar.weekOfYear()) == semana 
+				&&  a.getReserva().getFechaEntrega().toLocalDate().getYear() == anio)
+				.toList();
+ 	}
+ 	
+	public boolean existsByReserva(Reserva reserva) {
+		return repository.existsByReserva(reserva);
+	}
 	public List<Alquiler> obtenerAlquilerPorIdReserva(List<Integer> idsReserva){
 		return repository.findByReservaIdReservaIn(idsReserva);
 	}

@@ -1,8 +1,9 @@
 package com.grupo56.proyectoIngeBackend.controller;
 import java.time.LocalDate;
-
+import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,19 +14,24 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.grupo56.proyectoIngeBackend.model.Alquiler;
 import com.grupo56.proyectoIngeBackend.model.AutoDTO;
 import com.grupo56.proyectoIngeBackend.model.AutoPatentesAdminDTO;
 import com.grupo56.proyectoIngeBackend.model.AutoPatentesDTO;
 import com.grupo56.proyectoIngeBackend.model.Cliente;
+import com.grupo56.proyectoIngeBackend.model.GananciaSemanalDTO;
 import com.grupo56.proyectoIngeBackend.model.IdReservaDTO;
 import com.grupo56.proyectoIngeBackend.model.IdSucursalDTO;
 import com.grupo56.proyectoIngeBackend.model.RequestSucursalFechaDTO;
 import com.grupo56.proyectoIngeBackend.model.Reserva;
 import com.grupo56.proyectoIngeBackend.model.ReservaDTO;
 import com.grupo56.proyectoIngeBackend.model.SecurityUser;
+import com.grupo56.proyectoIngeBackend.model.SemanaDTO;
 import com.grupo56.proyectoIngeBackend.model.Tarjeta;
 import com.grupo56.proyectoIngeBackend.model.Usuario;
 import com.grupo56.proyectoIngeBackend.repository.AlquilerRepository;
+import com.grupo56.proyectoIngeBackend.service.AlquilerService;
 import com.grupo56.proyectoIngeBackend.service.ClienteService;
 import com.grupo56.proyectoIngeBackend.service.ReservaService;
 import com.grupo56.proyectoIngeBackend.service.TarjetaService;
@@ -41,7 +47,8 @@ public class ReservaController {
 	@Autowired 
 	private TarjetaService tarjetaService;
 	@Autowired
-	private AlquilerRepository alquilerRepo;
+	private AlquilerService alquilerService;
+	
 	
 	@PostMapping("/public/autosDisponibles")
 	public ResponseEntity<List<AutoPatentesDTO>> obtenerAutosDisponibles(@RequestBody RequestSucursalFechaDTO request){
@@ -150,7 +157,7 @@ public class ReservaController {
 	@PostMapping("/empleado/cancelarReservaAdminEmpleado")
 	public ResponseEntity<?> cancelarReserva(@RequestBody IdReservaDTO request){
 		Reserva reserva= service.obtenerReservaPorId(request.idReserva());
-		if(reserva.getEstado().equals("cancelado")|| alquilerRepo.existsByReserva(reserva))
+		if(reserva.getEstado().equals("cancelado")|| alquilerService.existsByReserva(reserva))
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "La reserva ya esta cancelada o le correspone un alquiler en curso"));
 		reserva.setEstado("cancelado");
 		service.actualizarReserva(reserva);
@@ -158,6 +165,24 @@ public class ReservaController {
 
 	}
 	
-	
-	
+	@PostMapping("/empleado/verGanciasSemanalas")
+	public ResponseEntity<?> obtenerGananciasSemanales(@RequestBody SemanaDTO request){
+		List<Reserva> reservas = service.obtenerReservasDeSemana(request.dia());
+		List<Alquiler> alquileres = alquilerService.obtenerAlquieresDeSemana(request.dia());
+		if (reservas.isEmpty())
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "No hay reservas registradas para esa semana"));	
+		WeekFields semanaEstandar = WeekFields.of(Locale.getDefault());
+		int semana = request.dia().get(semanaEstandar.weekOfYear());	
+		List<GananciaSemanalDTO> gananciasDiariasDTO = new ArrayList();
+		double total = 0;
+		for (Alquiler alquiler : alquileres) {
+			total += alquiler.getPrecio();
+		}
+		for (Reserva reserva : reservas) {
+			if (reserva.getEstado().equals("cancelada"))
+			total += reserva.getPrecio();
+		}
+		GananciaSemanalDTO gananciaSemanalDTO = new GananciaSemanalDTO(semana, request.dia().getYear(), 0, null);
+		return ResponseEntity.status(HttpStatus.OK).body(gananciaSemanalDTO);
+	}
 }

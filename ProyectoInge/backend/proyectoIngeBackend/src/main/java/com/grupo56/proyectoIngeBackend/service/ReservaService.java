@@ -1,9 +1,12 @@
 package com.grupo56.proyectoIngeBackend.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +25,7 @@ import com.grupo56.proyectoIngeBackend.model.Tarjeta;
 import com.grupo56.proyectoIngeBackend.repository.AlquilerRepository;
 import com.grupo56.proyectoIngeBackend.repository.ReservaRepository;
 
+
 @Service
 public class ReservaService {
 	
@@ -39,6 +43,20 @@ public class ReservaService {
 	AlquilerRepository alquilerRepo;
 	
 
+	public List<Reserva> obtenerReservas(){
+		return repository.findAll();
+	}
+	public List<Reserva> obtenerReservasDeSemana(LocalDate dia){
+		WeekFields semanaEstandar = WeekFields.of(Locale.getDefault());
+		int semana = dia.get(semanaEstandar.weekOfYear());	
+		int anio = dia.getYear();
+		return repository.findAll().stream()
+				.filter(r -> r.getFechaEntrega().toLocalDate().get(semanaEstandar.weekOfYear()) == semana 
+				&& r.getFechaEntrega().toLocalDate().getYear() == anio 
+				&& !r.getEstado().equals("confirmado"))
+				.toList();
+	}
+	
 	public List<Reserva> obtenerReservaDeSucursal(Sucursal sucursal){
 		return repository.findBySucursalEntrega(sucursal);
 	}
@@ -129,6 +147,7 @@ public class ReservaService {
 			return reservas.contains(reserva);}
 		return false;
 	}
+	
 	public List<ReservaDTO> obtenerReservasDeSucursal(Integer idSucursal){
 	    List<ReservaDTO> reservasDTO = new ArrayList<ReservaDTO>();
 	    List<Reserva> reservas = repository.reservasSucursalId(idSucursal);    
