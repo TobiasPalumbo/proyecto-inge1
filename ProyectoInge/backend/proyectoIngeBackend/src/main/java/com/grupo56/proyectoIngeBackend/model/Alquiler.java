@@ -24,17 +24,31 @@ public class Alquiler {
 	
 	private double precio;
 	
+	private String dniConductor;
+	
+	private String dniSegundoConductor = null;
+	
 	private String estado = "pendiente";
 	
 	public Alquiler() {}
 
-	public Alquiler(Reserva reserva, LocalDateTime fechaRegreso, double precio) {
+	public Alquiler(Reserva reserva, LocalDateTime fechaRegreso, double precio, String dniConductor) {
 		super();
 		this.reserva = reserva;
 		this.fechaRegreso = fechaRegreso;
 		this.precio = precio;
+		this.dniConductor = dniConductor;
 	}
-
+	
+	public Alquiler(Reserva reserva, LocalDateTime fechaRegreso, double precio, String dniConductor, String dniSegundoConductor) {
+		super();
+		this.reserva = reserva;
+		this.fechaRegreso = fechaRegreso;
+		this.precio = precio;
+		this.dniConductor = dniConductor;
+		this.dniSegundoConductor = dniSegundoConductor;
+	}
+	
 	public String getEstado() {
 		return estado;
 	}
@@ -74,6 +88,22 @@ public class Alquiler {
 
 	public void setFechaRegreso(LocalDateTime fechaRegreso) {
 		this.fechaRegreso = fechaRegreso;
+	}
+
+	public String getDniConductor() {
+		return dniConductor;
+	}
+
+	public void setDniConductor(String dniConductor) {
+		this.dniConductor = dniConductor;
+	}
+
+	public String getDniSegundoConductor() {
+		return dniSegundoConductor;
+	}
+
+	public void setDniSegundoConductor(String dniSegundoConductor) {
+		this.dniSegundoConductor = dniSegundoConductor;
 	}
 
 	

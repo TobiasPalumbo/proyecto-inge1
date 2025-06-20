@@ -26,6 +26,7 @@ import com.grupo56.proyectoIngeBackend.model.AutoDTO;
 import com.grupo56.proyectoIngeBackend.model.AutoPatente;
 import com.grupo56.proyectoIngeBackend.model.Cliente;
 import com.grupo56.proyectoIngeBackend.model.FechasRequestDTO;
+import com.grupo56.proyectoIngeBackend.model.IdSucursalDTO;
 import com.grupo56.proyectoIngeBackend.model.PaqueteExtra;
 import com.grupo56.proyectoIngeBackend.model.PaqueteExtraDTO;
 import com.grupo56.proyectoIngeBackend.model.PatenteDTO;
@@ -55,60 +56,37 @@ public class AlquilerController {
 	private PaqueteExtraService paqueteExtraService;
 	
 	@GetMapping("/misAlquileres")
-	public ResponseEntity<List<AlquilerDTO>> obetenerAlquiler(Authentication authentication) {
+	public ResponseEntity<List<AlquilerDTO>> obetenerMisAlquiler(Authentication authentication) {
 		Usuario usuario = ((SecurityUser) authentication.getPrincipal()).getUsuario();
         Cliente cliente= clienteService.obtenerPorUsuario(usuario);
-        List<AlquilerDTO> alquileresDTO = new ArrayList<>();
         List<Reserva> reservas = reservaService.obtenerReservasPorCliente(cliente);         	
         List<Alquiler> alquileres = service.obtenerAlquilerPorIdReserva(reservas.stream().map(r -> r.getIdReserva()).toList());
         if (alquileres.isEmpty())
         	return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         List<AlquilerPaqueteExtra> alquileresPaquetesExtras = alquilerPaqueteExtraService.obtenerAlquilerPaquetes();
-        for (Alquiler a : alquileres) {
-        	List<PaqueteExtraDTO> paquetesExtras = new ArrayList<>();
-        	double precioTotal = a.getPrecio();
-        	for (AlquilerPaqueteExtra aP : alquileresPaquetesExtras) {
-				if (aP.getAlquiler().getIdAlquiler() == a.getIdAlquiler()) {
-					paquetesExtras.add(
-							new PaqueteExtraDTO(
-								aP.getPaqueteExtra().getIdPaquete(), 
-								aP.getPaqueteExtra().getTipoPaquete(), 
-								aP.getPaqueteExtra().getPrecio(),
-								aP.getCantidad()
-								)
-							);
-				}
-			}	
-        	Reserva r = a.getReserva();
-        	AutoPatente aP = r.getAutoPatente();
-        	AutoDTO autoDTO = new AutoDTO(
-                    aP.getAuto().getIdAuto(),
-                    aP.getCategoria().getId(),
-                    aP.getAuto().getMarca(),
-                    aP.getAuto().getModelo(),
-                    aP.getAuto().getPrecioDia(),
-                    aP.getAuto().getCantidadAsientos(),
-                    aP.getCategoria().getDescripcion(),
-                    aP.getAuto().getPoliticaCancelacion().getIdPoliticaCancelacion(),
-                    aP.getAuto().getPoliticaCancelacion().getPorcentaje()
-                );
-        	ReservaDTO reservaDTO = new ReservaDTO(
-        			r.getIdReserva(),
-        			r.getSucursalEntrega(),
-        			r.getSucursalRegreso(),
-        			autoDTO, 
-        			r.getEstado(),
-        			r.getFechaEntrega().toLocalDate(),
-        			r.getFechaRegreso().toLocalDate(),
-        			r.getFechaEntrega().toLocalTime(),
-        			r.getFechaRegreso().toLocalTime());
-        	AlquilerDTO alquilerDTO = new AlquilerDTO(a.getIdAlquiler(), precioTotal, reservaDTO, paquetesExtras);
-        	alquileresDTO.add(alquilerDTO);
-		}
-
+		List<AlquilerDTO> alquileresDTO = service.construirAlquileresDTO(alquileres, alquileresPaquetesExtras);
         return ResponseEntity.status(HttpStatus.OK).body(alquileresDTO);
 	}
 	
+	@PostMapping("/empleado/verAlquileres")
+	public ResponseEntity<?> obtenerAlquileres(@RequestBody IdSucursalDTO request){
+		List<Alquiler> alquileres = service.obtenerAlquilerPorIdSucursalEntrega(request.idSucursal());
+		if (alquileres.isEmpty())
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(Map.of("messege", "la sucursal no contiene alquileres"));
+		List<AlquilerPaqueteExtra> alquileresPaqueteExtras = alquilerPaqueteExtraService.obtenerAlquilerPaquetes();
+		List<AlquilerDTO> alquileresDTO = service.construirAlquileresDTO(alquileres, alquileresPaqueteExtras);
+		return ResponseEntity.status(HttpStatus.OK).body(alquileresDTO);
+	}
+	
+	@PostMapping("/empleado/verDevoluciones")
+	public ResponseEntity<?> obtenerDevoluciones(@RequestBody IdSucursalDTO request){
+		List<Alquiler> alquileres = service.obtenerAlquilerPorIdSucursalRegreso(request.idSucursal());
+		if (alquileres.isEmpty())
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(Map.of("messege", "la sucursal no contiene alquileres"));
+		List<AlquilerPaqueteExtra> alquileresPaqueteExtras = alquilerPaqueteExtraService.obtenerAlquilerPaquetes();
+		List<AlquilerDTO> alquileresDTO = service.construirAlquileresDTO(alquileres, alquileresPaqueteExtras);
+		return ResponseEntity.status(HttpStatus.OK).body(alquileresDTO);
+	}
 	
 	@PostMapping("/empleado/verAutosAlquiladosEntreFechas")
 	public ResponseEntity<?> obtenerAlquileresEntreFechas(@RequestBody FechasRequestDTO request) {
@@ -170,7 +148,7 @@ public class AlquilerController {
 		})
 		.sum();
 		total += reserva.getPrecio();
-		Alquiler alquiler = new Alquiler(reserva, reserva.getFechaEntrega() , total);
+		Alquiler alquiler = new Alquiler(reserva, reserva.getFechaEntrega() , total, request.dniConductor(), request.dniSegundoConductor());
 		service.guardarAlquiler(alquiler);
 		for (RequestPaqueteExtraDTO paqueteExtra : request.paquetesExtras()) {
 			alquilerPaqueteExtraService
@@ -178,7 +156,8 @@ public class AlquilerController {
 		}
 		return ResponseEntity
 				.status(HttpStatus.CREATED)
-				.body(Map.of("message", "Alquiler registrado",
+				.body(Map.of(
+						"message", "Alquiler registrado",
 						"idAlquiler", alquiler.getIdAlquiler(),
 						"fechaRegreso", alquiler.getFechaRegreso()));
 	}
@@ -199,4 +178,5 @@ public class AlquilerController {
 		service.guardarAlquiler(alquilerFiltrado);
 		return ResponseEntity.status(HttpStatus.OK).body(Map.of("message", "Se registro al devolucion exitosamente"));
 	}
+	
 }
