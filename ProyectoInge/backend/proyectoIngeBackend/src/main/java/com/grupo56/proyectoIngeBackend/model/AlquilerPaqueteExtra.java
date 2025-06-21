@@ -2,8 +2,6 @@ package com.grupo56.proyectoIngeBackend.model;
 
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
@@ -29,7 +27,6 @@ public class AlquilerPaqueteExtra {
     
     public AlquilerPaqueteExtra() {}
 
-    // Constructor con parámetros
     public AlquilerPaqueteExtra(Alquiler alquiler, PaqueteExtra paqueteExtra, int cantidad) {
         this.id = new AlquilerPaqueteExtraId(alquiler.getIdAlquiler(), paqueteExtra.getIdPaquete());
         this.alquiler = alquiler;

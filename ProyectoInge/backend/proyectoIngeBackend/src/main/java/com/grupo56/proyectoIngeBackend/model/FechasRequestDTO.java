@@ -4,5 +4,4 @@ import java.time.LocalDate;
 
 public record FechasRequestDTO(
 		LocalDate fechaInicio, 
-		LocalDate fechaFin
-		) {}
+		LocalDate fechaFin) {}

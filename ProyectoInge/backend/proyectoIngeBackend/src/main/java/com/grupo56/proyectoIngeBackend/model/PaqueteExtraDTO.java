@@ -4,5 +4,4 @@ public record PaqueteExtraDTO(
 		Integer idPaquete, 
 		String tipoPaquete, 
 		double precio, 
-		int cantidad
-		) {}
+		int cantidad) {}

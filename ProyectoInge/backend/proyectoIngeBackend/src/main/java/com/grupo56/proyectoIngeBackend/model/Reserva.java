@@ -1,6 +1,5 @@
 package com.grupo56.proyectoIngeBackend.model;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

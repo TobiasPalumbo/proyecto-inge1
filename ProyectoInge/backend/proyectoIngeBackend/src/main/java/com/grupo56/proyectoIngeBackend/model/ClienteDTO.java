@@ -9,5 +9,4 @@ public record ClienteDTO(
 		String apellido, 
 		String correo,
 		LocalDate fechaRegistro, 
-		LocalDate fechaNacimiento
-		) {}
+		LocalDate fechaNacimiento) {}

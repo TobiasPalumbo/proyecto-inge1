@@ -4,4 +4,6 @@ import java.util.List;
 
 import lombok.NoArgsConstructor;
 @NoArgsConstructor
-public record MarcasSucursalesResponseDTO(List<String> marcas, List<Sucursal> sucursales) {}
+public record MarcasSucursalesResponseDTO(
+		List<String> marcas,
+		List<Sucursal> sucursales) {}

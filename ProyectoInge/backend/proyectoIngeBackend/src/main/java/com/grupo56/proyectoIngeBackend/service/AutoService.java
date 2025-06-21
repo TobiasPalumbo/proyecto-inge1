@@ -6,9 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.grupo56.proyectoIngeBackend.model.Auto;
 import com.grupo56.proyectoIngeBackend.model.MarcaModeloRequestDTO;
-import com.grupo56.proyectoIngeBackend.repository.AlquilerRepository;
 import com.grupo56.proyectoIngeBackend.repository.AutoRepository;
-import com.grupo56.proyectoIngeBackend.repository.ReservaRepository;
 
 @Service
 public class AutoService {
