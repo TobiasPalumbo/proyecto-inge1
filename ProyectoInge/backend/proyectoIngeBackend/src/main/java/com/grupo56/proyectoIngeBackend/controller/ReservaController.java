@@ -2,9 +2,11 @@ package com.grupo56.proyectoIngeBackend.controller;
 import java.time.LocalDate;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +22,7 @@ import com.grupo56.proyectoIngeBackend.model.AutoDTO;
 import com.grupo56.proyectoIngeBackend.model.AutoPatentesAdminDTO;
 import com.grupo56.proyectoIngeBackend.model.AutoPatentesDTO;
 import com.grupo56.proyectoIngeBackend.model.Cliente;
+import com.grupo56.proyectoIngeBackend.model.GananciaDiariaDTO;
 import com.grupo56.proyectoIngeBackend.model.GananciaSemanalDTO;
 import com.grupo56.proyectoIngeBackend.model.IdReservaDTO;
 import com.grupo56.proyectoIngeBackend.model.IdSucursalDTO;
@@ -28,6 +31,7 @@ import com.grupo56.proyectoIngeBackend.model.Reserva;
 import com.grupo56.proyectoIngeBackend.model.ReservaDTO;
 import com.grupo56.proyectoIngeBackend.model.SecurityUser;
 import com.grupo56.proyectoIngeBackend.model.SemanaDTO;
+import com.grupo56.proyectoIngeBackend.model.SemanaHelper;
 import com.grupo56.proyectoIngeBackend.model.Tarjeta;
 import com.grupo56.proyectoIngeBackend.model.Usuario;
 import com.grupo56.proyectoIngeBackend.repository.AlquilerRepository;
@@ -90,6 +94,7 @@ public class ReservaController {
                 r.getAutoPatente().getAuto().getPoliticaCancelacion().getIdPoliticaCancelacion(),
                 r.getAutoPatente().getAuto().getPoliticaCancelacion().getPorcentaje()
             ),
+            r.getPrecio(),
             r.getEstado(),
             r.getFechaEntrega().toLocalDate(),
             r.getFechaRegreso().toLocalDate(),
@@ -149,7 +154,7 @@ public class ReservaController {
 		if(reservasDTO.isEmpty())
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 		List<ReservaDTO> reservasDTOfitradas = reservasDTO.stream()
-															.filter(r -> r.fechaEntrega().isEqual(LocalDate.now()) && r.estado().equals("confirmado"))
+															.filter(r -> r.fechaEntrega().isEqual(LocalDate.now()) && r.estado().equals("pendiente"))
 															.toList();
 		return ResponseEntity.status(HttpStatus.OK).body(reservasDTOfitradas);
 	}
@@ -165,24 +170,45 @@ public class ReservaController {
 
 	}
 	
-	@PostMapping("/empleado/verGanciasSemanalas")
+	@PostMapping("/empleado/verGananciasSemanalas")
 	public ResponseEntity<?> obtenerGananciasSemanales(@RequestBody SemanaDTO request){
 		List<Reserva> reservas = service.obtenerReservasDeSemana(request.dia());
 		List<Alquiler> alquileres = alquilerService.obtenerAlquieresDeSemana(request.dia());
 		if (reservas.isEmpty())
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "No hay reservas registradas para esa semana"));	
 		WeekFields semanaEstandar = WeekFields.of(Locale.getDefault());
-		int semana = request.dia().get(semanaEstandar.weekOfYear());	
-		List<GananciaSemanalDTO> gananciasDiariasDTO = new ArrayList();
+		int semana = request.dia().get(semanaEstandar.weekOfYear());
+		SemanaHelper creadorSemana = new SemanaHelper();
+		List<GananciaDiariaDTO> gananciasDiariasDTO = new ArrayList();
+		List<LocalDate> dias = creadorSemana.obtenerDiasDeSemana(request.dia().getYear(), semana);
+		Map<LocalDate, Double> diaMap = dias.stream().collect(Collectors.toMap(d -> d, d -> 0.0));
 		double total = 0;
-		for (Alquiler alquiler : alquileres) {
-			total += alquiler.getPrecio();
-		}
+		double ganancia = 0;
+		
 		for (Reserva reserva : reservas) {
 			if (reserva.getEstado().equals("cancelada"))
-			total += reserva.getPrecio();
+				ganancia += reserva.getPrecio() * reserva.getAutoPatente().getAuto().getPoliticaCancelacion().getPorcentaje();
+			else 
+				ganancia = reserva.getPrecio();
+			LocalDate fechaPago = reserva.getFechaDePago().toLocalDate();
+			diaMap.replace(fechaPago, diaMap.get(fechaPago) + ganancia);
+			total+= ganancia;
 		}
-		GananciaSemanalDTO gananciaSemanalDTO = new GananciaSemanalDTO(semana, request.dia().getYear(), 0, null);
+		
+		for (Alquiler alquiler : alquileres) {
+			if (alquiler.getPrecio() > alquiler.getReserva().getPrecio()) {
+				double diferencia = alquiler.getPrecio() - alquiler.getReserva().getPrecio();
+				LocalDate fechaEntrega = alquiler.getReserva().getFechaEntrega().toLocalDate();
+				diaMap.replace(fechaEntrega,  diaMap.get(fechaEntrega) + diferencia);
+				total+= diferencia;
+			}		
+		}
+		
+		for (Map.Entry<LocalDate, Double> entry : diaMap.entrySet()) {
+			gananciasDiariasDTO.add(new GananciaDiariaDTO(entry.getKey(), entry.getValue()));
+		}
+
+		GananciaSemanalDTO gananciaSemanalDTO = new GananciaSemanalDTO(semana, request.dia().getMonthValue(), request.dia().getYear(), total, gananciasDiariasDTO);
 		return ResponseEntity.status(HttpStatus.OK).body(gananciaSemanalDTO);
 	}
 }

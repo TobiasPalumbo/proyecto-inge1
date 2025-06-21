@@ -1,5 +1,6 @@
 package com.grupo56.proyectoIngeBackend.model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -41,11 +42,23 @@ public class Reserva {
 	@ManyToOne
 	@JoinColumn(name = "idTarjeta")
  	private Tarjeta tarjeta;
+	
 	private LocalDateTime fechaEntrega;
+	
 	private LocalDateTime fechaRegreso;
+	
+	private LocalDateTime fechaDePago = LocalDateTime.now();
+	
 	private double precio;
 	
 	
+	public LocalDateTime getFechaDePago() {
+		return fechaDePago;
+	}
+	
+	public void setFechaDePago(LocalDateTime fechaDePago) {
+		this.fechaDePago = fechaDePago;
+	}
 	public Integer getIdReserva() {
 		return idReserva;
 	}

@@ -91,6 +91,7 @@ public class AlquilerService {
 	        			r.getSucursalEntrega(),
 	        			r.getSucursalRegreso(),
 	        			autoDTO, 
+	        			r.getPrecio(),
 	        			r.getEstado(),
 	        			r.getFechaEntrega().toLocalDate(),
 	        			r.getFechaRegreso().toLocalDate(),

@@ -51,9 +51,8 @@ public class ReservaService {
 		int semana = dia.get(semanaEstandar.weekOfYear());	
 		int anio = dia.getYear();
 		return repository.findAll().stream()
-				.filter(r -> r.getFechaEntrega().toLocalDate().get(semanaEstandar.weekOfYear()) == semana 
-				&& r.getFechaEntrega().toLocalDate().getYear() == anio 
-				&& !r.getEstado().equals("confirmado"))
+				.filter(r -> r.getFechaDePago().toLocalDate().get(semanaEstandar.weekOfYear()) == semana 
+				&& r.getFechaEntrega().toLocalDate().getYear() == anio)
 				.toList();
 	}
 	
@@ -167,6 +166,7 @@ public class ReservaService {
                 r.getAutoPatente().getAuto().getPoliticaCancelacion().getIdPoliticaCancelacion(),
                 r.getAutoPatente().getAuto().getPoliticaCancelacion().getPorcentaje()
             ),
+            r.getPrecio(),
             r.getEstado(),
             r.getFechaEntrega().toLocalDate(),
             r.getFechaRegreso().toLocalDate(),
