@@ -27,6 +27,7 @@ import com.grupo56.proyectoIngeBackend.model.AutoDTO;
 import com.grupo56.proyectoIngeBackend.model.AutoPatente;
 import com.grupo56.proyectoIngeBackend.model.Cliente;
 import com.grupo56.proyectoIngeBackend.model.FechasRequestDTO;
+import com.grupo56.proyectoIngeBackend.model.GenerarAlquilerDTO;
 import com.grupo56.proyectoIngeBackend.model.IdSucursalDTO;
 import com.grupo56.proyectoIngeBackend.model.PaqueteExtra;
 import com.grupo56.proyectoIngeBackend.model.PaqueteExtraDTO;
