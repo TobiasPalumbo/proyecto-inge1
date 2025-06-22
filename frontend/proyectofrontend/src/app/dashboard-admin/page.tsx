@@ -1,0 +1,29 @@
+"use client";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
+
+export default function Dashboard() {
+    const { rol, loading, adminVerificado } = useAuth();
+  const router = useRouter();
+
+
+  useEffect(() => {
+    if (!loading) {
+      if (rol !== "admin" || !adminVerificado) {
+        router.push("/pagina-inicio"); 
+      }
+    }
+    }, [rol, loading, adminVerificado, router]);
+
+
+    if (loading || rol !== "admin"|| !adminVerificado) {
+    return null; 
+  }
+
+  return (
+    <div>
+      <h1>Bienvenido al panel de administración de Alquilapp Car</h1>
+    </div>
+  );
+}

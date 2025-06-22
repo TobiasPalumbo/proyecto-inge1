@@ -1,0 +1,112 @@
+package com.grupo56.proyectoIngeBackend.model;
+
+import java.time.LocalDateTime;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+
+@Entity
+public class Alquiler {
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer idAlquiler;
+	
+	@JoinColumn(name = "idReserva")
+	@OneToOne
+	private Reserva reserva;
+	
+	private LocalDateTime fechaRegreso;
+	
+	private double precio;
+	
+	private String dniConductor;
+	
+	private String dniSegundoConductor = null;
+	
+	private String estado = "pendiente";
+	
+	public Alquiler() {}
+
+	public Alquiler(Reserva reserva, LocalDateTime fechaRegreso, double precio, String dniConductor) {
+		super();
+		this.reserva = reserva;
+		this.fechaRegreso = fechaRegreso;
+		this.precio = precio;
+		this.dniConductor = dniConductor;
+	}
+	
+	public Alquiler(Reserva reserva, LocalDateTime fechaRegreso, double precio, String dniConductor, String dniSegundoConductor) {
+		super();
+		this.reserva = reserva;
+		this.fechaRegreso = fechaRegreso;
+		this.precio = precio;
+		this.dniConductor = dniConductor;
+		this.dniSegundoConductor = dniSegundoConductor;
+	}
+	
+	public String getEstado() {
+		return estado;
+	}
+
+	public void setEstado(String estado) {
+		this.estado = estado;
+	}
+
+	
+	public Integer getIdAlquiler() {
+		return idAlquiler;
+	}
+
+	public void setIdAlquiler(Integer idAlquiler) {
+		this.idAlquiler = idAlquiler;
+	}
+
+	public Reserva getReserva() {
+		return reserva;
+	}
+
+	public void setReserva(Reserva reserva) {
+		this.reserva = reserva;
+	}
+
+	public double getPrecio() {
+		return precio;
+	}
+
+	public void setPrecio(double precio) {
+		this.precio = precio;
+	}
+
+	public LocalDateTime getFechaRegreso() {
+		return fechaRegreso;
+	}
+
+	public void setFechaRegreso(LocalDateTime fechaRegreso) {
+		this.fechaRegreso = fechaRegreso;
+	}
+
+	public String getDniConductor() {
+		return dniConductor;
+	}
+
+	public void setDniConductor(String dniConductor) {
+		this.dniConductor = dniConductor;
+	}
+
+	public String getDniSegundoConductor() {
+		return dniSegundoConductor;
+	}
+
+	public void setDniSegundoConductor(String dniSegundoConductor) {
+		this.dniSegundoConductor = dniSegundoConductor;
+	}
+
+	
+	
+	
+}
