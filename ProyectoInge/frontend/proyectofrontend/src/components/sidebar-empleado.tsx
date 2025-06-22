@@ -1,7 +1,7 @@
 'use client'; 
 
 import * as React from "react";
-import { ClipboardList, Car, Home, CalendarClock } from "lucide-react";
+import { ClipboardList, Car, Home, CalendarClock, CornerDownLeft } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from '@/lib/utils'; 
@@ -17,30 +17,35 @@ import {
 } from "@/components/ui/sidebar";
 
 export function EmployeeSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const pathname = usePathname(); // Obtiene la ruta actual
+  const pathname = usePathname();
 
-  // Define tus enlaces de navegación en un array
+  
   const navLinks = [
     {
       title: "Inicio",
-      url: "/dashboard-empleado", // Asegúrate de que esta URL sea la correcta para el inicio del empleado
+      url: "/dashboard-empleado", 
       icon: <Home className="size-4" />,
     },
     {
-      title: "Ver Reservas",
+      title: "Reservas",
       url: "/dashboard-empleado/reservas", 
       icon: <ClipboardList className="size-4" />,
     },
     {
-      title: "Ver Alquileres",
+      title: "Alquileres",
       url: "/dashboard-empleado/alquileres", 
       icon: <Car className="size-4" />,
     },
     
     {
-      title: "Ver entregas",
+      title: "Entregas",
       url: "/dashboard-empleado/entregas", 
       icon: <CalendarClock className="size-4" />,
+    },
+  {
+      title: "Devoluciones",
+      url: "/dashboard-empleado/devoluciones",
+      icon: <CornerDownLeft className="size-4" />,
     },
   ];
 
@@ -65,9 +70,9 @@ export function EmployeeSidebar({ ...props }: React.ComponentProps<typeof Sideba
 
             const handleClick = (e: React.MouseEvent) => {
               if (isActive) {
-                e.preventDefault(); // Previene la navegación si ya estamos en la página
+                e.preventDefault(); 
                 console.log(`Ya estás en la página: ${item.title}`);
-                // Opcional: podrías agregar una pequeña notificación visual aquí.
+
               }
             };
 

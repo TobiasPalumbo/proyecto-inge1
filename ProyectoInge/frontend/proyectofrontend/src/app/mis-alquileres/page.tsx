@@ -53,7 +53,7 @@ interface ReservaDTO {
 
 interface AlquilerDTO {
   idAlquiler: number;
-  precioTotal: number;
+  precio: number;
   reserva: ReservaDTO;
   paquetesExtras: PaqueteExtra[];
 }
@@ -110,7 +110,7 @@ export default function MisAlquileres() {
       return "Ninguno";
     }
     return paquetes
-      .map((p) => `${p.tipoPaquete} (x${p.cantidad})`)
+      .map((p) => `${p.tipoPaquete}`)
       .join(", ");
   }
 
@@ -204,7 +204,7 @@ export default function MisAlquileres() {
                       {formatPaquetesExtras(alquiler.paquetesExtras)}
                     </TableCell>
                     <TableCell className="px-4 py-3 border-r border-yellow-300">
-                      ${alquiler.precioTotal.toFixed(0)}
+                      ${alquiler.precio.toFixed(0)}
                     </TableCell>
                     <TableCell className="px-4 py-3 border-r border-yellow-300">
                       {formatDateTime(alquiler.reserva.fechaEntrega, alquiler.reserva.horaEntrega)}

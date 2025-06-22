@@ -29,6 +29,7 @@ interface Reserva {
   auto: Auto;
   fechaEntrega: string;
   fechaRegreso: string;
+  precio: number;
   estado: string;
   sucursalEntrega: Sucursal;
   sucursalRegreso: Sucursal;
@@ -56,17 +57,7 @@ export default function MisReservas() {
       .finally(() => setLoading(false));
   }, []);
 
-  function calcularPrecioTotal(
-    precioDia: number,
-    fechaEntrega: string,
-    fechaRegreso: string
-  ): string {
-    const start = new Date(fechaEntrega);
-    const end = new Date(fechaRegreso);
-    const diffDias =
-      Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-    return (precioDia * diffDias).toFixed(0);
-  }
+
 
   return (
     <>
@@ -163,11 +154,7 @@ export default function MisReservas() {
                         </TableCell>
                         <TableCell className="px-4 py-3 border-r border-yellow-300">
                           $
-                          {calcularPrecioTotal(
-                            reserva.auto.precio,
-                            reserva.fechaEntrega,
-                            reserva.fechaRegreso
-                          )}
+                          {reserva.precio}
                         </TableCell>
                         <TableCell className="px-4 py-3 border-r border-yellow-300">
                           {(reserva.auto.porcentaje *100).toFixed(0)}%

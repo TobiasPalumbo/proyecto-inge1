@@ -30,6 +30,7 @@ type Sucursal = {
 
 type Reserva = {
   idReserva: number;
+  precio: number;
   estado: string;
   fechaEntrega: string;
   horaEntrega: string;
@@ -148,9 +149,6 @@ export default function ReservasSucursalTable() {
 
       const data: Reserva[] = await response.json();
       setReservas(data);
-      data.forEach((reserva) => {
-        fetchPresupuesto(reserva);
-      });
     } catch (error: any) {
       setReservas([]);
       setErrorMensaje(`Error al cargar reservas: ${error.message}`);
@@ -185,34 +183,6 @@ export default function ReservasSucursalTable() {
     });
   }, [reservas, mostrarHistorial]);
 
-  const fetchPresupuesto = async (reserva: Reserva) => {
-    try {
-      const response = await fetch(
-        "http://localhost:8080/public/simularPresupuesto",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            id: reserva.auto.idAuto,
-            fechaEntrega: reserva.fechaEntrega,
-            fechaRegreso: reserva.fechaRegreso,
-          }),
-        }
-      );
-      if (!response.ok) {
-        return;
-      }
-      const data: PresupuestoResponse = await response.json();
-      setPresupuestos((prevPresupuestos) => ({
-        ...prevPresupuestos,
-        [reserva.idReserva]: data.presupuesto,
-      }));
-    } catch (error) {
-      // Este error no se muestra al usuario directamente
-    }
-  };
 
   const handleCancelarReserva = async (idReserva: number) => {
     setCancelandoReservaId(idReserva);
@@ -395,9 +365,7 @@ export default function ReservasSucursalTable() {
                     {reserva.auto.categoria}
                   </TableCell>
                   <TableCell className="px-4 py-3 border-r border-yellow-200 text-gray-800 text-sm font-semibold">
-                    {presupuestos[reserva.idReserva] !== undefined
-                      ? `$${presupuestos[reserva.idReserva]?.toFixed(2)}`
-                      : "Cargando..."}
+                    {reserva.precio.toFixed(2)} 
                   </TableCell>
                   <TableCell className="px-4 py-3 border-r border-yellow-200 text-gray-700 text-sm">
                     {(reserva.auto.porcentaje * 100).toFixed(0)}%
