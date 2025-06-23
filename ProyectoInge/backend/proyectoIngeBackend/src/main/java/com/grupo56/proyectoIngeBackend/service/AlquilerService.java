@@ -97,7 +97,7 @@ public class AlquilerService {
 	        			r.getFechaRegreso().toLocalDate(),
 	        			r.getFechaEntrega().toLocalTime(),
 	        			r.getFechaRegreso().toLocalTime());
-	        	AlquilerDTO alquilerDTO = new AlquilerDTO(a.getIdAlquiler(), precioTotal, reservaDTO, paquetesExtras);
+	        	AlquilerDTO alquilerDTO = new AlquilerDTO(a.getIdAlquiler(), precioTotal, a.getEstado(), reservaDTO, paquetesExtras);
 	        	alquileresDTO.add(alquilerDTO);
 	      }
 	      return alquileresDTO;
