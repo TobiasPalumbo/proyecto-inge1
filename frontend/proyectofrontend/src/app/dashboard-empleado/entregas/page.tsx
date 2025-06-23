@@ -238,7 +238,7 @@ export default function EntregasSucursalTable() {
                     <Button
                       onClick={() =>
                         router.push(
-                          `/empleado/registrarEntrega?id=${reserva.idReserva}`
+                          `entregas/registro-alquiler/${reserva.idReserva}`
                         )
                       }
                       className="bg-amber-500 hover:bg-amber-600 text-white font-semibold py-2 px-4 rounded-md shadow-md transition-colors duration-200 text-sm"

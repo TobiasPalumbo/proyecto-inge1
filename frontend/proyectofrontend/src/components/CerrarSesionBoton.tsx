@@ -5,21 +5,21 @@ import { useAuth } from "@/context/AuthContext";
 
 export default function CerrarSesionButton() {
   const router = useRouter();
-  const { logout } = useAuth(); // Usar el hook del contexto
+  const { logout } = useAuth(); 
 
   const handleCerrarSesion = async () => {
     if (confirm("¿Estás seguro de que deseas cerrar sesión?")) {
       try {
-        await fetch("http://localhost:8080/public/auth/logout", {
+        await fetch("http://localhost:8080/custom-logout", {
           method: "POST",
-          credentials: "include", // Necesario para enviar la cookie JSESSIONID
+          credentials: "include",
         });
       } catch (error) {
         console.error("Error al cerrar sesión en el backend:", error);
       }
 
-      logout(); // Limpia estado y sessionStorage
-      router.push("/pagina-inicio"); // Redirige después del logout
+      logout();
+      router.push("/pagina-inicio");
     }
   };
 

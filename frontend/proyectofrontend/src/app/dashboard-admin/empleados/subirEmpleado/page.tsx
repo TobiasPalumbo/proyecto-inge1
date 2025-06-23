@@ -77,7 +77,7 @@ export default function SubirEmpleadoForm() {
       });
 
 if (!res.ok) {
-        let errorMessage = "Error al subir el empleado."; // Mensaje por defecto
+        let errorMessage = "Error al subir el empleado."; 
 
         try {
           const errorData = await res.json();

@@ -11,6 +11,7 @@ import {
   ChartNoAxesCombined,
   CalendarClock,
   ClipboardList,
+  CornerDownLeft,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -41,10 +42,21 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       icon: <ClipboardList className="size-4" />,
     },
     {
+      title: "Alquileres",
+      url: "/dashboard-admin/alquileres",
+      icon: <CalendarCheck className="size-4" />,
+    },
+    {
       title: "Entregas",
       url: "/dashboard-admin/entregas",
       icon: <CalendarClock className="size-4" />,
     },
+    {
+      title: "Devoluciones",
+      url: "/dashboard-admin/devoluciones",
+      icon: <CornerDownLeft className="size-4" />,
+    },
+    
     {
       title: "Estadísticas",
       url: "/dashboard-admin/estadisticas",
