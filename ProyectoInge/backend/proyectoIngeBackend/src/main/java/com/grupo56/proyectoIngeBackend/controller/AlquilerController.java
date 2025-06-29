@@ -1,5 +1,6 @@
 package com.grupo56.proyectoIngeBackend.controller;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ import com.grupo56.proyectoIngeBackend.model.AutoAlquiladoDTO;
 import com.grupo56.proyectoIngeBackend.model.AutoDTO;
 import com.grupo56.proyectoIngeBackend.model.AutoPatente;
 import com.grupo56.proyectoIngeBackend.model.Cliente;
+import com.grupo56.proyectoIngeBackend.model.Empleado;
 import com.grupo56.proyectoIngeBackend.model.FechasRequestDTO;
 import com.grupo56.proyectoIngeBackend.model.GenerarAlquilerDTO;
 import com.grupo56.proyectoIngeBackend.model.IdSucursalDTO;
@@ -40,6 +42,7 @@ import com.grupo56.proyectoIngeBackend.model.Usuario;
 import com.grupo56.proyectoIngeBackend.service.AlquilerPaqueteExtraService;
 import com.grupo56.proyectoIngeBackend.service.AlquilerService;
 import com.grupo56.proyectoIngeBackend.service.ClienteService;
+import com.grupo56.proyectoIngeBackend.service.EmpleadoService;
 import com.grupo56.proyectoIngeBackend.service.PaqueteExtraService;
 import com.grupo56.proyectoIngeBackend.service.ReservaService;
 
@@ -56,6 +59,8 @@ public class AlquilerController {
 	private AlquilerPaqueteExtraService alquilerPaqueteExtraService;
 	@Autowired
 	private PaqueteExtraService paqueteExtraService;
+	@Autowired
+	private EmpleadoService empleadoService;
 	
 	@GetMapping("/misAlquileres")
 	public ResponseEntity<List<AlquilerDTO>> obetenerMisAlquiler(Authentication authentication) {
@@ -70,9 +75,25 @@ public class AlquilerController {
         return ResponseEntity.status(HttpStatus.OK).body(alquileresDTO);
 	}
 	
-	@PostMapping("/empleado/verAlquileres")
-	public ResponseEntity<?> obtenerAlquileres(@RequestBody IdSucursalDTO request){
-		List<Alquiler> alquileres = service.obtenerAlquilerPorIdSucursalEntrega(request.idSucursal());
+	@GetMapping("/empleado/verAlquileres")
+	public ResponseEntity<?> obtenerAlquileres(Authentication authentication){
+		Usuario usuario = ((SecurityUser) authentication.getPrincipal()).getUsuario();
+		if (usuario.getRol().equals("empleado")) {
+			Empleado empleado = empleadoService.obtenerEmpleadoPorIdUsuario(usuario);
+			List<Alquiler> alquileres = service.obtenerAlquilerPorIdSucursal(empleado.getSucursal().getIdSucursal());
+			if (alquileres.isEmpty())
+				return ResponseEntity.status(HttpStatus.NO_CONTENT).body(Map.of("messege", "la sucursal no contiene alquileres"));
+			List<AlquilerPaqueteExtra> alquileresPaqueteExtras = alquilerPaqueteExtraService.obtenerAlquilerPaquetes();
+			List<AlquilerDTO> alquileresDTO = service.construirAlquileresDTO(alquileres, alquileresPaqueteExtras);
+			return ResponseEntity.status(HttpStatus.OK).body(Map.of("rol", usuario.getRol(), "alquileres", alquileresDTO));
+		}
+		else
+			return ResponseEntity.status(HttpStatus.OK).body(Map.of("rol", usuario.getRol(), "alquileres", new ArrayList()));
+	}
+	
+	@PostMapping("/admin/verAlquileresPorSucursal")
+	public ResponseEntity<?> obtenerAlquileresPorSucursal(@RequestBody IdSucursalDTO request){
+		List<Alquiler> alquileres = service.obtenerAlquilerPorIdSucursal(request.idSucursal());
 		if (alquileres.isEmpty())
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(Map.of("messege", "la sucursal no contiene alquileres"));
 		List<AlquilerPaqueteExtra> alquileresPaqueteExtras = alquilerPaqueteExtraService.obtenerAlquilerPaquetes();
@@ -80,11 +101,27 @@ public class AlquilerController {
 		return ResponseEntity.status(HttpStatus.OK).body(alquileresDTO);
 	}
 	
-	@PostMapping("/empleado/verDevoluciones")
-	public ResponseEntity<?> obtenerDevoluciones(@RequestBody IdSucursalDTO request){
+	@GetMapping("/empleado/verDevoluciones")
+	public ResponseEntity<?> obtenerDevoluciones(Authentication authentication){
+		Usuario usuario = ((SecurityUser) authentication.getPrincipal()).getUsuario();
+		if (usuario.getRol().equals("empleado")) {
+			Empleado empleado = empleadoService.obtenerEmpleadoPorIdUsuario(usuario);
+			List<Alquiler> alquileres = service.obtenerAlquilerPorIdSucursalRegreso(empleado.getSucursal().getIdSucursal());
+			if (alquileres.isEmpty())
+				return ResponseEntity.status(HttpStatus.NO_CONTENT).body(Map.of("messege", "la sucursal no contiene devolciones"));
+			List<AlquilerPaqueteExtra> alquileresPaqueteExtras = alquilerPaqueteExtraService.obtenerAlquilerPaquetes();
+			List<AlquilerDTO> alquileresDTO = service.construirAlquileresDTO(alquileres, alquileresPaqueteExtras);
+			return ResponseEntity.status(HttpStatus.OK).body(Map.of("rol", usuario.getRol(), "alquileres", alquileresDTO));
+		}
+		else
+			return ResponseEntity.status(HttpStatus.OK).body(Map.of("rol", usuario.getRol(), "alquileres", new ArrayList()));
+	}
+	
+	@PostMapping("/admin/verDevolucionesPorSucursal")
+	public ResponseEntity<?> obtenerDevolucionesPorSucursal(@RequestBody IdSucursalDTO request){
 		List<Alquiler> alquileres = service.obtenerAlquilerPorIdSucursalRegreso(request.idSucursal());
 		if (alquileres.isEmpty())
-			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(Map.of("messege", "la sucursal no contiene alquileres"));
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(Map.of("messege", "la sucursal no contiene devolciones"));
 		List<AlquilerPaqueteExtra> alquileresPaqueteExtras = alquilerPaqueteExtraService.obtenerAlquilerPaquetes();
 		List<AlquilerDTO> alquileresDTO = service.construirAlquileresDTO(alquileres, alquileresPaqueteExtras);
 		return ResponseEntity.status(HttpStatus.OK).body(alquileresDTO);
