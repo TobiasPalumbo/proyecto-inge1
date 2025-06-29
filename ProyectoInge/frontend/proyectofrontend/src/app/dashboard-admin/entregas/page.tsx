@@ -82,7 +82,7 @@ export default function EntregasSucursalTable() {
 
     try {
       const response = await fetch(
-        "http://localhost:8080/empleado/verEntregas",
+        "http://localhost:8080/admin/verEntregasPorSucursal",
         {
           method: "POST",
           headers: {

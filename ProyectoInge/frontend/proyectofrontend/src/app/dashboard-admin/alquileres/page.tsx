@@ -103,7 +103,7 @@ export default function AlquileresSucursalTable() {
 
     try {
       const response = await fetch(
-        "http://localhost:8080/empleado/verAlquileres",
+        "http://localhost:8080/admin/verAlquileresPorSucursal",
         {
           method: "POST",
           headers: {

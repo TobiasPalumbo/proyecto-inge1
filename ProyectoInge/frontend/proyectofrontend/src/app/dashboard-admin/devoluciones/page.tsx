@@ -106,7 +106,7 @@ export default function VerDevolucionesTable() {
 
     try {
       const response = await fetch(
-        "http://localhost:8080/empleado/verDevoluciones",
+        "http://localhost:8080/admin/verDevolucionesPorSucursal",
         {
           method: "POST",
           headers: {
