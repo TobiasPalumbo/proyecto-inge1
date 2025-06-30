@@ -107,7 +107,12 @@ public class AlquilerController {
 		if (usuario.getRol().equals("empleado")) {
 			Empleado empleado = empleadoService.obtenerEmpleadoPorIdUsuario(usuario);
 			List<Alquiler> alquileres = service.obtenerAlquilerPorIdSucursalRegreso(empleado.getSucursal().getIdSucursal());
-			if (alquileres.isEmpty())
+
+			List<Alquiler> alquileresFiltrados = alquileres.stream()
+					.filter(a -> a.getFechaRegreso().toLocalDate().equals(LocalDate.now()) 
+							|| (a.getFechaRegreso().toLocalDate().isBefore(LocalDate.now()) && a.getEstado().equals("pendiente")))
+							.toList();
+			if (alquileresFiltrados.isEmpty())
 				return ResponseEntity.status(HttpStatus.NO_CONTENT).body(Map.of("messege", "la sucursal no contiene devolciones"));
 			List<AlquilerPaqueteExtra> alquileresPaqueteExtras = alquilerPaqueteExtraService.obtenerAlquilerPaquetes();
 			List<AlquilerDTO> alquileresDTO = service.construirAlquileresDTO(alquileres, alquileresPaqueteExtras);
@@ -121,6 +126,12 @@ public class AlquilerController {
 	public ResponseEntity<?> obtenerDevolucionesPorSucursal(@RequestBody IdSucursalDTO request){
 		List<Alquiler> alquileres = service.obtenerAlquilerPorIdSucursalRegreso(request.idSucursal());
 		if (alquileres.isEmpty())
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(Map.of("messege", "la sucursal no contiene devolciones"));
+		List<Alquiler> alquileresFiltrados = alquileres.stream()
+				.filter(a -> a.getFechaRegreso().toLocalDate().equals(LocalDate.now()) 
+						|| (a.getFechaRegreso().toLocalDate().isBefore(LocalDate.now()) && a.getEstado().equals("pendiente")))
+						.toList();
+		if (alquileresFiltrados.isEmpty())
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(Map.of("messege", "la sucursal no contiene devolciones"));
 		List<AlquilerPaqueteExtra> alquileresPaqueteExtras = alquilerPaqueteExtraService.obtenerAlquilerPaquetes();
 		List<AlquilerDTO> alquileresDTO = service.construirAlquileresDTO(alquileres, alquileresPaqueteExtras);
