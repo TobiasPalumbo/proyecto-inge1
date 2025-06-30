@@ -113,7 +113,7 @@ export default function SucursalesPage() {
 
 function CardSucursal({ sucursal, imageName }: { sucursal: Sucursal, imageName: string }) {
   return (
-    <div className="border-2 border-amber-200 rounded-xl overflow-hidden hover:shadow-lg transition-all bg-white h-full flex flex-col hover:border-amber-300">
+    <div className="border-2 border-amber-900 rounded-xl overflow-hidden hover:shadow-lg transition-all bg-white h-full flex flex-col hover:border-amber-400">
       <div className="h-48 sm:h-52 md:h-56 lg:h-60 xl:h-64 relative">
         <Image
           src={`/sucursales-imagenes/${imageName}.jpg`}

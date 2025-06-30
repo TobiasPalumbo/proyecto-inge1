@@ -10,15 +10,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Loader2 } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 // --- TIPOS ---
 type Sucursal = {
@@ -66,39 +59,29 @@ type AlquilerDTO = {
 };
 
 export default function VerDevolucionesTable() {
-  const [sucursales, setSucursales] = useState<Sucursal[]>([]);
-  const [sucursalSeleccionada, setSucursalSeleccionada] = useState<string>("");
   const [devoluciones, setDevoluciones] = useState<AlquilerDTO[]>([]);
+  const [mostrarHistorial, setMostrarHistorial] = useState(false);
   const [cargando, setCargando] = useState(false);
   const [errorMensaje, setErrorMensaje] = useState<string | null>(null);
-  const router = useRouter(); // Inicializar useRouter
+  const router = useRouter(); 
 
-  useEffect(() => {
-    fetch("http://localhost:8080/public/sucursales")
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(`Error HTTP: ${res.status}`);
-        }
-        return res.json();
-      })
-      .then((data: Sucursal[]) => setSucursales(data))
-      .catch((err) => {
-        setErrorMensaje(
-          "No se pudieron cargar las sucursales. Verifique la conexión al servidor."
-        );
+  const displayDevoluciones = useMemo(() => {
+    let current = [...devoluciones];
+    if (!mostrarHistorial) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      current = current.filter((a) => {
+        const fechaRegreso = new Date(a.reserva.fechaRegreso);
+        fechaRegreso.setHours(0, 0, 0, 0);
+        return fechaRegreso.getTime() === today.getTime();
       });
-  }, []);
-
-  const handleSucursalChange = (value: string) => {
-    setSucursalSeleccionada(value);
-    setErrorMensaje(null);
-  };
+    }
+    return current.sort((a, b) =>
+      b.reserva.fechaRegreso.localeCompare(a.reserva.fechaRegreso)
+    );
+  }, [devoluciones, mostrarHistorial]);
 
   const handleBuscarDevoluciones = async () => {
-    if (!sucursalSeleccionada || sucursalSeleccionada === "") {
-      setErrorMensaje("Por favor, seleccione una sucursal.");
-      return;
-    }
     setCargando(true);
     setErrorMensaje(null);
     setDevoluciones([]);
@@ -107,12 +90,11 @@ export default function VerDevolucionesTable() {
       const response = await fetch(
         "http://localhost:8080/empleado/verDevoluciones",
         {
-          method: "POST",
+          method: "GET",
           headers: {
             "Content-Type": "application/json",
           },
           credentials: "include",
-          body: JSON.stringify({ idSucursal: parseInt(sucursalSeleccionada) }),
         }
       );
 
@@ -136,8 +118,8 @@ export default function VerDevolucionesTable() {
         throw new Error(errorMessage);
       }
 
-      const data: AlquilerDTO[] = await response.json();
-      setDevoluciones(data);
+      const data = await response.json();
+      setDevoluciones(data.alquileres);
     } catch (error: any) {
       setDevoluciones([]);
       setErrorMensaje(`Error al cargar devoluciones: ${error.message}`);
@@ -152,50 +134,27 @@ export default function VerDevolucionesTable() {
     return parts.length >= 2 ? `${parts[0]}:${parts[1]}` : timeString;
   };
 
-  const displayDevoluciones = useMemo(() => {
-    return [...devoluciones].sort((a, b) => {
-      return b.reserva.fechaRegreso.localeCompare(a.reserva.fechaRegreso);
-    });
-  }, [devoluciones]);
+  useEffect(() => {
+    handleBuscarDevoluciones();
+  }, []);
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       <h1 className="text-3xl font-extrabold text-amber-800 mb-6 text-center">
-        Panel de Devoluciones por Sucursal
+        Panel de Devoluciones
       </h1>
 
-      <div className="flex flex-col sm:flex-row gap-4 items-center mb-6 justify-center">
-        <Select
-          value={sucursalSeleccionada}
-          onValueChange={handleSucursalChange}
-        >
-          <SelectTrigger className="w-[250px] bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-yellow-500">
-            <SelectValue placeholder="Seleccionar sucursal" />
-          </SelectTrigger>
-          <SelectContent className="bg-white border border-gray-200 rounded-lg shadow-lg">
-            {sucursales.map((s) => (
-              <SelectItem key={s.idSucursal} value={String(s.idSucursal)}>
-                {s.localidad} - {s.direccion}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Button
-          onClick={handleBuscarDevoluciones}
-          disabled={!sucursalSeleccionada || cargando}
-          className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {cargando ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Cargando...
-            </>
-          ) : (
-            "Ver devoluciones"
-          )}
-        </Button>
+      <div className="flex items-center space-x-2 mb-6 justify-center">
+        <Switch
+          id="show-history"
+          checked={mostrarHistorial}
+          onCheckedChange={setMostrarHistorial}
+          className="data-[state=checked]:bg-yellow-500 data-[state=unchecked]:bg-gray-300"
+        />
+        <Label htmlFor="show-history" className="text-gray-700 font-medium">
+          Mostrar Historial de Devoluciones
+        </Label>
       </div>
-
       {errorMensaje && (
         <div
           className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4 text-center"
@@ -229,7 +188,7 @@ export default function VerDevolucionesTable() {
                 Regreso
               </TableHead>
               <TableHead className="px-4 py-3 text-center text-sm font-bold text-amber-950 uppercase tracking-wider">
-                Estado
+                
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -237,7 +196,7 @@ export default function VerDevolucionesTable() {
             {cargando ? (
               <TableRow>
                 <TableCell
-                  colSpan={7} // Se ajusta el colspan
+                  colSpan={7}
                   className="text-center py-10 text-gray-500 text-lg"
                 >
                   Cargando devoluciones...
@@ -246,7 +205,7 @@ export default function VerDevolucionesTable() {
             ) : displayDevoluciones.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={7} // Se ajusta el colspan
+                  colSpan={7}
                   className="text-center py-10 text-gray-500 text-lg"
                 >
                   No se encontraron devoluciones.
@@ -265,8 +224,7 @@ export default function VerDevolucionesTable() {
                     {alquiler.reserva.idReserva}
                   </TableCell>
                   <TableCell className="px-4 py-3 border-r border-yellow-200 text-gray-800 text-sm font-medium">
-                    {alquiler.reserva.auto.marca}{" "}
-                    {alquiler.reserva.auto.modelo}
+                    {alquiler.reserva.auto.marca} {alquiler.reserva.auto.modelo}
                   </TableCell>
                   <TableCell className="px-4 py-3 border-r border-yellow-200 text-gray-700 text-sm">
                     {alquiler.reserva.auto.categoria}
@@ -288,9 +246,18 @@ export default function VerDevolucionesTable() {
                       {alquiler.reserva.sucursalRegreso.direccion})
                     </span>
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-center text-gray-800 text-sm font-medium">
-                    {alquiler.reserva.estado}
-                  </TableCell>
+                  <TableCell className="px-4 py-3 text-center">
+  <button
+    onClick={() =>
+      router.push(`devoluciones/registro-devolucion/${alquiler.idAlquiler}`)
+    }
+    className="bg-amber-500 hover:bg-amber-600 text-white font-semibold py-2 px-4 rounded-md shadow-md transition-colors duration-200 text-sm"
+  >
+    Registrar Devolución
+  </button>
+</TableCell>
+
+
                 </TableRow>
               ))
             )}

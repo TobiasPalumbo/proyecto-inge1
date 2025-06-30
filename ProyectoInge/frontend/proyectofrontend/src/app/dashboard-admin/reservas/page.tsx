@@ -64,6 +64,7 @@ type PresupuestoResponse = {
 };
 
 export default function ReservasSucursalTable() {
+  const [mostrarHistorial, setMostrarHistorial] = useState(false);
   const [sucursales, setSucursales] = useState<Sucursal[]>([]);
   const [sucursalSeleccionada, setSucursalSeleccionada] = useState<string>("");
   const [reservas, setReservas] = useState<Reserva[]>([]);
