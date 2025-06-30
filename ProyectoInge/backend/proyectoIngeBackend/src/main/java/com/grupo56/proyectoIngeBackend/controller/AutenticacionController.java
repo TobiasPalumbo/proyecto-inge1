@@ -58,7 +58,7 @@ public class AutenticacionController {
 		}
 		String codigo = String.valueOf(new Random().nextInt(9000) + 1000);
 	    codigos.put(usuario1.getCorreo(), codigo);
-	    correoService.enviarCodigo("carlos_andres01.10@hotmail.com", codigo);
+	    correoService.enviarCodigo("palumbotobias@gmail.com", codigo);
 	    return ResponseEntity.ok(Map.of( "correo", usuario1.getCorreo(), "rol", usuario1.getRol()));
 	}
 

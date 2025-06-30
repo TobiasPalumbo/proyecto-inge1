@@ -194,7 +194,7 @@ public class ReservaController {
 
 	}
 	
-	@PostMapping("/empleado/verGananciasSemanalas")
+	@PostMapping("/admin/verGananciasSemanalas")
 	public ResponseEntity<?> obtenerGananciasSemanales(@RequestBody SemanaDTO request){
 		List<Reserva> reservas = service.obtenerReservasDeSemana(request.dia());
 		List<Alquiler> alquileres = alquilerService.obtenerAlquieresDeSemana(request.dia());
@@ -208,7 +208,6 @@ public class ReservaController {
 		Map<LocalDate, Double> diaMap = dias.stream().collect(Collectors.toMap(d -> d, d -> 0.0));
 		double total = 0;
 		double ganancia = 0;
-		
 		for (Reserva reserva : reservas) {
 			if (reserva.getEstado().equals("cancelada"))
 				ganancia += reserva.getPrecio() * reserva.getAutoPatente().getAuto().getPoliticaCancelacion().getPorcentaje();
