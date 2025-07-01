@@ -138,7 +138,7 @@ public class AlquilerController {
 		return ResponseEntity.status(HttpStatus.OK).body(alquileresDTO);
 	}
 	
-	@PostMapping("/empleado/verAutosAlquiladosEntreFechas")
+	@PostMapping("/admin/verAutosAlquiladosEntreFechas")
 	public ResponseEntity<?> obtenerAlquileresEntreFechas(@RequestBody FechasRequestDTO request) {
 			List<Alquiler> alquileres = service.obtenerAlquileres();
 		    List<AutoAlquiladoDTO> autosAlquiladosDTO = new ArrayList<>();

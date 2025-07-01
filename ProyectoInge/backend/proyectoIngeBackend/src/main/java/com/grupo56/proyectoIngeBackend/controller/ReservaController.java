@@ -231,7 +231,7 @@ public class ReservaController {
 			gananciasDiariasDTO.add(new GananciaDiariaDTO(entry.getKey(), entry.getValue()));
 		}
 
-		GananciaSemanalDTO gananciaSemanalDTO = new GananciaSemanalDTO(semana, request.dia().getMonthValue(), request.dia().getYear(), total, gananciasDiariasDTO);
+		GananciaSemanalDTO gananciaSemanalDTO = new GananciaSemanalDTO(semana, request.dia(), total, gananciasDiariasDTO);
 		return ResponseEntity.status(HttpStatus.OK).body(gananciaSemanalDTO);
 	}
 }

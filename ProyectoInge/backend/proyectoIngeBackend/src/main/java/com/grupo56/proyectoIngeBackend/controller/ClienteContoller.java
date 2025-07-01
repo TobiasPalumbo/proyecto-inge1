@@ -21,7 +21,7 @@ public class ClienteContoller {
 	@Autowired
 	private ClienteService service;
 	
-	@PostMapping("/empleado/clientesRegistrados")
+	@PostMapping("/admin/clientesRegistrados")
 	public ResponseEntity<List<ClienteDTO>> obtenerClientesRegistradoEnFechas(@RequestBody FechasRequestDTO request){
 		List<Cliente> clientes  = service.obtenerClientes();
 		if (clientes.isEmpty())
