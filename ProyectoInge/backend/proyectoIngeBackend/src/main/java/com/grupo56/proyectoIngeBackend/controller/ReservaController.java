@@ -166,8 +166,25 @@ public class ReservaController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "La reserva ya esta cancelada o le correspone un alquiler en curso"));
 		reserva.setEstado("cancelado");
 		service.actualizarReserva(reserva);
-        return ResponseEntity.status(HttpStatus.OK).body(Map.of("message", "Reserva cancelada"));
-
+		double devolucionPorcentaje  = reserva.getAutoPatente().getAuto().getPoliticaCancelacion().getPorcentaje();
+        Tarjeta tarjeta = reserva.getTarjeta();
+        tarjeta.setMonto(reserva.getTarjeta().getMonto() + reserva.getPrecio() * devolucionPorcentaje);
+        tarjetaService.subirTarjeta(tarjeta);
+        String mensajeExito = "Reserva cancelada, se reintegro el " + (devolucionPorcentaje * 100)  + "% del precio de la reserva";
+        return ResponseEntity.status(HttpStatus.OK).body(Map.of("message", mensajeExito));
+	}
+	@PostMapping("/empleado/anularReservaAdminEmpleado")
+	public ResponseEntity<?> anularReserva(@RequestBody IdReservaDTO request){
+		Reserva reserva= service.obtenerReservaPorId(request.idReserva());
+		if(reserva.getEstado().equals("anulado"))
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "La reserva ya esta anulada"));
+		reserva.setEstado("anulado");
+		service.actualizarReserva(reserva);
+        Tarjeta tarjeta = reserva.getTarjeta();
+        tarjeta.setMonto(reserva.getTarjeta().getMonto() + reserva.getPrecio());
+        tarjetaService.subirTarjeta(tarjeta);
+        String mensajeExito = "Reserva anulada se dovolvio la totalidad del monto";
+        return ResponseEntity.status(HttpStatus.OK).body(Map.of("message", mensajeExito));
 	}
 	
 	@PostMapping("/empleado/verGananciasSemanalas")
