@@ -64,7 +64,6 @@ type PresupuestoResponse = {
 };
 
 export default function ReservasSucursalTable() {
-  const [mostrarHistorial, setMostrarHistorial] = useState(false);
   const [sucursales, setSucursales] = useState<Sucursal[]>([]);
   const [sucursalSeleccionada, setSucursalSeleccionada] = useState<string>("");
   const [reservas, setReservas] = useState<Reserva[]>([]);
@@ -404,9 +403,17 @@ export default function ReservasSucursalTable() {
                   </TableCell>
                   <TableCell className="px-2 py-2 text-center">
                     <Button
-  onClick={() => handleCancelarReserva(reserva.idReserva)}
-  className="bg-red-600 hover:bg-red-700 text-white font-medium px-3 py-1.5 text-xs rounded-md shadow-md transition-colors duration-200 whitespace-nowrap"
->
+                      onClick={() => handleCancelarReserva(reserva.idReserva)}
+                      disabled={
+                        reserva.estado === "cancelado" ||
+                        cancelandoReservaId === reserva.idReserva
+                      }
+                      className={`font-medium px-3 py-1.5 text-xs rounded-md shadow-md transition-colors duration-200 whitespace-nowrap ${
+                        reserva.estado === "cancelado"
+                          ? "bg-red-500 text-white cursor-not-allowed"
+                          : "bg-red-600 hover:bg-red-700 text-white"
+                      }`}
+                    >
                       {cancelandoReservaId === reserva.idReserva ? (
                         <>
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
