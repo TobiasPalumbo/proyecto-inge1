@@ -56,6 +56,10 @@ public class AlquilerService {
 		return repository.findAll().stream().filter(r -> r.getReserva().getSucursalRegreso().getIdSucursal() == idSucursal).toList();
 	}
 	
+	public List<Alquiler> obtenerAlquilerPorIdSucursal(Integer idSucursal){
+		return repository.findAll().stream().filter(r -> r.getReserva().getSucursalRegreso().getIdSucursal() == idSucursal || r.getReserva().getSucursalEntrega().getIdSucursal() == idSucursal ).toList();
+	}
+	
 	public List<AlquilerDTO> construirAlquileresDTO(List<Alquiler> alquileres, List<AlquilerPaqueteExtra> alquileresPaquetesExtras) {
 		 List<AlquilerDTO> alquileresDTO = new ArrayList<>();
 	      for (Alquiler a : alquileres) {

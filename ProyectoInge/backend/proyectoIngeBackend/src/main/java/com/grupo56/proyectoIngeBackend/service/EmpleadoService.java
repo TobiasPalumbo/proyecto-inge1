@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.grupo56.proyectoIngeBackend.model.Empleado;
 import com.grupo56.proyectoIngeBackend.model.Sucursal;
+import com.grupo56.proyectoIngeBackend.model.Usuario;
 import com.grupo56.proyectoIngeBackend.repository.EmpleadoRepository;
 
 @Service
@@ -28,5 +29,9 @@ public class EmpleadoService {
 	}
 	public Empleado obtenerEmpleadoPorId(Integer idEmpleado) {
 		return repository.findById(idEmpleado).get();
+	}
+	
+	public Empleado obtenerEmpleadoPorIdUsuario(Usuario usuario) {
+		return repository.findByUsuario(usuario).get();
 	}
 }

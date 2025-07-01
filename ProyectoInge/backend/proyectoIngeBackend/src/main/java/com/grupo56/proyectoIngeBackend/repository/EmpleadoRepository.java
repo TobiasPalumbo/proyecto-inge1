@@ -11,12 +11,14 @@ import com.grupo56.proyectoIngeBackend.model.Usuario;
 
 @Repository
 public interface EmpleadoRepository extends JpaRepository<Empleado,Integer>{
-	Optional<Empleado> findByUsuario(Usuario usuario);
+	public Optional<Empleado> findByUsuario(Usuario usuario);
 	
-	boolean existsBySucursalAndBorradoFalse(Sucursal sucursal);
-	List<Empleado> findByBorradoFalse();
-	boolean existsByCuilAndBorradoFalse(String cuil);
-
+	public boolean existsBySucursalAndBorradoFalse(Sucursal sucursal);
+	
+	public List<Empleado> findByBorradoFalse();
+	
+	public boolean existsByCuilAndBorradoFalse(String cuil);
+	
 
 
 }

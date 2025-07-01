@@ -18,10 +18,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.grupo56.proyectoIngeBackend.model.Alquiler;
+import com.grupo56.proyectoIngeBackend.model.AlquilerDTO;
+import com.grupo56.proyectoIngeBackend.model.AlquilerPaqueteExtra;
 import com.grupo56.proyectoIngeBackend.model.AutoDTO;
 import com.grupo56.proyectoIngeBackend.model.AutoPatentesAdminDTO;
 import com.grupo56.proyectoIngeBackend.model.AutoPatentesDTO;
 import com.grupo56.proyectoIngeBackend.model.Cliente;
+import com.grupo56.proyectoIngeBackend.model.Empleado;
 import com.grupo56.proyectoIngeBackend.model.GananciaDiariaDTO;
 import com.grupo56.proyectoIngeBackend.model.GananciaSemanalDTO;
 import com.grupo56.proyectoIngeBackend.model.IdReservaDTO;
@@ -37,6 +40,7 @@ import com.grupo56.proyectoIngeBackend.model.Usuario;
 import com.grupo56.proyectoIngeBackend.repository.AlquilerRepository;
 import com.grupo56.proyectoIngeBackend.service.AlquilerService;
 import com.grupo56.proyectoIngeBackend.service.ClienteService;
+import com.grupo56.proyectoIngeBackend.service.EmpleadoService;
 import com.grupo56.proyectoIngeBackend.service.ReservaService;
 import com.grupo56.proyectoIngeBackend.service.TarjetaService;
 
@@ -52,6 +56,8 @@ public class ReservaController {
 	private TarjetaService tarjetaService;
 	@Autowired
 	private AlquilerService alquilerService;
+	@Autowired
+	private EmpleadoService empleadoService;
 	
 	
 	@PostMapping("/public/autosDisponibles")
@@ -148,8 +154,26 @@ public class ReservaController {
 		return ResponseEntity.status(HttpStatus.OK).body(reservasDTO);
 	}
 	
-	@PostMapping("/empleado/verEntregas")
-	public ResponseEntity<List<ReservaDTO>> obtenerEntregas(@RequestBody IdSucursalDTO idSucursalDTO) {
+	
+	@GetMapping("/empleado/verEntregas")
+	public ResponseEntity<?> obtenerEntregas(Authentication authentication) {
+		Usuario usuario = ((SecurityUser) authentication.getPrincipal()).getUsuario();
+		if (usuario.getRol().equals("empleado")) {
+			Empleado empleado = empleadoService.obtenerEmpleadoPorIdUsuario(usuario);
+			List<ReservaDTO> reservasDTO = service.obtenerReservasDeSucursal(empleado.getSucursal().getIdSucursal());
+			if(reservasDTO.isEmpty())
+				return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+			List<ReservaDTO> reservasDTOfitradas = reservasDTO.stream()
+																.filter(r -> r.fechaEntrega().isEqual(LocalDate.now()) && r.estado().equals("pendiente"))
+																.toList();
+			return ResponseEntity.status(HttpStatus.OK).body(Map.of("rol", usuario.getRol(), "reservas", reservasDTOfitradas));
+		}
+		else
+			return ResponseEntity.status(HttpStatus.OK).body(Map.of("rol", usuario.getRol(), "reservas", new ArrayList()));
+	}
+	
+	@PostMapping("/admin/verEntregasPorSucursal")
+	public ResponseEntity<List<ReservaDTO>> obtenerEntregasPorSucursal(@RequestBody IdSucursalDTO idSucursalDTO) {
 		List<ReservaDTO> reservasDTO = service.obtenerReservasDeSucursal(idSucursalDTO.idSucursal());
 		if(reservasDTO.isEmpty())
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
@@ -187,7 +211,7 @@ public class ReservaController {
         return ResponseEntity.status(HttpStatus.OK).body(Map.of("message", mensajeExito));
 	}
 	
-	@PostMapping("/empleado/verGananciasSemanalas")
+	@PostMapping("/admin/verGananciasSemanalas")
 	public ResponseEntity<?> obtenerGananciasSemanales(@RequestBody SemanaDTO request){
 		List<Reserva> reservas = service.obtenerReservasDeSemana(request.dia());
 		List<Alquiler> alquileres = alquilerService.obtenerAlquieresDeSemana(request.dia());
@@ -201,7 +225,6 @@ public class ReservaController {
 		Map<LocalDate, Double> diaMap = dias.stream().collect(Collectors.toMap(d -> d, d -> 0.0));
 		double total = 0;
 		double ganancia = 0;
-		
 		for (Reserva reserva : reservas) {
 			if (reserva.getEstado().equals("cancelada"))
 				ganancia += reserva.getPrecio() * reserva.getAutoPatente().getAuto().getPoliticaCancelacion().getPorcentaje();
@@ -225,7 +248,7 @@ public class ReservaController {
 			gananciasDiariasDTO.add(new GananciaDiariaDTO(entry.getKey(), entry.getValue()));
 		}
 
-		GananciaSemanalDTO gananciaSemanalDTO = new GananciaSemanalDTO(semana, request.dia().getMonthValue(), request.dia().getYear(), total, gananciasDiariasDTO);
+		GananciaSemanalDTO gananciaSemanalDTO = new GananciaSemanalDTO(semana, request.dia(), total, gananciasDiariasDTO);
 		return ResponseEntity.status(HttpStatus.OK).body(gananciaSemanalDTO);
 	}
 }
