@@ -186,7 +186,7 @@ public class ReservaController {
 	@PostMapping("/empleado/cancelarReservaAdminEmpleado")
 	public ResponseEntity<?> cancelarReserva(@RequestBody IdReservaDTO request){
 		Reserva reserva= service.obtenerReservaPorId(request.idReserva());
-		if(reserva.getEstado().equals("cancelado")|| alquilerService.existsByReserva(reserva))
+		if(reserva.getEstado().equals("cancelado")|| alquilerService.existsByReserva(reserva)|| reserva.getEstado().equals("anulado"))
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "La reserva ya esta cancelada o le correspone un alquiler en curso"));
 		reserva.setEstado("cancelado");
 		service.actualizarReserva(reserva);
@@ -200,8 +200,8 @@ public class ReservaController {
 	@PostMapping("/empleado/anularReservaAdminEmpleado")
 	public ResponseEntity<?> anularReserva(@RequestBody IdReservaDTO request){
 		Reserva reserva= service.obtenerReservaPorId(request.idReserva());
-		if(reserva.getEstado().equals("anulado"))
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "La reserva ya esta anulada"));
+		if(reserva.getEstado().equals("anulado")|| reserva.getEstado().equals("anulado"))
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "La reserva ya esta anulada o cancelada"));
 		reserva.setEstado("anulado");
 		service.actualizarReserva(reserva);
         Tarjeta tarjeta = reserva.getTarjeta();
