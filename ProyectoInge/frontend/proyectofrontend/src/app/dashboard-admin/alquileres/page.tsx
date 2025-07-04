@@ -19,7 +19,6 @@ import {
 } from "@/components/ui/select";
 import { Loader2 } from "lucide-react";
 
-// --- TIPOS ---
 type Sucursal = {
   idSucursal: number;
   localidad: string;
@@ -44,10 +43,10 @@ type ReservaDTO = {
   sucursalRegreso: Sucursal;
   auto: AutoDTO;
   estado: string;
-  fechaEntrega: string; // Asumiendo string en formato "YYYY-MM-DD"
-  fechaRegreso: string; // Asumiendo string en formato "YYYY-MM-DD"
-  horaEntrega: string; // Asumiendo string en formato "HH:MM:SS"
-  horaRegreso: string; // Asumiendo string en formato "HH:MM:SS"
+  fechaEntrega: string;
+  fechaRegreso: string;
+  horaEntrega: string;
+  horaRegreso: string;
 };
 
 type PaqueteExtraDTO = {
@@ -60,6 +59,7 @@ type PaqueteExtraDTO = {
 type AlquilerDTO = {
   idAlquiler: number;
   precio: number;
+  estadoAlquiler: string;
   reserva: ReservaDTO;
   paquetesExtras: PaqueteExtraDTO[];
 };
@@ -150,9 +150,13 @@ export default function AlquileresSucursalTable() {
     return parts.length >= 2 ? `${parts[0]}:${parts[1]}` : timeString;
   };
 
-    const displayAlquileres = useMemo(() => {
+  const displayAlquileres = useMemo(() => {
     return [...alquileres].sort((a, b) => {
-      return b.reserva.fechaEntrega.localeCompare(a.reserva.fechaEntrega);
+      const dateComparison = b.reserva.fechaEntrega.localeCompare(a.reserva.fechaEntrega);
+      if (dateComparison !== 0) {
+        return dateComparison;
+      }
+      return b.reserva.horaEntrega.localeCompare(a.reserva.horaEntrega);
     });
   }, [alquileres]);
 
@@ -183,7 +187,13 @@ export default function AlquileresSucursalTable() {
           disabled={!sucursalSeleccionada || cargando}
           className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {cargando ? "Cargando..." : "Ver alquileres"}
+          {cargando ? (
+            <>
+              <Loader2 className="animate-spin w-5 h-5 mr-2" /> Cargando...
+            </>
+          ) : (
+            "Ver alquileres"
+          )}
         </Button>
       </div>
 
@@ -225,13 +235,17 @@ export default function AlquileresSucursalTable() {
               <TableHead className="px-4 py-3 text-center text-xs font-bold text-amber-950 uppercase tracking-wider border-r border-yellow-500">
                 Regreso
               </TableHead>
+              {/* Columna de Estado, ahora al final */}
+              <TableHead className="px-4 py-3 text-center text-sm font-bold text-amber-950 uppercase border-r border-yellow-500 ">
+                Estado
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody className="bg-white divide-y divide-yellow-200">
             {cargando ? (
               <TableRow>
                 <TableCell
-                  colSpan={8}
+                  colSpan={9} 
                   className="text-center py-10 text-gray-500 text-lg"
                 >
                   Cargando alquileres...
@@ -240,7 +254,7 @@ export default function AlquileresSucursalTable() {
             ) : displayAlquileres.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={8}
+                  colSpan={9} 
                   className="text-center py-10 text-gray-500 text-lg"
                 >
                   No se encontraron alquileres.
@@ -272,7 +286,7 @@ export default function AlquileresSucursalTable() {
                     {alquiler.paquetesExtras &&
                     alquiler.paquetesExtras.length > 0
                       ? alquiler.paquetesExtras
-                          .map((p) => p.tipoPaquete) // Se muestra solo el tipo de paquete, sin la cantidad
+                          .map((p) => p.tipoPaquete) 
                           .join(", ")
                       : "Ninguno"}
                   </TableCell>
@@ -293,6 +307,10 @@ export default function AlquileresSucursalTable() {
                       ({alquiler.reserva.sucursalRegreso.localidad},{" "}
                       {alquiler.reserva.sucursalRegreso.direccion})
                     </span>
+                  </TableCell>
+                  {/* Celda del estado, ahora al final */}
+                  <TableCell className="px-4 py-3 border-r border-yellow-200 text-gray-700 text-sm">
+                    {alquiler.estadoAlquiler}
                   </TableCell>
                 </TableRow>
               ))

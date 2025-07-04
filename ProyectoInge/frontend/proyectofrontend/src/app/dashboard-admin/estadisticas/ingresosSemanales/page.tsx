@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react"; // Asegúrate de que useMemo esté aquí
 import {
   Card,
   CardContent,
@@ -32,7 +32,7 @@ import {
 import { es } from "date-fns/locale";
 
 interface GananciaDiariaDTO {
-  dia: string; // Esperamos que 'dia' sea un string en formato ISO como 'YYYY-MM-DD'
+  dia: string; 
   ganancia: number;
 }
 
@@ -42,21 +42,22 @@ interface GananciaSemanalDTO {
   anio: number;
   gananciaTotal: number;
   gananciasDiaras: GananciaDiariaDTO[];
+  dia: string; 
 }
 
 interface DailyProfitsChartProps {
   data: GananciaDiariaDTO[];
-  selectedWeekDate: string; // La fecha seleccionada por el usuario para determinar la semana
+  weekBaseDate: string; 
 }
 
-function DailyProfitsChart({ data, selectedWeekDate }: DailyProfitsChartProps) {
+function DailyProfitsChart({ data, weekBaseDate }: DailyProfitsChartProps) {
   if (!data) {
     return (
       <p className="text-center text-gray-500">No hay datos para mostrar.</p>
     );
   }
 
-  const baseDate = parseISO(selectedWeekDate);
+  const baseDate = parseISO(weekBaseDate);
   if (!isValid(baseDate)) {
     return (
       <p className="text-center text-red-500">Fecha base inválida para el gráfico.</p>
@@ -77,7 +78,7 @@ function DailyProfitsChart({ data, selectedWeekDate }: DailyProfitsChartProps) {
     const dateKey = currentDay.toISOString().split('T')[0];
     
     fullWeekData.push({
-      name: format(currentDay, "EEE", { locale: es }),
+      name: format(currentDay, "EEE", { locale: es }), 
       ganancia: weekDataMap.has(dateKey) ? weekDataMap.get(dateKey) : 0,
       fullDateTooltip: format(currentDay, "EEEE dd/MM", { locale: es }),
     });
@@ -113,6 +114,7 @@ interface SemanaInfo {
   semana: number;
   mes: number;
   anio: number;
+  fechaCompleta: string; 
 }
 
 interface WeeklyTotalCardProps {
@@ -121,6 +123,8 @@ interface WeeklyTotalCardProps {
 }
 
 function WeeklyTotalCard({ totalGanancia, semanaInfo }: WeeklyTotalCardProps) {
+  const formattedDate = format(parseISO(semanaInfo.fechaCompleta), "dd/MM/yyyy", { locale: es });
+
   return (
     <Card className="max-w-sm mx-auto flex flex-col justify-center items-center text-center p-4 border border-gray-200 shadow-md">
       <CardHeader className="pb-2 pt-2 w-full flex flex-col items-center">
@@ -129,7 +133,7 @@ function WeeklyTotalCard({ totalGanancia, semanaInfo }: WeeklyTotalCardProps) {
           <p>Semanal</p>
         </div>
         <CardDescription className="text-sm text-gray-500">
-          Semana {semanaInfo.semana}/{semanaInfo.mes}/{semanaInfo.anio}
+          Semana del día: {formattedDate}
         </CardDescription>
       </CardHeader>
       <CardContent className="pt-2 pb-2 w-full flex justify-center">
@@ -145,10 +149,14 @@ export default function GananciasSemanalasPage() {
   const [selectedDateString, setSelectedDateString] = useState<string>(
     new Date().toISOString().split("T")[0]
   );
+  const [loadedDateString, setLoadedDateString] = useState<string | null>(null);
   const [gananciasData, setGananciasData] = useState<GananciaSemanalDTO | null>(
     null
   );
   const [loading, setLoading] = useState<boolean>(false);
+  // Reintroducimos este estado para un control más fino del botón
+  const [isDateInputActuallyValid, setIsDateInputActuallyValid] = useState<boolean>(true);
+
 
   const [feedback, setFeedback] = useState<{
     message: string;
@@ -158,23 +166,77 @@ export default function GananciasSemanalasPage() {
     type: "",
   });
 
+  // Función para validar la fecha del input en tiempo real y actualizar el estado de validez
+  const validateDateForButton = useCallback((dateString: string) => {
+    console.log(`[validateDateForButton] Validando: "${dateString}"`);
+    if (!dateString) { // Si el string está vacío (el input se borró)
+      console.log("[validateDateForButton] Fecha vacía. Inválido.");
+      setIsDateInputActuallyValid(false);
+      return false;
+    }
+    const parsedDate = parseISO(dateString);
+    if (!isValid(parsedDate)) { // Si no es una fecha parseable
+      console.log(`[validateDateForButton] Fecha "${dateString}" no es parseable. Inválido.`);
+      setIsDateInputActuallyValid(false);
+      return false;
+    }
+    // Considerar también la fecha futura para deshabilitar el botón
+    const today = new Date();
+    const todayDateOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    if (parsedDate > todayDateOnly) { // Si es una fecha futura
+        console.log(`[validateDateForButton] Fecha "${dateString}" es futura. Inválido.`);
+        setIsDateInputActuallyValid(false);
+        return false;
+    }
+    console.log(`[validateDateForButton] Fecha "${dateString}" es válida y no futura.`);
+    setIsDateInputActuallyValid(true); // Si todo lo anterior es válido
+    return true; // Retorna true si es válido
+  }, []); // Dependencias vacías, solo se crea una vez
+
   const handleFetchGanancias = useCallback(async () => {
+    setFeedback({ message: "", type: "" });
+    setGananciasData(null); 
+    setLoadedDateString(null); 
+
+    // Validación fuerte antes de hacer el fetch
     if (!selectedDateString) {
       setFeedback({
-        message: "Se requiere una fecha para generar estadísticas.",
+        message: "Por favor, selecciona una fecha para generar estadísticas.",
         type: "error",
       });
-      setGananciasData(null);
-      return;
+      // Asegurar que el botón esté deshabilitado si esto ocurre
+      setIsDateInputActuallyValid(false); 
+      return; 
+    }
+
+    const selectedDate = parseISO(selectedDateString);
+    const today = new Date();
+    const todayDateOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+    if (!isValid(selectedDate)) { 
+        setFeedback({
+            message: "La fecha ingresada no es válida. Por favor, selecciona una fecha correcta.",
+            type: "error",
+        });
+        setIsDateInputActuallyValid(false);
+        return;
+    }
+
+    if (selectedDate > todayDateOnly) { 
+      setFeedback({
+        message: "La fecha seleccionada no puede ser futura.",
+        type: "error", 
+      });
+      setIsDateInputActuallyValid(false);
+      return; 
     }
 
     setLoading(true);
-    setGananciasData(null);
-    setFeedback({ message: "Cargando estadísticas...", type: "" });
+    setFeedback({ message: "Cargando estadísticas...", type: "" }); 
 
     try {
       const response = await fetch(
-        "http://localhost:8080/empleado/verGananciasSemanalas",
+        "http://localhost:8080/admin/verGananciasSemanalas",
         {
           method: "POST",
           headers: {
@@ -194,17 +256,18 @@ export default function GananciasSemanalasPage() {
           errorMessageFromBackend = jsonError.message || errorText;
         } catch (e) {
           errorMessageFromBackend =
-            errorText || `No se encontraron resultados.`;
+            errorText || `Error del servidor al obtener las ganancias.`;
         }
 
         const finalErrorMessage =
-          errorMessageFromBackend || `No se encontraron resultados.`;
+          errorMessageFromBackend || `No se encontraron resultados para la fecha seleccionada.`;
         setFeedback({ message: finalErrorMessage, type: "error" });
-        return;
+        return; 
       }
 
       const data: GananciaSemanalDTO = await response.json();
       setGananciasData(data);
+      setLoadedDateString(selectedDateString); 
 
       if (
         data.gananciaTotal === 0 &&
@@ -212,7 +275,7 @@ export default function GananciasSemanalasPage() {
       ) {
         setFeedback({
           message: "No se encontraron ganancias para la semana seleccionada.",
-          type: "success",
+          type: "success", 
         });
       } else {
         setFeedback({
@@ -227,20 +290,34 @@ export default function GananciasSemanalasPage() {
       } else if (typeof err === "string") {
         errorMessage += ` Detalles: ${err}`;
       }
-      setGananciasData(null);
+      setGananciasData(null); 
+      setLoadedDateString(null); 
       setFeedback({ message: errorMessage, type: "error" });
     } finally {
       setLoading(false);
     }
-  }, [selectedDateString]);
+  }, [selectedDateString]); 
 
-  useEffect(() => {}, [selectedDateString]);
+  // Este useEffect para la carga inicial con la fecha actual al cargar la página
+  useEffect(() => {
+    // Validar la fecha inicial al cargar el componente
+    validateDateForButton(selectedDateString);
+
+    if (!feedback.message && !loading && gananciasData === null && loadedDateString === null) {
+      handleFetchGanancias();
+    }
+  }, [handleFetchGanancias, feedback.message, loading, gananciasData, loadedDateString, selectedDateString, validateDateForButton]);
 
   const hasActualData =
-    gananciasData &&
+    gananciasData !== null && loadedDateString !== null &&
     (gananciasData.gananciaTotal > 0 ||
-      (gananciasData.gananciasDiaras &&
-        gananciasData.gananciasDiaras.length > 0));
+     (gananciasData.gananciasDiaras && gananciasData.gananciasDiaras.length > 0));
+
+  // La lógica del `disabled` del botón ahora depende de `isDateInputActuallyValid`
+  const isButtonDisabled = useMemo(() => {
+    return loading || !isDateInputActuallyValid;
+  }, [loading, isDateInputActuallyValid]);
+
 
   return (
     <div className="container mx-auto py-12 px-4 bg-gray-50 min-h-screen">
@@ -260,14 +337,20 @@ export default function GananciasSemanalasPage() {
           type="date"
           id="date-input"
           value={selectedDateString}
-          onChange={(e) => setSelectedDateString(e.target.value)}
+          onChange={(e) => {
+            const newValue = e.target.value;
+            console.log(`[Input onChange] Nuevo valor: "${newValue}"`);
+            setSelectedDateString(newValue);
+            // Inmediatamente validamos para actualizar el estado del botón
+            validateDateForButton(newValue); 
+          }}
           className="mt-1 block w-full pl-3 pr-10 py-2 border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-amber-500 focus:border-amber-500 text-sm border"
-          max={format(new Date(), "yyyy-MM-dd")}
+          max={format(new Date(), "yyyy-MM-dd")} 
         />
 
         <Button
           onClick={handleFetchGanancias}
-          disabled={loading || !selectedDateString}
+          disabled={isButtonDisabled} 
           className="w-full mt-4 bg-amber-500 hover:bg-amber-600 text-white text-lg flex items-center justify-center gap-2"
         >
           {loading && <Loader2 className="animate-spin w-5 h-5" />}
@@ -281,7 +364,7 @@ export default function GananciasSemanalasPage() {
                 ? "bg-red-100 text-red-800"
                 : feedback.type === "success"
                 ? "bg-green-100 text-green-800"
-                : "bg-gray-100 text-gray-700"
+                : "bg-gray-100 text-gray-700" 
             }`}
           >
             {feedback.message}
@@ -297,14 +380,14 @@ export default function GananciasSemanalasPage() {
       )}
 
       {hasActualData && !loading && (
-        // Esta es la línea que debemos cambiar para aumentar la separación
         <div className="flex flex-col items-center gap-8 mt-8"> 
           <WeeklyTotalCard
-            totalGanancia={gananciasData.gananciaTotal}
+            totalGanancia={gananciasData!.gananciaTotal} 
             semanaInfo={{
-              semana: gananciasData.semana,
-              mes: gananciasData.mes,
-              anio: gananciasData.anio,
+              semana: gananciasData!.semana,
+              mes: gananciasData!.mes,
+              anio: gananciasData!.anio,
+              fechaCompleta: loadedDateString!, 
             }}
           />
           <div className="p-8 bg-white rounded-lg shadow-xl border border-amber-700 w-full max-w-4xl">
@@ -312,8 +395,8 @@ export default function GananciasSemanalasPage() {
               Ganancias Diarias de la Semana
             </h3>
             <DailyProfitsChart
-              data={gananciasData.gananciasDiaras}
-              selectedWeekDate={selectedDateString}
+              data={gananciasData!.gananciasDiaras}
+              weekBaseDate={loadedDateString!} 
             />
           </div>
         </div>
