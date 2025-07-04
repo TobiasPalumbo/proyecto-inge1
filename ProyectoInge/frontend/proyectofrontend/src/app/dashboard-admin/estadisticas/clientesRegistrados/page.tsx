@@ -17,7 +17,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Input } from "@/components/ui/input"; // Aunque no se usa directamente, se mantiene si es un componente de UI de tu librería
 import { Button } from "@/components/ui/button";
 import {
   LineChart,
@@ -31,9 +30,9 @@ import {
 } from "recharts";
 import { Skeleton } from "@/components/ui/skeleton";
 import { isAfter, format, parseISO } from "date-fns";
-import { Loader2 } from "lucide-react"; // Importar Loader2 para el spinner
+import { Loader2 } from "lucide-react"; 
 
-// Tipos
+
 type ClienteDTO = {
   dni: string;
   telefono: string;
@@ -49,7 +48,6 @@ type RegistroPorDia = {
   cantidad: number;
 };
 
-// Ticks personalizados
 const CustomizedAxisTick = (props: any) => {
   const { x, y, payload } = props;
   return (
@@ -70,7 +68,6 @@ const CustomizedAxisTick = (props: any) => {
 };
 
 export default function EstadisticasClientes() {
-  // Inicializamos con la fecha actual formateada correctamente
   const [fechaInicio, setFechaInicio] = useState(format(new Date(), "yyyy-MM-dd"));
   const [fechaFin, setFechaFin] = useState(format(new Date(), "yyyy-MM-dd"));
 
@@ -78,19 +75,12 @@ export default function EstadisticasClientes() {
   const [datosPorDia, setDatosPorDia] = useState<RegistroPorDia[]>([]);
   const [loading, setLoading] = useState(false);
   const [mensaje, setMensaje] = useState<string | null>(null);
-
-  // Bandera para controlar si ya se ha intentado una búsqueda y si hay resultados válidos para mostrar
-  // Esta bandera ahora indica que hay datos para mostrar, no que se intentó la búsqueda.
   const [hasData, setHasData] = useState(false);
-
-  // Eliminamos el useEffect que limpiaba al cambiar las fechas.
-  // Ahora, la limpieza ocurre solo al iniciar una nueva búsqueda en obtenerEstadisticas.
 
   const agruparPorFecha = (clientes: ClienteDTO[]) => {
     const conteo: Record<string, number> = {};
     clientes.forEach((c: ClienteDTO) => {
-      // Asegurarse de que fechaRegistro sea una cadena válida antes de usarla como clave
-      const fecha = c.fechaRegistro || 'Sin Fecha'; // Fallback por si la fecha no existe
+      const fecha = c.fechaRegistro || 'Sin Fecha';
       conteo[fecha] = (conteo[fecha] || 0) + 1;
     });
     const datos: RegistroPorDia[] = Object.entries(conteo).map(
@@ -99,14 +89,11 @@ export default function EstadisticasClientes() {
         cantidad: Number(cantidad),
       })
     );
-    // Ordenar los datos por fecha para el gráfico
     datos.sort((a, b) => new Date(a.fecha).getTime() - new Date(b.fecha).getTime());
     setDatosPorDia(datos);
   };
 
-  // Función de validación de fechas (sin side-effects, solo retorna boolean)
   const validarFechas = useCallback(() => {
-    // Si alguna fecha está vacía, no es válida para la operación
     if (!fechaInicio || !fechaFin) {
       setMensaje("Por favor, selecciona un rango de fechas.");
       return false;
@@ -129,8 +116,9 @@ export default function EstadisticasClientes() {
       setMensaje("Las fechas no pueden ser futuras.");
       return false;
     }
-    return true; // Si todo es válido
+    return true; 
   }, [fechaInicio, fechaFin]);
+
 
   const obtenerEstadisticas = useCallback(async () => {
     setMensaje(null); 
@@ -144,6 +132,7 @@ export default function EstadisticasClientes() {
 
     setLoading(true);
 
+    
     try {
       const response = await fetch(
         "http://localhost:8080/admin/clientesRegistrados",
@@ -179,12 +168,7 @@ export default function EstadisticasClientes() {
       setLoading(false);
     }
   }, [fechaInicio, fechaFin, validarFechas]);
- useEffect(() => {
-     if (!mensaje && !hasData) {
-      obtenerEstadisticas();
-    }
-  }, [obtenerEstadisticas]); 
-
+ 
   return (
     <div className="container mx-auto py-12 px-4 bg-gray-50 min-h-screen">
       <h1 className="text-5xl font-extrabold text-center text-gray-800 mb-10 tracking-tight">
@@ -316,12 +300,6 @@ export default function EstadisticasClientes() {
               </Table>
             </CardContent>
           </Card>
-        </div>
-      )}
-     {!loading && !hasData && mensaje && 
-        !(mensaje.includes("Error") || mensaje.includes("inválido") || mensaje.includes("futuras") || mensaje.includes("posterior a")) && (
-        <div className="mt-8 text-center text-gray-600 text-lg">
-          {mensaje}
         </div>
       )}
     </div>

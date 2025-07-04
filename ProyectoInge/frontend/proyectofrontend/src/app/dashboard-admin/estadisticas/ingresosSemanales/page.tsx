@@ -198,13 +198,11 @@ export default function GananciasSemanalasPage() {
     setGananciasData(null); 
     setLoadedDateString(null); 
 
-    // Validación fuerte antes de hacer el fetch
     if (!selectedDateString) {
       setFeedback({
         message: "Por favor, selecciona una fecha para generar estadísticas.",
         type: "error",
       });
-      // Asegurar que el botón esté deshabilitado si esto ocurre
       setIsDateInputActuallyValid(false); 
       return; 
     }
@@ -298,22 +296,12 @@ export default function GananciasSemanalasPage() {
     }
   }, [selectedDateString]); 
 
-  // Este useEffect para la carga inicial con la fecha actual al cargar la página
-  useEffect(() => {
-    // Validar la fecha inicial al cargar el componente
-    validateDateForButton(selectedDateString);
-
-    if (!feedback.message && !loading && gananciasData === null && loadedDateString === null) {
-      handleFetchGanancias();
-    }
-  }, [handleFetchGanancias, feedback.message, loading, gananciasData, loadedDateString, selectedDateString, validateDateForButton]);
 
   const hasActualData =
     gananciasData !== null && loadedDateString !== null &&
     (gananciasData.gananciaTotal > 0 ||
      (gananciasData.gananciasDiaras && gananciasData.gananciasDiaras.length > 0));
 
-  // La lógica del `disabled` del botón ahora depende de `isDateInputActuallyValid`
   const isButtonDisabled = useMemo(() => {
     return loading || !isDateInputActuallyValid;
   }, [loading, isDateInputActuallyValid]);

@@ -160,7 +160,7 @@ export default function EstadisticasPage() {
       setCurrentAutoRentals(data as AutoAlquiladoBackendDTO[]);
 
       if (data.length === 0) {
-        setFeedback({ message: "No se encontraron alquileres en el rango de fechas seleccionado.", type: "success" });
+        setFeedback({ message: "No se encontraron alquileres en el rango de fechas seleccionado.", type: "error" });
       } else {
         setFeedback({ message: "Estadísticas cargadas con éxito.", type: "success" });
       }
@@ -187,7 +187,7 @@ export default function EstadisticasPage() {
   return (
     <div className="container mx-auto py-12 px-4 bg-gray-50 min-h-screen">
       <h1 className="text-5xl font-extrabold text-center text-gray-800 mb-10 tracking-tight">
-        Estadísticas de <span className="text-amber-600">Alquileres</span>
+        Estadísticas de <span className="text-amber-600">Alquileres de Autos</span>
       </h1>
 
       <div className="max-w-xl mx-auto p-8 bg-white rounded-lg shadow-xl border border-amber-700 space-y-6 mb-8">

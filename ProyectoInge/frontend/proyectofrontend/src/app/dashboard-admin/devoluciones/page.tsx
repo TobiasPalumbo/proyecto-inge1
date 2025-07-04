@@ -207,6 +207,7 @@ export default function VerDevolucionesTable() {
         </div>
       )}
 
+
       <div className="overflow-x-auto rounded-lg border border-yellow-300 shadow-md">
         <Table>
           <TableHeader>
@@ -229,8 +230,10 @@ export default function VerDevolucionesTable() {
               <TableHead className="px-4 py-3 text-center text-xs font-bold text-amber-950 uppercase tracking-wider border-r border-yellow-500">
                 Regreso
               </TableHead>
-              <TableHead className="px-4 py-3 text-center text-sm font-bold text-amber-950 uppercase tracking-wider">
+              <TableHead className="px-4 py-3 text-center text-sm font-bold text-amber-950 uppercase tracking-wider  border-r border-yellow-500">
                 Estado
+              </TableHead>
+              <TableHead className="px-4 py-3 text-center text-xs font-bold text-amber-950 uppercase tracking-wider border-r border-yellow-500">
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -238,7 +241,7 @@ export default function VerDevolucionesTable() {
             {cargando ? (
               <TableRow>
                 <TableCell
-                  colSpan={7} // Se ajusta el colspan
+                  colSpan={8} // Se ajusta el colspan
                   className="text-center py-10 text-gray-500 text-lg"
                 >
                   Cargando devoluciones...
@@ -247,7 +250,7 @@ export default function VerDevolucionesTable() {
             ) : displayDevoluciones.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={7} // Se ajusta el colspan
+                  colSpan={7} 
                   className="text-center py-10 text-gray-500 text-lg"
                 >
                   No se encontraron devoluciones.
@@ -289,8 +292,21 @@ export default function VerDevolucionesTable() {
                       {alquiler.reserva.sucursalRegreso.direccion})
                     </span>
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-center text-gray-800 text-sm font-medium">
+                  <TableCell className="px-4 py-3 text-gray-800 border-r border-yellow-200">
                     {alquiler.estadoAlquiler}
+                  </TableCell>
+                  <TableCell className="px-4 py-3 text-gray-800 border-r border-yellow-200">
+                    <Button
+                      variant="outline"
+                      className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-1 px-3 rounded-lg shadow-sm transition duration-300 ease-in-out transform hover:scale-105"
+                      onClick={() =>
+                        router.push(
+                          `/dashboard-admin/devoluciones/${alquiler.idAlquiler}`
+                        )
+                      }
+                    >
+                      Registrar Devolución
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))

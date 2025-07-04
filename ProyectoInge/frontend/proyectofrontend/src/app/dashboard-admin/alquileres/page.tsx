@@ -235,7 +235,6 @@ export default function AlquileresSucursalTable() {
               <TableHead className="px-4 py-3 text-center text-xs font-bold text-amber-950 uppercase tracking-wider border-r border-yellow-500">
                 Regreso
               </TableHead>
-              {/* Columna de Estado, ahora al final */}
               <TableHead className="px-4 py-3 text-center text-sm font-bold text-amber-950 uppercase border-r border-yellow-500 ">
                 Estado
               </TableHead>
@@ -308,9 +307,18 @@ export default function AlquileresSucursalTable() {
                       {alquiler.reserva.sucursalRegreso.direccion})
                     </span>
                   </TableCell>
-                  {/* Celda del estado, ahora al final */}
                   <TableCell className="px-4 py-3 border-r border-yellow-200 text-gray-700 text-sm">
+                    <span
+                      className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
+                        alquiler.estadoAlquiler === "finalizado"
+                          ? "bg-amber-200 text-amber-600" 
+                          : alquiler.estadoAlquiler === "confirmado"
+                          ? "bg-green-100 text-green-800"
+                          : "bg-gray-100 text-gray-800"
+                      }`}
+                    >
                     {alquiler.estadoAlquiler}
+                    </span>
                   </TableCell>
                 </TableRow>
               ))
