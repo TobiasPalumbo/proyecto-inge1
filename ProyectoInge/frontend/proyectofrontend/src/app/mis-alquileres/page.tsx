@@ -11,9 +11,7 @@ import {
   TableBody,
   TableCell,
 } from "@/components/ui/table";
-import { Loader2 } from "lucide-react"; // Importar Loader2 para el estado de carga
-
-// --- INTERFACES BASADAS EN TU BACKEND ---
+import { Loader2 } from "lucide-react";
 
 interface PaqueteExtra {
   idPaquete: number;
@@ -29,7 +27,7 @@ interface AutoDTO {
   modelo: string;
   precioDia: number;
   cantidadAsientos: number;
-  descripcionCategoria: string;
+  categoria: string;
   idPoliticaCancelacion: number;
   porcentajeCancelacion: number;
 }
@@ -53,6 +51,7 @@ interface ReservaDTO {
 
 interface AlquilerDTO {
   idAlquiler: number;
+  estadoAlquiler: string;
   precio: number;
   reserva: ReservaDTO;
   paquetesExtras: PaqueteExtra[];
@@ -154,8 +153,11 @@ export default function MisAlquileres() {
                 <TableHead className="px-4 py-3 text-left text-xs font-bold text-amber-950 uppercase tracking-wider border-r border-yellow-500">
                   Sucursal Entrega
                 </TableHead>
-                <TableHead className="px-4 py-3 text-left text-xs font-bold text-amber-950 uppercase tracking-wider">
+                <TableHead className="px-4 py-3 text-left text-xs font-bold text-amber-950 uppercase tracking-wider border-r border-yellow-500">
                   Sucursal Regreso
+                </TableHead>
+                <TableHead className="px-4 py-3 text-left text-xs font-bold text-amber-950 uppercase tracking-wider border-r border-yellow-500">
+                  Estado
                 </TableHead>
               </TableRow>
             </TableHeader>
@@ -181,7 +183,7 @@ export default function MisAlquileres() {
               ) : alquileres.length === 0 ? (
                 <TableRow>
                   <TableCell
-                    colSpan={9} // Ajusta el colSpan
+                    colSpan={10}
                     className="text-center py-10 text-gray-500 text-lg"
                   >
                     No tenés alquileres para mostrar.
@@ -198,7 +200,7 @@ export default function MisAlquileres() {
                       {alquiler.reserva.auto.modelo}
                     </TableCell>
                     <TableCell className="px-4 py-3 border-r border-yellow-300">
-                      {alquiler.reserva.auto.descripcionCategoria}
+                      {alquiler.reserva.auto.categoria}
                     </TableCell>
                     <TableCell className="px-4 py-3 border-r border-yellow-300">
                       {formatPaquetesExtras(alquiler.paquetesExtras)}
@@ -219,6 +221,21 @@ export default function MisAlquileres() {
                     <TableCell className="px-4 py-3">
                       {alquiler.reserva.sucursalRegreso.localidad},{" "}
                       {alquiler.reserva.sucursalRegreso.direccion}
+                    </TableCell>
+                    <TableCell className="px-4 py-3 border-r border-yellow-300">
+                      <span
+                      className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
+                        alquiler.estadoAlquiler === "pendiente"
+                          ? "bg-blue-100 text-blue-800"
+                          : alquiler.estadoAlquiler === "confirmado"
+                          ? "bg-green-100 text-green-800"
+                          : alquiler.estadoAlquiler === "cancelado" || alquiler.estadoAlquiler === "anulado"
+                          ? "bg-red-100 text-red-800"
+                          : "bg-gray-100 text-gray-800"
+                      }`}
+                      >
+                        {alquiler.estadoAlquiler}
+                      </span>
                     </TableCell>
                   </TableRow>
                 ))
