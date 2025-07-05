@@ -154,7 +154,6 @@ export default function GananciasSemanalasPage() {
     null
   );
   const [loading, setLoading] = useState<boolean>(false);
-  // Reintroducimos este estado para un control más fino del botón
   const [isDateInputActuallyValid, setIsDateInputActuallyValid] = useState<boolean>(true);
 
 
@@ -166,10 +165,9 @@ export default function GananciasSemanalasPage() {
     type: "",
   });
 
-  // Función para validar la fecha del input en tiempo real y actualizar el estado de validez
   const validateDateForButton = useCallback((dateString: string) => {
     console.log(`[validateDateForButton] Validando: "${dateString}"`);
-    if (!dateString) { // Si el string está vacío (el input se borró)
+    if (!dateString) { 
       console.log("[validateDateForButton] Fecha vacía. Inválido.");
       setIsDateInputActuallyValid(false);
       return false;
@@ -180,7 +178,7 @@ export default function GananciasSemanalasPage() {
       setIsDateInputActuallyValid(false);
       return false;
     }
-    // Considerar también la fecha futura para deshabilitar el botón
+
     const today = new Date();
     const todayDateOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
     if (parsedDate > todayDateOnly) { // Si es una fecha futura
@@ -189,10 +187,9 @@ export default function GananciasSemanalasPage() {
         return false;
     }
     console.log(`[validateDateForButton] Fecha "${dateString}" es válida y no futura.`);
-    setIsDateInputActuallyValid(true); // Si todo lo anterior es válido
-    return true; // Retorna true si es válido
-  }, []); // Dependencias vacías, solo se crea una vez
-
+    setIsDateInputActuallyValid(true);
+    return true; 
+  }, []); 
   const handleFetchGanancias = useCallback(async () => {
     setFeedback({ message: "", type: "" });
     setGananciasData(null); 
@@ -234,7 +231,7 @@ export default function GananciasSemanalasPage() {
 
     try {
       const response = await fetch(
-        "http://localhost:8080/admin/verGananciasSemanalas",
+        "http://localhost:8080/admin/verGananciasSemanales",
         {
           method: "POST",
           headers: {
