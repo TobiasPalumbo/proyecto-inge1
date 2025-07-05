@@ -29,7 +29,8 @@ public interface ReservaRepository extends JpaRepository<Reserva, Integer> {
 		       + "SELECT r.autoPatente.patente"
 		       + " FROM Reserva r" 
 		       + " WHERE"
-		       + " r.estado != 'cancelado'"
+		       + " r.estado = 'pendiente'"
+		       + " OR r.estado = 'confirmado'"
 		       + " AND (r.fechaEntrega <= :fechaRegreso AND r.fechaRegreso >= :fechaEntrega)" +
 		       ")")
 	public List<AutoPatente> autosPatenteDiponibles(

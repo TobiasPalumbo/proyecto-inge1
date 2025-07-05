@@ -211,7 +211,7 @@ public class ReservaController {
         return ResponseEntity.status(HttpStatus.OK).body(Map.of("message", mensajeExito));
 	}
 	
-	@PostMapping("/admin/verGananciasSemanalas")
+	@PostMapping("/admin/verGananciasSemanales")
 	public ResponseEntity<?> obtenerGananciasSemanales(@RequestBody SemanaDTO request){
 		List<Reserva> reservas = service.obtenerReservasDeSemana(request.dia());
 		List<Alquiler> alquileres = alquilerService.obtenerAlquieresDeSemana(request.dia());
