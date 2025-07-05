@@ -30,6 +30,7 @@ import com.grupo56.proyectoIngeBackend.model.Cliente;
 import com.grupo56.proyectoIngeBackend.model.Empleado;
 import com.grupo56.proyectoIngeBackend.model.FechasRequestDTO;
 import com.grupo56.proyectoIngeBackend.model.GenerarAlquilerDTO;
+import com.grupo56.proyectoIngeBackend.model.IdAlquilerDTO;
 import com.grupo56.proyectoIngeBackend.model.IdSucursalDTO;
 import com.grupo56.proyectoIngeBackend.model.PaqueteExtra;
 import com.grupo56.proyectoIngeBackend.model.PaqueteExtraDTO;
@@ -237,4 +238,16 @@ public class AlquilerController {
 		return ResponseEntity.status(HttpStatus.OK).body(Map.of("message", "Se registro al devolucion exitosamente"));
 	}
 	
+	@PostMapping("/empleado/verAlquiler")
+	public ResponseEntity<?> obtenerAlquiler(@RequestBody IdAlquilerDTO request){
+		Alquiler alquiler = service.obtenerAlquilerPorId(request.idAlquiler());
+		if (alquiler == null)
+			ResponseEntity.status(HttpStatus.NO_CONTENT).body(Map.of("messege", "No hay un alquiler registrad"));
+		List<Alquiler> alquileres = new ArrayList<Alquiler>();
+		alquileres.add(alquiler);
+		List<AlquilerPaqueteExtra> alquileresPaqueteExtras = alquilerPaqueteExtraService.obtenerAlquilerPaquetes();
+		List<AlquilerDTO> alquileresDTO = service.construirAlquileresDTO(alquileres, alquileresPaqueteExtras);
+		return ResponseEntity.status(HttpStatus.OK).body(Map.of("alquiler", alquileresDTO.get(0)));
+
+	}
 }

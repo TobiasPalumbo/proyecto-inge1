@@ -1,5 +1,6 @@
 package com.grupo56.proyectoIngeBackend.service;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ public class AlquilerService {
 	private AlquilerRepository repository;
 	
  	public List<Alquiler> obtenerAlquieresDeSemana(LocalDate dia){
-		WeekFields semanaEstandar = WeekFields.of(Locale.getDefault());
+ 		WeekFields semanaEstandar = WeekFields.of(DayOfWeek.MONDAY, 1);
 		int semana = dia.get(semanaEstandar.weekOfYear());	
 		int anio = dia.getYear();
 		return repository.findAll().stream()
@@ -105,5 +106,11 @@ public class AlquilerService {
 	        	alquileresDTO.add(alquilerDTO);
 	      }
 	      return alquileresDTO;
+	}
+	
+	public Alquiler obtenerAlquilerPorId(Integer idAquiler) {
+		Alquiler alquiler = repository.findById(idAquiler).get();
+
+		return alquiler;
 	}
 }

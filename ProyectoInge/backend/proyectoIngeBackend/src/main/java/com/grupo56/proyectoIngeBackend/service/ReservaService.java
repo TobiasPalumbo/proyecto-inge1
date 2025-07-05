@@ -1,5 +1,6 @@
 package com.grupo56.proyectoIngeBackend.service;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -47,7 +48,7 @@ public class ReservaService {
 		return repository.findAll();
 	}
 	public List<Reserva> obtenerReservasDeSemana(LocalDate dia){
-		WeekFields semanaEstandar = WeekFields.of(Locale.getDefault());
+		WeekFields semanaEstandar = WeekFields.of(DayOfWeek.MONDAY, 1);
 		int semana = dia.get(semanaEstandar.weekOfYear());	
 		int anio = dia.getYear();
 		return repository.findAll().stream()
