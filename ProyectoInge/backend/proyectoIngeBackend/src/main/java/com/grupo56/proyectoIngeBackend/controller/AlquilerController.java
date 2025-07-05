@@ -247,7 +247,7 @@ public class AlquilerController {
 		alquileres.add(alquiler);
 		List<AlquilerPaqueteExtra> alquileresPaqueteExtras = alquilerPaqueteExtraService.obtenerAlquilerPaquetes();
 		List<AlquilerDTO> alquileresDTO = service.construirAlquileresDTO(alquileres, alquileresPaqueteExtras);
-		return ResponseEntity.status(HttpStatus.OK).body(Map.of("alquiler", alquileresDTO.get(0)));
+		return ResponseEntity.status(HttpStatus.OK).body(Map.of("alquiler", alquileresDTO.get(0), "patente", alquiler.getReserva().getAutoPatente().getPatente()));
 
 	}
 }

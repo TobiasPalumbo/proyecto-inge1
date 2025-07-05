@@ -227,12 +227,17 @@ public class ReservaController {
 		double total = 0;
 		double ganancia = 0;
 		for (Reserva reserva : reservas) {
-			if (reserva.getEstado().equals("cancelada"))
-				ganancia += reserva.getPrecio() * reserva.getAutoPatente().getAuto().getPoliticaCancelacion().getPorcentaje();
+			if (reserva.getEstado().equals("cancelado"))
+				ganancia = reserva.getPrecio() * reserva.getAutoPatente().getAuto().getPoliticaCancelacion().getPorcentaje();
 			else if (reserva.getEstado().equals("pendiente") || reserva.getEstado().equals("vencido"))
 				ganancia = reserva.getPrecio();
 			LocalDate fechaPago = reserva.getFechaDePago().toLocalDate();
-			diaMap.replace(fechaPago, diaMap.get(fechaPago) + ganancia);
+			
+			if (diaMap.containsKey(fechaPago)) 
+			    diaMap.replace(fechaPago, diaMap.get(fechaPago) + ganancia);
+			else 
+			    diaMap.put(fechaPago, ganancia);
+			
 			total+= ganancia;
 		}
 		
