@@ -1,4 +1,5 @@
 package com.grupo56.proyectoIngeBackend.controller;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
@@ -217,7 +218,7 @@ public class ReservaController {
 		List<Alquiler> alquileres = alquilerService.obtenerAlquieresDeSemana(request.dia());
 		if (reservas.isEmpty())
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "No hay reservas registradas para esa semana"));	
-		WeekFields semanaEstandar = WeekFields.of(Locale.getDefault());
+		WeekFields semanaEstandar = WeekFields.of(DayOfWeek.MONDAY, 1);
 		int semana = request.dia().get(semanaEstandar.weekOfYear());
 		SemanaHelper creadorSemana = new SemanaHelper();
 		List<GananciaDiariaDTO> gananciasDiariasDTO = new ArrayList();
