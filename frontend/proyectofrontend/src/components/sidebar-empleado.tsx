@@ -22,11 +22,6 @@ export function EmployeeSidebar({ ...props }: React.ComponentProps<typeof Sideba
   
   const navLinks = [
     {
-      title: "Inicio",
-      url: "/dashboard-empleado", 
-      icon: <Home className="size-4" />,
-    },
-    {
       title: "Reservas",
       url: "/dashboard-empleado/reservas", 
       icon: <ClipboardList className="size-4" />,

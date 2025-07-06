@@ -163,7 +163,7 @@ export default function RegistroAlquilerPage() {
       const data = await res.json();
       setFeedback({ message: data.message || "Alquiler registrado con éxito.", type: "success" });
       setAlquilerRegistrado(true);
-      setTimeout(() => router.push("/empleado/verAlquileres"), 2000);
+      setTimeout(() => router.push("/dashboard-admin/alquileres"), 2000);
     } catch (err) {
       setFeedback({
         message: `${(err as Error).message}`,

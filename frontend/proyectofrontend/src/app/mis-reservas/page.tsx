@@ -174,7 +174,17 @@ export default function MisReservas() {
                           {reserva.sucursalRegreso.direccion}
                         </TableCell>
                         <TableCell className="px-4 py-3 text-center">
-                          {reserva.estado}
+                          <span
+                      className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
+                        reserva.estado === "pendiente"
+                          ? "bg-blue-100 text-blue-800"
+                          : reserva.estado === "confirmado"
+                          ? "bg-green-100 text-green-800"
+                          : reserva.estado === "cancelado" || reserva.estado === "anulado"
+                          ? "bg-red-100 text-red-800"
+                          : "bg-gray-100 text-gray-800"
+                      }`}
+                    >{reserva.estado}</span>
                         </TableCell>
                       </TableRow>
                     )

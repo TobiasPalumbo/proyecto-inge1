@@ -125,6 +125,7 @@ export default function CancelarReservaPage() {
               >
                 Volver
               </Button>
+              
               <Button
                 type="submit"
                 disabled={isCancelling}
