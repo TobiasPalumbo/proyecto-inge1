@@ -245,7 +245,10 @@ public class ReservaController {
 			if (alquiler.getPrecio() > alquiler.getReserva().getPrecio()) {
 				double diferencia = alquiler.getPrecio() - alquiler.getReserva().getPrecio();
 				LocalDate fechaEntrega = alquiler.getReserva().getFechaEntrega().toLocalDate();
-				diaMap.replace(fechaEntrega,  diaMap.get(fechaEntrega) + diferencia);
+				if (diaMap.containsKey(fechaEntrega)) 
+				    diaMap.replace(fechaEntrega, diaMap.get(fechaEntrega) + ganancia);
+				else 
+				    diaMap.put(fechaEntrega, ganancia);
 				total+= diferencia;
 			}		
 		}
