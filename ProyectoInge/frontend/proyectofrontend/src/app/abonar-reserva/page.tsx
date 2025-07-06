@@ -275,6 +275,7 @@ export default function AbonarReservaPage() {
     };
 
     try {
+      console.log(body)
       const response = await fetch("http://localhost:8080/pagarConTarjeta", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

@@ -174,7 +174,7 @@ export default function GananciasSemanalasPage() {
 
     try {
       const response = await fetch(
-        "http://localhost:8080/empleado/verGananciasSemanalas",
+        "http://localhost:8080/admin/verGananciasSemanales",
         {
           method: "POST",
           headers: {
@@ -202,10 +202,9 @@ export default function GananciasSemanalasPage() {
         setFeedback({ message: finalErrorMessage, type: "error" });
         return;
       }
-
       const data: GananciaSemanalDTO = await response.json();
       setGananciasData(data);
-
+      console.log(data)
       if (
         data.gananciaTotal === 0 &&
         (data.gananciasDiaras === null || data.gananciasDiaras.length === 0)

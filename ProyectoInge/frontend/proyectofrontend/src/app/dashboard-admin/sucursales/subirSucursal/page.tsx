@@ -64,13 +64,16 @@ export default function SubirSucursalForm() {
       <h1 className="text-5xl font-extrabold text-center text-gray-800 mb-10 tracking-tight">
         Subir Nueva <span className="text-amber-600">Sucursal</span>
       </h1>
-
-      <form
+      <form 
         onSubmit={handleSubmit}
         className="max-w-3xl mx-auto p-8 bg-white rounded-lg shadow-xl border border-amber-500 space-y-6"
       >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
+            <Label htmlFor="imagen" className="block text-sm font-medium text-gray-700">
+              Selecciona una imagen para la sucursal
+            </Label>
+            <input required  type="file" accept="image/*"  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-1 focus:ring-amber-500 focus:border-amber-500 text-sm border" />
             <Label htmlFor="localidad" className="block text-sm font-medium text-gray-700">
               Localidad
             </Label>

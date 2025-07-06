@@ -119,7 +119,7 @@ export default function EstadisticasPage() {
         fechaFin: fechaFinInput,
       };
 
-      const res = await fetch("http://localhost:8080/empleado/verAutosAlquiladosEntreFechas", {
+      const res = await fetch("http://localhost:8080/admin/verAutosAlquiladosEntreFechas", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
