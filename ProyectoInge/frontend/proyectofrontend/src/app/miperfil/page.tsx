@@ -104,7 +104,7 @@ export default function PaginaPerfil() {
         className="fixed top-4 left-4 z-50 px-6 py-2 bg-amber-900 text-white rounded-md hover:bg-amber-800 transition duration-200 shadow-lg" 
         onClick={() => router.push("/pagina-inicio")}
       >
-        ← Volver a Inicio
+        ← Volver
       </Button>
 
     
@@ -113,7 +113,7 @@ export default function PaginaPerfil() {
         <div className="bg-white shadow-xl rounded-2xl overflow-hidden border border-gray-400">
         
           <div className="py-6 px-4 sm:px-6">
-            <h2 className="text-3xl font-bold text-amber-950 text-center">Mi Perfil</h2>
+            <h1 className="text-3xl font-bold text-amber-950 text-center">Mi Perfil</h1>
           </div>
 
           <div className="px-4 py-6 sm:p-8">

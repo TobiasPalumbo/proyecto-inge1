@@ -12,6 +12,9 @@ import {
 } from "@/components/ui/table";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+// Necesitas importar el componente Button y Loader2 si los usas
+import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
 
 // --- TIPOS ---
 type Sucursal = {
@@ -53,6 +56,7 @@ type PaqueteExtraDTO = {
 
 type AlquilerDTO = {
   idAlquiler: number;
+  estadoAlquiler: string; // Este es el estado relevante para tu botón
   precio: number;
   reserva: ReservaDTO;
   paquetesExtras: PaqueteExtraDTO[];
@@ -63,7 +67,7 @@ export default function VerDevolucionesTable() {
   const [mostrarHistorial, setMostrarHistorial] = useState(false);
   const [cargando, setCargando] = useState(false);
   const [errorMensaje, setErrorMensaje] = useState<string | null>(null);
-  const router = useRouter(); 
+  const router = useRouter();
 
   const displayDevoluciones = useMemo(() => {
     let current = [...devoluciones];
@@ -73,9 +77,13 @@ export default function VerDevolucionesTable() {
       current = current.filter((a) => {
         const fechaRegreso = new Date(a.reserva.fechaRegreso);
         fechaRegreso.setHours(0, 0, 0, 0);
-        return fechaRegreso.getTime() === today.getTime();
+        // Filtra también por estado para que solo se muestren las no finalizadas hoy
+        // o si mostrarHistorial es true, las finalizadas también.
+        // Si quieres que el botón aparezca solo para las devoluciones de hoy Y no finalizadas:
+        return fechaRegreso.getTime() === today.getTime() && a.estadoAlquiler !== "Finalizado";
       });
     }
+    // Siempre ordena, incluso si es el historial completo
     return current.sort((a, b) =>
       b.reserva.fechaRegreso.localeCompare(a.reserva.fechaRegreso)
     );
@@ -101,7 +109,7 @@ export default function VerDevolucionesTable() {
       if (response.status === 204) {
         setDevoluciones([]);
         setErrorMensaje(
-          "No se encontraron devoluciones para la sucursal seleccionada."
+          "No se encontraron devoluciones." // Mensaje más genérico sin sucursal
         );
         return;
       }
@@ -119,7 +127,9 @@ export default function VerDevolucionesTable() {
       }
 
       const data = await response.json();
-      setDevoluciones(data.alquileres);
+      // Asegúrate de que 'data.alquileres' sea el path correcto si el backend devuelve un objeto con la lista.
+      // Si el backend devuelve directamente el array, usa `setDevoluciones(data);`
+      setDevoluciones(data.alquileres || data); // Para mayor robustez
     } catch (error: any) {
       setDevoluciones([]);
       setErrorMensaje(`Error al cargar devoluciones: ${error.message}`);
@@ -155,6 +165,25 @@ export default function VerDevolucionesTable() {
           Mostrar Historial de Devoluciones
         </Label>
       </div>
+
+      {/* Aquí podrías agregar un botón para recargar la lista si no se hace en cada Mount */}
+      {/* <div className="mb-4 text-center">
+        <Button
+          onClick={handleBuscarDevoluciones}
+          disabled={cargando}
+          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {cargando ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Cargando...
+            </>
+          ) : (
+            "Recargar Devoluciones"
+          )}
+        </Button>
+      </div> */}
+
       {errorMensaje && (
         <div
           className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4 text-center"
@@ -187,16 +216,17 @@ export default function VerDevolucionesTable() {
               <TableHead className="px-4 py-3 text-center text-xs font-bold text-amber-950 uppercase tracking-wider border-r border-yellow-500">
                 Regreso
               </TableHead>
-              <TableHead className="px-4 py-3 text-center text-sm font-bold text-amber-950 uppercase tracking-wider">
-                
+              <TableHead className="px-4 py-3 text-center text-sm font-bold text-amber-950 uppercase tracking-wider border-r border-yellow-500">
+                Estado
               </TableHead>
+              <TableHead className="px-4 py-3 text-center text-sm font-bold text-amber-950 uppercase tracking-wider"></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody className="bg-white divide-y divide-yellow-200">
             {cargando ? (
               <TableRow>
                 <TableCell
-                  colSpan={7}
+                  colSpan={8} 
                   className="text-center py-10 text-gray-500 text-lg"
                 >
                   Cargando devoluciones...
@@ -205,7 +235,7 @@ export default function VerDevolucionesTable() {
             ) : displayDevoluciones.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={7}
+                  colSpan={8} 
                   className="text-center py-10 text-gray-500 text-lg"
                 >
                   No se encontraron devoluciones.
@@ -246,18 +276,35 @@ export default function VerDevolucionesTable() {
                       {alquiler.reserva.sucursalRegreso.direccion})
                     </span>
                   </TableCell>
+                  <TableCell className="px-4 py-3 text-gray-800 border-r border-yellow-200">
+                    <span
+                      className={
+                        alquiler.estadoAlquiler === "Finalizado" // Asegúrate de que el valor del estado sea "Finalizado" con F mayúscula
+                          ? "text-orange-500 font-semibold"
+                          : "text-gray-800"
+                      }
+                    >
+                      {alquiler.estadoAlquiler}
+                    </span>
+                  </TableCell>
                   <TableCell className="px-4 py-3 text-center">
-  <button
-    onClick={() =>
-      router.push(`devoluciones/registro-devolucion/${alquiler.idAlquiler}`)
-    }
-    className="bg-amber-500 hover:bg-amber-600 text-white font-semibold py-2 px-4 rounded-md shadow-md transition-colors duration-200 text-sm"
-  >
-    Registrar Devolución
-  </button>
-</TableCell>
-
-
+                    <Button
+                      variant="outline"
+                      disabled={alquiler.estadoAlquiler === "finalizado"}
+                      className={`font-bold py-1 px-3 rounded-lg shadow-sm transition duration-300 ease-in-out transform ${
+                        alquiler.estadoAlquiler === "finalizado"
+                          ? "bg-orange-100 text-orange-400 cursor-not-allowed opacity-75"
+                          : "bg-yellow-500 hover:bg-yellow-600 text-white hover:scale-105"
+                      }`}
+                      onClick={() =>
+                        router.push(
+                          `/dashboard-empleado/devoluciones/registro-devolucion/${alquiler.idAlquiler}`
+                        )
+                      }
+                    >
+                      Registrar Devolución{" "}
+                    </Button>
+                  </TableCell>
                 </TableRow>
               ))
             )}

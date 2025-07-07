@@ -7,25 +7,21 @@ import { format, parseISO, isAfter } from "date-fns";
 import { es } from 'date-fns/locale';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
-// MODIFICACIÓN CLAVE: AutoInfoDTO DEBE REFLEJAR EXACTAMENTE TU AutoDTO (Java Record)
-// Basado en el JSON proporcionado, el AutoDTO tiene estas propiedades directamente.
 interface AutoInfoDTO {
-  idAuto: number; // Por ejemplo: 30
-  idCategoria: number; // Por ejemplo: 7
-  marca: string; // Por ejemplo: "Toyota"
-  modelo: string; // Por ejemplo: "Hilux"
-  precio: number; // Por ejemplo: 5000.0
-  cantidadAsientos: number; // Por ejemplo: 5
-  categoria: string; // Por ejemplo: "PickUp AT"
-  idPoliticaCancelacion: number; // Por ejemplo: 3
-  porcentaje: number; // Por ejemplo: 0.0
+  idAuto: number; 
+  idCategoria: number; 
+  marca: string; 
+  modelo: string; 
+  precio: number; 
+  cantidadAsientos: number; 
+  categoria: string; 
+  idPoliticaCancelacion: number; 
+  porcentaje: number; 
 }
 
-// AutoAlquiladoBackendDTO es CORRECTA según tu definición de Java y el JSON esperado
-// Contiene un AutoInfoDTO anidado bajo la clave 'auto' y una 'cantida'
 interface AutoAlquiladoBackendDTO {
-  auto: AutoInfoDTO; // La propiedad 'auto' existe y contiene un AutoInfoDTO
-  cantida: number;   // La propiedad 'cantida' también existe (esta es la que se suma)
+  auto: AutoInfoDTO; 
+  cantida: number;
 }
 
 interface FechasRequestDTO {
@@ -48,11 +44,9 @@ export default function EstadisticasPage() {
   const [loading, setLoading] = useState(false);
   const [feedback, setFeedback] = useState<{ message: string; type: "success" | "error" | "" }>({ message: "", type: "" });
 
-  // Accede a autoAlquilado.auto.marca y autoAlquilado.auto.modelo (estructura anidada correcta)
   const brandModelChartData = useMemo(() => {
     const brandModelCounts: { [key: string]: number } = {};
     currentAutoRentals.forEach(autoAlquilado => {
-      // Defensa para asegurar que 'auto' existe antes de acceder a sus propiedades
       if (autoAlquilado.auto) {
         const brandModel = `${autoAlquilado.auto.marca} - ${autoAlquilado.auto.modelo}`;
         brandModelCounts[brandModel] = (brandModelCounts[brandModel] || 0) + autoAlquilado.cantida;
@@ -65,11 +59,9 @@ export default function EstadisticasPage() {
     }));
   }, [currentAutoRentals]);
 
-  // Accede a autoAlquilado.auto.categoria (estructura anidada correcta)
   const categoryChartData = useMemo(() => {
     const categoryCounts: { [key: string]: number } = {};
     currentAutoRentals.forEach(autoAlquilado => {
-      // Defensa para asegurar que 'auto' existe antes de acceder a sus propiedades
       if (autoAlquilado.auto) {
         const category = autoAlquilado.auto.categoria;
         categoryCounts[category] = (categoryCounts[category] || 0) + autoAlquilado.cantida;
@@ -168,7 +160,7 @@ export default function EstadisticasPage() {
       setCurrentAutoRentals(data as AutoAlquiladoBackendDTO[]);
 
       if (data.length === 0) {
-        setFeedback({ message: "No se encontraron alquileres en el rango de fechas seleccionado.", type: "success" });
+        setFeedback({ message: "No se encontraron alquileres en el rango de fechas seleccionado.", type: "error" });
       } else {
         setFeedback({ message: "Estadísticas cargadas con éxito.", type: "success" });
       }
@@ -189,13 +181,13 @@ export default function EstadisticasPage() {
 
   const formatDateForDisplay = (dateString: string | null) => {
     if (!dateString) return "N/A";
-    return format(parseISO(dateString), "dd 'de' LLLL 'de'yyyy", { locale: es });
+    return format(parseISO(dateString), "dd 'de' LLLL 'de' yyyy", { locale: es });
   };
 
   return (
     <div className="container mx-auto py-12 px-4 bg-gray-50 min-h-screen">
       <h1 className="text-5xl font-extrabold text-center text-gray-800 mb-10 tracking-tight">
-        Estadísticas de <span className="text-amber-600">Alquileres</span>
+        Estadísticas de <span className="text-amber-600">Alquileres de Autos</span>
       </h1>
 
       <div className="max-w-xl mx-auto p-8 bg-white rounded-lg shadow-xl border border-amber-700 space-y-6 mb-8">
