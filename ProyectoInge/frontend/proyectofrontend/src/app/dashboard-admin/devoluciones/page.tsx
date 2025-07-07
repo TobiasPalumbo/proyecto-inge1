@@ -83,7 +83,7 @@ export default function VerDevolucionesTable() {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       current = current.filter((a) => {
-        const fechaRegreso = new Date(a.reserva.fechaRegreso);
+        const fechaRegreso = new Date(a.reserva.fechaRegreso+"T00:00:00");
         fechaRegreso.setHours(0, 0, 0, 0);
         return fechaRegreso.getTime() === today.getTime();
       });

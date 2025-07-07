@@ -129,7 +129,7 @@ export default function RegistroAlquilerPage() {
 
     const paquetesParaEnviar: RequestPaqueteExtraDTO[] = paquetesSeleccionados.map((p) => ({
       idPaquete: p.idPaquete,
-      cantidad: 0,
+      cantidad: p.cantidad, 
     }));
 
     try {
@@ -216,6 +216,7 @@ export default function RegistroAlquilerPage() {
               DNI Segundo Conductor
             </Label>
             <input
+              required
               id="dniSegundoConductor"
               type="text"
               value={dniSegundoConductor}
