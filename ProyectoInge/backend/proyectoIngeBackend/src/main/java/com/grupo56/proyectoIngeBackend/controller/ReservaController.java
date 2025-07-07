@@ -36,6 +36,7 @@ import com.grupo56.proyectoIngeBackend.model.ReservaDTO;
 import com.grupo56.proyectoIngeBackend.model.SecurityUser;
 import com.grupo56.proyectoIngeBackend.model.SemanaDTO;
 import com.grupo56.proyectoIngeBackend.model.SemanaHelper;
+import com.grupo56.proyectoIngeBackend.model.Sucursal;
 import com.grupo56.proyectoIngeBackend.model.Tarjeta;
 import com.grupo56.proyectoIngeBackend.model.Usuario;
 import com.grupo56.proyectoIngeBackend.repository.AlquilerRepository;
@@ -43,6 +44,7 @@ import com.grupo56.proyectoIngeBackend.service.AlquilerService;
 import com.grupo56.proyectoIngeBackend.service.ClienteService;
 import com.grupo56.proyectoIngeBackend.service.EmpleadoService;
 import com.grupo56.proyectoIngeBackend.service.ReservaService;
+import com.grupo56.proyectoIngeBackend.service.SucursalService;
 import com.grupo56.proyectoIngeBackend.service.TarjetaService;
 
 
@@ -59,6 +61,8 @@ public class ReservaController {
 	private AlquilerService alquilerService;
 	@Autowired
 	private EmpleadoService empleadoService;
+	@Autowired
+	private SucursalService sucursalService;
 	
 	
 	@PostMapping("/public/autosDisponibles")
@@ -212,7 +216,7 @@ public class ReservaController {
         return ResponseEntity.status(HttpStatus.OK).body(Map.of("message", mensajeExito));
 	}
 	
-	@PostMapping("/public/verGananciasSemanales")
+	@PostMapping("/admin/verGananciasSemanales")
 	public ResponseEntity<?> obtenerGananciasSemanales(@RequestBody SemanaDTO request){
 		List<Reserva> reservas = service.obtenerReservasDeSemana(request.dia());
 		List<Alquiler> alquileres = alquilerService.obtenerAlquieresDeSemana(request.dia());
@@ -252,4 +256,34 @@ public class ReservaController {
 		GananciaSemanalDTO gananciaSemanalDTO = new GananciaSemanalDTO(semana, request.dia(), total, gananciasDiariasDTO);
 		return ResponseEntity.status(HttpStatus.OK).body(gananciaSemanalDTO);
 	}
+	@PostMapping("/empleado/cerrarDia")
+	public ResponseEntity<?> cerrarDia(Authentication authentication) {
+		Usuario usuario = ((SecurityUser) authentication.getPrincipal()).getUsuario();
+		if(usuario.getRol().equals("empleado")) {
+			Empleado empleado = empleadoService.obtenerEmpleadoPorIdUsuario(usuario);
+			List<Reserva> reservasSucu= service.obtenerReservaDeSucursal(empleado.getSucursal());
+			reservasSucu.stream().filter(r -> r.getEstado().equals("pendiente"))
+			.filter(r -> !r.getFechaEntrega().toLocalDate().isAfter(LocalDate.now()))
+			.forEach(r -> {
+				r.setEstado("vencido");
+				service.actualizarReserva(r);
+			});
+            return ResponseEntity.status(HttpStatus.OK).body(Map.of("message", "Dia cerrado correctamente"));	
+		}
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "Usted no es empleado"));	
+	}
+	@PostMapping("/admin/cerrarDia")
+	public ResponseEntity<?> cerrarDia(@RequestBody IdSucursalDTO request) {
+		Sucursal sucursal= sucursalService.obtenerSucursalPorId(request.idSucursal());
+			List<Reserva> reservasSucu= service.obtenerReservaDeSucursal(sucursal);
+			reservasSucu.stream().filter(r -> r.getEstado().equals("pendiente"))
+			.filter(r -> !r.getFechaEntrega().toLocalDate().isAfter(LocalDate.now()))
+			.forEach(r -> {
+				r.setEstado("vencido");
+				service.actualizarReserva(r);
+			});
+            return ResponseEntity.status(HttpStatus.OK).body(Map.of("message", "Dia cerrado correctamente"));	
+		
+	}
+
 }
