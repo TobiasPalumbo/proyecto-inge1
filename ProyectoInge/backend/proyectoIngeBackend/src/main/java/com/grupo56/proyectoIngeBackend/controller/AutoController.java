@@ -96,7 +96,10 @@ public class AutoController {
 		Map<String, Double> presupuesto = new HashMap<String, Double>();
 		if (auto == null)
 			 return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-		double total = ChronoUnit.DAYS.between(request.fechaEntrega(), request.fechaRegreso()) * auto.getPrecioDia();
+		int dias = (int) ChronoUnit.DAYS.between(request.fechaEntrega(), request.fechaRegreso());
+		if (dias == 0)
+			dias = 1;
+		double total = dias * auto.getPrecioDia();
 		presupuesto.put("presupuesto", total);
 		return ResponseEntity.status(HttpStatus.OK).body(presupuesto);
 	}

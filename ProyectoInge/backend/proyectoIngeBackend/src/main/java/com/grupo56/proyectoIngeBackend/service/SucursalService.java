@@ -49,17 +49,15 @@ public class SucursalService {
 		if(sucursalOp.isEmpty())
 			return false;
 		Sucursal sucursal= sucursalOp.get();
-		boolean hayEmpleadosActivos=empleadoRepo.existsBySucursalAndBorradoFalse(sucursal);
+		boolean hayEmpleadosActivos= empleadoRepo.existsBySucursalAndBorradoFalse(sucursal);
 		boolean hayAutosActivos=autoRepo.existsBySucursalAndBorradoFalse(sucursal);
 		boolean hayReservasActivas= reservaRepo.existsBySucursalEntregaOrSucursalRegresoAndEstadoNot(sucursal, sucursal,"cancelado");
 		if(!hayEmpleadosActivos && !hayAutosActivos && !hayReservasActivas) {
 			sucursal.setBorrado(true);
 			repository.save(sucursal);
 			return true;
-			
 		}
 		return false;
-		
 	}
 
 

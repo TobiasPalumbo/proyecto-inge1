@@ -45,7 +45,11 @@ public interface ReservaRepository extends JpaRepository<Reserva, Integer> {
 	public List<Reserva> reservasSucursalId(
 		    @Param("idSucursal") Integer idSucursal
 		);
-	
+	@Query("SELECT r FROM Reserva r "
+			+ "WHERE r.sucursalEntrega.idSucursal = :idSucursal ")
+	public List<Reserva> reservasSucursalIdEntrega(
+		    @Param("idSucursal") Integer idSucursal
+		);
 	
 	
 	@Query("SELECT DISTINCT new  com.grupo56.proyectoIngeBackend.model.AutoDTO("
@@ -85,13 +89,18 @@ public interface ReservaRepository extends JpaRepository<Reserva, Integer> {
 	@Query("""
 		    SELECT COUNT(r) > 0
 		    FROM Reserva r
+		    WHERE r.estado = 'pendiente'
+		    AND r.autoPatente.idAutoPatente = :autoId
+		""")
+		boolean existsReservasPendientes(Integer autoId);
+
+	@Query("""
+		    SELECT COUNT(r) > 0
+		    FROM Reserva r
 		    WHERE r.estado = 'confirmado'
 		    AND r.autoPatente.idAutoPatente = :autoId
-		    AND NOT EXISTS (
-		        SELECT a FROM Alquiler a WHERE a.reserva = r
-		    )
 		""")
-		boolean existsReservaConfirmadaSinAlquiler(Integer autoId);
+		boolean existsReservasConfirmadas(Integer autoId);
 
 
 

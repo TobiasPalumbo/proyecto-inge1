@@ -19,7 +19,6 @@ public interface AlquilerRepository extends JpaRepository<Alquiler, Integer> {
 		    SELECT COUNT(a) > 0
 		    FROM Alquiler a
 		    WHERE a.estado = 'pendiente'
-		    AND a.reserva.estado = 'confirmado'
 		    AND a.reserva.autoPatente.idAutoPatente = :autoId
 		""")
 	public boolean existsAlquilerPendientePorAuto(Integer autoId);

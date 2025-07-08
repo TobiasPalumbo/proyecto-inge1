@@ -202,12 +202,14 @@ public class AlquilerController {
 		List<PaqueteExtra> paquetes = paqueteExtraService.obtenerPorIdsPaquetesExtras(idsPaquetes);
 		Map<Integer, PaqueteExtra> mapPaquetes = paquetes.stream().collect(Collectors.toMap(p -> p.getIdPaquete(), Function.identity()));
 		double total = request.paquetesExtras().stream().mapToDouble(p -> {
+			System.out.println(p.cantidad());
 			PaqueteExtra paquete = mapPaquetes.get(p.idPaquete());
 			return paquete.getPrecio() * p.cantidad();
 		})
 		.sum();
+		System.out.println(total);
 		total += reserva.getPrecio();
-		Alquiler alquiler = new Alquiler(reserva, reserva.getFechaEntrega() , total, request.dniConductor(), request.dniSegundoConductor());
+		Alquiler alquiler = new Alquiler(reserva, reserva.getFechaRegreso() , total, request.dniConductor(), request.dniSegundoConductor());
 		service.guardarAlquiler(alquiler);
 		for (RequestPaqueteExtraDTO paqueteExtra : request.paquetesExtras()) {
 			alquilerPaqueteExtraService

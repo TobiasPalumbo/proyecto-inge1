@@ -177,9 +177,37 @@ public class ReservaService {
     );
 		return reservasDTO;
 	}
+	
+	public List<ReservaDTO> obtenerReservasDeSucursalEntrega(Integer idSucursal){
+	    List<ReservaDTO> reservasDTO = new ArrayList<ReservaDTO>();
+	    List<Reserva> reservas = repository.reservasSucursalIdEntrega(idSucursal);    
+        reservas.stream().forEach(r -> 
+        reservasDTO.add(new ReservaDTO(
+            r.getIdReserva(),
+            r.getSucursalEntrega(),
+            r.getSucursalRegreso(),
+            new AutoDTO(
+                r.getAutoPatente().getAuto().getIdAuto(),
+                r.getAutoPatente().getCategoria().getId(),
+                r.getAutoPatente().getAuto().getMarca(),
+                r.getAutoPatente().getAuto().getModelo(),
+                r.getAutoPatente().getAuto().getPrecioDia(),
+                r.getAutoPatente().getAuto().getCantidadAsientos(),
+                r.getAutoPatente().getCategoria().getDescripcion(),
+                r.getAutoPatente().getAuto().getPoliticaCancelacion().getIdPoliticaCancelacion(),
+                r.getAutoPatente().getAuto().getPoliticaCancelacion().getPorcentaje()
+            ),
+            r.getPrecio(),
+            r.getEstado(),
+            r.getFechaEntrega().toLocalDate(),
+            r.getFechaRegreso().toLocalDate(),
+            r.getFechaEntrega().toLocalTime(),
+            r.getFechaRegreso().toLocalTime()
+        ))
+    );
+		return reservasDTO;
+	}
 	public boolean existenReservasEnSucursal(Sucursal sucursal) {
 		return repository.existsBySucursalEntregaOrSucursalRegresoAndEstadoNot(sucursal, sucursal, "cancelado");
 	}
-
-	
 }
