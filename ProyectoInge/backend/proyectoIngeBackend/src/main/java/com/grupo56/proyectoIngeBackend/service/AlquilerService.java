@@ -2,6 +2,9 @@ package com.grupo56.proyectoIngeBackend.service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.List;
@@ -102,7 +105,11 @@ public class AlquilerService {
 	        			r.getFechaRegreso().toLocalDate(),
 	        			r.getFechaEntrega().toLocalTime(),
 	        			r.getFechaRegreso().toLocalTime());
-	        	AlquilerDTO alquilerDTO = new AlquilerDTO(a.getIdAlquiler(), precioTotal, a.getEstado(), reservaDTO, paquetesExtras);
+	        	double precioExtra = autoDTO.precio() * (int) ChronoUnit.DAYS.between(reservaDTO.fechaRegreso(), LocalDate.now());
+	        	LocalDateTime hoy = LocalDateTime.now();
+	        	LocalDate diaHoy = hoy.toLocalDate();
+	        	LocalTime horaHoy = hoy.toLocalTime();
+	        	AlquilerDTO alquilerDTO = new AlquilerDTO(a.getIdAlquiler(), precioTotal,  precioExtra, diaHoy, horaHoy, a.getEstado(), reservaDTO, paquetesExtras);
 	        	alquileresDTO.add(alquilerDTO);
 	      }
 	      return alquileresDTO;
