@@ -53,10 +53,15 @@ type PaqueteExtraDTO = {
 
 type AlquilerDTO = {
   idAlquiler: number;
+  estadoAlquiler: string; // Este es el estado relevante para tu botón
   precio: number;
+  precioExtra: number;
+  diaHoy: string;
+  horaHoy: string;
   reserva: ReservaDTO;
   paquetesExtras: PaqueteExtraDTO[];
 };
+
 
 export default function VerDevolucionesTable() {
   const [devoluciones, setDevoluciones] = useState<AlquilerDTO[]>([]);
@@ -122,6 +127,7 @@ export default function VerDevolucionesTable() {
       }
 
       const data = await response.json();
+      console.log(data)
       setDevoluciones(data.alquileres);
     } catch (error: any) {
       setDevoluciones([]);
@@ -190,8 +196,14 @@ export default function VerDevolucionesTable() {
               <TableHead className="px-4 py-3 text-center text-xs font-bold text-amber-950 uppercase tracking-wider border-r border-yellow-500">
                 Regreso
               </TableHead>
-              <TableHead className="px-4 py-3 text-center text-sm font-bold text-amber-950 uppercase tracking-wider">
+              <TableHead className="text-center text-sm font-bold text-xs  text-amber-950 uppercase border-r border-yellow-500">
+                Precio
+              </TableHead>
+              <TableHead className="px-4 py-3 text-center text-xs font-bold text-amber-950 uppercase tracking-wider border-r border-yellow-500 ">
                 Estado
+              </TableHead>
+              <TableHead className="px-4 py-3 text-center text-sm font-bold text-amber-950 uppercase tracking-wider">
+                
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -249,18 +261,30 @@ export default function VerDevolucionesTable() {
                       {alquiler.reserva.sucursalRegreso.direccion})
                     </span>
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-center">
-  <button
-    onClick={() =>
-      router.push(`devoluciones/registro-devolucion/${alquiler.idAlquiler}`)
-    }
-    className="bg-amber-500 hover:bg-amber-600 text-white font-semibold py-2 px-4 rounded-md shadow-md transition-colors duration-200 text-sm"
-  >
-    Registrar Devolución
-  </button>
-</TableCell>
-
-
+                  <TableCell className="px-4 py-3 border-r border-yellow-200 text-sm">
+                    ${alquiler.precio}
+                  </TableCell>
+                  <TableCell className="px-4 py-3 border-r border-yellow-200 text-sm">
+                    <span
+                      className={
+                        alquiler.estadoAlquiler === "Finalizado"
+                          ? "text-orange-500 font-semibold"
+                          : "text-gray-800"
+                      }
+                    >
+                      {alquiler.estadoAlquiler}
+                    </span>
+                  </TableCell>
+                  <TableCell className="px-4 py-3 text-center px-4 py-3 border-r border-yellow-200 text-sm">
+                  <button
+                    onClick={() =>
+                      router.push(`devoluciones/registro-devolucion/${alquiler.idAlquiler}`)
+                    }
+                    className="bg-amber-500 hover:bg-amber-600 text-white font-semibold py-2 px-4 rounded-md shadow-md transition-colors duration-200 text-sm"
+                  >
+                    Registrar Devolución
+                  </button>
+                </TableCell>
                 </TableRow>
               ))
             )}

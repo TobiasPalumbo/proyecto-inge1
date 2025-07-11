@@ -64,6 +64,9 @@ type AlquilerDTO = {
   idAlquiler: number;
   estadoAlquiler: string; // Este es el estado relevante para tu botón
   precio: number;
+  precioExtra: number;
+  diaHoy: string;
+  horaHoy: string;
   reserva: ReservaDTO;
   paquetesExtras: PaqueteExtraDTO[];
 };
@@ -152,6 +155,7 @@ export default function VerDevolucionesTable() {
       }
 
       const data: AlquilerDTO[] = await response.json();
+      console.log(data)
       setDevoluciones(data);
     } catch (error: any) {
       setErrorMensaje(`Error al cargar devoluciones: ${error.message}`);
@@ -250,6 +254,9 @@ export default function VerDevolucionesTable() {
                 Regreso
               </TableHead>
               <TableHead className="text-center text-sm font-bold text-amber-950 uppercase border-r border-yellow-500">
+                Precio
+              </TableHead>
+              <TableHead className="px-4 py-3 text-center text-xs font-bold text-amber-950 uppercase tracking-wider border-r border-yellow-500">
                 Estado
               </TableHead>
               <TableHead className="text-center text-xs font-bold text-amber-950 uppercase border-r border-yellow-500"></TableHead>
@@ -311,6 +318,9 @@ export default function VerDevolucionesTable() {
                     </span>
                   </TableCell>
                   <TableCell className="px-4 py-3 border-r border-yellow-200 text-sm">
+                    ${alquiler.precio}
+                  </TableCell>
+                  <TableCell className="px-4 py-3 border-r border-yellow-200 text-sm">
                     <span
                       className={
                         alquiler.estadoAlquiler === "Finalizado"
@@ -330,10 +340,11 @@ export default function VerDevolucionesTable() {
                           ? "bg-orange-100 text-orange-500 cursor-not-allowed"
                           : "bg-yellow-500 hover:bg-yellow-600 text-white hover:scale-105"
                       }`}
-                      onClick={() =>
-                        router.push(
-                          `/dashboard-admin/devoluciones/${alquiler.idAlquiler}`
-                        )
+                      onClick={() =>{
+                          router.push(
+                            `/dashboard-admin/devoluciones/${alquiler.idAlquiler}`
+                          )
+                        }
                       }
                     >
                       Registrar Devolución{" "}

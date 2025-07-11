@@ -81,7 +81,7 @@ export default function RegistroDevolucionPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto py-12 px-6">
+<div className="max-w-4xl mx-auto py-12 px-6">
       <h1 className="text-5xl font-extrabold mb-10 text-center text-amber-700 leading-tight">
         Registrar Devolución
       </h1>
@@ -113,9 +113,21 @@ export default function RegistroDevolucionPage() {
               </div>
             </div>
             <div>
-              <Label className="text-sm font-semibold text-gray-700">Precio Total</Label>
+              <Label className="text-sm font-semibold text-gray-700">Precio inicial</Label>
               <div className="text-gray-700 text-xl font-bold mt-1">
                 ${alquiler.precio}
+              </div>
+            </div>
+                 <div>
+              <Label className="text-sm font-semibold text-gray-700">Precio extra</Label>
+              <div className="text-gray-700 text-xl font-bold mt-1">
+                ${alquiler.precioExtra}
+              </div>
+            </div>
+            <div>
+              <Label className="text-sm font-semibold text-gray-700">Precio Total</Label>
+              <div className="text-gray-700 text-xl font-bold mt-1">
+                ${alquiler.precio + alquiler.precioExtra}
               </div>
             </div>
             <div>
@@ -142,14 +154,15 @@ export default function RegistroDevolucionPage() {
               </div>
             </div>
             <div>
-              <Label className="text-sm font-semibold text-gray-700">Fecha y Hora de Regreso</Label>
+              <Label className="text-sm font-semibold text-gray-700">Fecha y Hora de Regreso Inicial</Label>
               <div className="text-gray-800 mt-1">
                 {formatFecha(alquiler.reserva.fechaRegreso)} - {formatHora(alquiler.reserva.horaRegreso)}
               </div>
             </div>
           </div>
 
-          <div className="bg-gray-50 p-5 rounded-lg border border-gray-200">
+          <div className="bg-gray-50 p-5 rounded-lg border border-gray-200  grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6">
+            <div>
             <Label className="text-sm font-semibold text-gray-700 mb-3 block">Paquetes Extras</Label>
             {alquiler.paquetesExtras.length === 0 ? (
               <div className="text-gray-500 text-sm italic">No hay paquetes extras adicionales.</div>
@@ -162,8 +175,14 @@ export default function RegistroDevolucionPage() {
                 ))}
               </ul>
             )}
+            </div>
+            <div>
+              <Label className="text-sm font-semibold text-gray-700">Fecha y Hora de Regreso Final</Label>
+              <div className="text-gray-800 mt-1">
+                {formatFecha(alquiler.diaHoy)} - {formatHora(alquiler.horaHoy)}             
+               </div>
+            </div>
           </div>
-
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-6 text-sm" role="alert">
           <span className="block sm:inline"> {error}</span>
@@ -182,10 +201,22 @@ export default function RegistroDevolucionPage() {
               "Confirmar Devolución"
             )}
           </Button>
+          <Button
+           onClick={ () => setTimeout(() => router.push("/dashboard-empleado/devoluciones"), 0)}
+            type="button"
+            className="w-full bg-amber-600 hover:bg-amber-700 text-white font-semibold py-3 rounded-lg text-lg transition-colors duration-200 ease-in-out"
+            disabled={loading}
+          >
+            {loading ? (
+              <>
+                <Loader2 className="animate-spin w-5 h-5 mr-3" /> Procesando Devolución...
+              </>
+            ) : (
+              "Cancelar"
+            )}
+          </Button>
         </form>
       )}
-
-
       {registrado && (
        <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-70 z-50">
           <div className="max-w-sm bg-white rounded-lg shadow-lg p-6 flex items-center space-x-3">
