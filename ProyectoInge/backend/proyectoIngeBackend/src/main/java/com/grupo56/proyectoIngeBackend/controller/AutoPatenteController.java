@@ -88,10 +88,10 @@ public class AutoPatenteController {
 		AutoPatente autoP= service.obtenerAutoPatentePorPatente(request.patente());
 		if(autoP.isBorrado())
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "El auto se encuentra borrado"));
-		if(service.autoTieneReservasConfirmadasSinAlquiler(autoP.getIdAutoPatente()))
-	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "El auto tiene reservas confirmadas, cancelelas para continuar"));
-		if(service.autoTieneAlquileresPendientesPorReservaConfirmada(autoP.getIdAutoPatente()))
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "El auto tiene alquiler en curso"));
+		if(service.autoTieneReservasPendientes(autoP.getIdAutoPatente()))
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "El auto tiene reservas pendientes, cancelelas o anulalas para continuar"));
+		if(service.autoTieneAlquilerConfirmada(autoP.getIdAutoPatente()))
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "El auto tiene un alquiler en curso"));
      autoP.setBorrado(true);
      service.subirAutoPatente(autoP);
      return ResponseEntity.status(HttpStatus.OK).body(Map.of("message", "El auto fue borrado"));

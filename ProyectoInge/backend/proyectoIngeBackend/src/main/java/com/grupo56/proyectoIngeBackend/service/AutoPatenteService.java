@@ -48,11 +48,16 @@ public class AutoPatenteService {
 	public boolean existenAutosEnSucursal(Sucursal sucursal) {
 		return repository.existsBySucursalAndBorradoFalse(sucursal);
 	}
-	public boolean autoTieneReservasConfirmadasSinAlquiler(Integer autoId) {
-	    return reservaRepo.existsReservaConfirmadaSinAlquiler(autoId);
+	
+	public boolean autoTieneReservasConfirmadas(Integer autoId) {
+	    return reservaRepo.existsReservasConfirmadas(autoId);
 	}
-
-	public boolean autoTieneAlquileresPendientesPorReservaConfirmada(Integer autoId) {
+	
+	public boolean autoTieneReservasPendientes(Integer autoId) {
+	    return reservaRepo.existsReservasPendientes(autoId);
+	}
+	
+	public boolean autoTieneAlquilerConfirmada(Integer autoId) {
 	    return alquilerRepo.existsAlquilerPendientePorAuto(autoId);
 	}
 }

@@ -8,7 +8,7 @@ public class SemanaHelper {
 
     public static List<LocalDate> obtenerDiasDeSemana(int anio, int numeroSemana) {
         // Usamos la configuración regional (puede ser ISO o Locale.getDefault())
-        WeekFields weekFields = WeekFields.of(Locale.getDefault());
+        WeekFields weekFields = WeekFields.of(DayOfWeek.MONDAY, 1);
 
         // Lunes de esa semana
         LocalDate lunes = LocalDate.of(anio, 1, 1)

@@ -174,7 +174,7 @@ public class ReservaController {
 		Usuario usuario = ((SecurityUser) authentication.getPrincipal()).getUsuario();
 		if (usuario.getRol().equals("empleado")) {
 			Empleado empleado = empleadoService.obtenerEmpleadoPorIdUsuario(usuario);
-			List<ReservaDTO> reservasDTO = service.obtenerReservasDeSucursal(empleado.getSucursal().getIdSucursal());
+			List<ReservaDTO> reservasDTO = service.obtenerReservasDeSucursalEntrega(empleado.getSucursal().getIdSucursal());
 			if(reservasDTO.isEmpty())
 				return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 			List<ReservaDTO> reservasDTOfitradas = reservasDTO.stream()
@@ -188,7 +188,7 @@ public class ReservaController {
 	
 	@PostMapping("/admin/verEntregasPorSucursal")
 	public ResponseEntity<List<ReservaDTO>> obtenerEntregasPorSucursal(@RequestBody IdSucursalDTO idSucursalDTO) {
-		List<ReservaDTO> reservasDTO = service.obtenerReservasDeSucursal(idSucursalDTO.idSucursal());
+		List<ReservaDTO> reservasDTO = service.obtenerReservasDeSucursalEntrega(idSucursalDTO.idSucursal());
 		if(reservasDTO.isEmpty())
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 		List<ReservaDTO> reservasDTOfitradas = reservasDTO.stream()
@@ -214,7 +214,7 @@ public class ReservaController {
 	@PostMapping("/empleado/anularReservaAdminEmpleado")
 	public ResponseEntity<?> anularReserva(@RequestBody IdReservaDTO request){
 		Reserva reserva= service.obtenerReservaPorId(request.idReserva());
-		if(reserva.getEstado().equals("anulado")|| reserva.getEstado().equals("anulado"))
+		if(reserva.getEstado().equals("anulado")|| reserva.getEstado().equals("cancelada"))
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "La reserva ya esta anulada o cancelada"));
 		reserva.setEstado("anulado");
 		service.actualizarReserva(reserva);
