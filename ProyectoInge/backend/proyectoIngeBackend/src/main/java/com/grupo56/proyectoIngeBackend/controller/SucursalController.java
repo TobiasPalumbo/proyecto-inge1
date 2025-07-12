@@ -40,10 +40,10 @@ public class SucursalController {
 		}
 	@PostMapping("/admin/darDeBajaSucursal")
 	public ResponseEntity<String> darDeBajaSucursal(@RequestBody IdSucursalDTO idSucursalDTO){
-		if(service.borrarSucursal(idSucursalDTO.idSucursal()))
-			return ResponseEntity.status(HttpStatus.CREATED).body("La sucursal se a dado de baja");
-		return ResponseEntity.status(HttpStatus.CONFLICT).body("La sucursal posee empleados, reservas o vehiculos");
-		
+		String info = service.borrarSucursal(idSucursalDTO.idSucursal());
+		if (info.equals("Sucursal borrada"))
+			return ResponseEntity.status(HttpStatus.CREATED).body("La sucursal se ha dado de baja");
+		return ResponseEntity.status(HttpStatus.CONFLICT).body(info);
 	}
 		
 	}

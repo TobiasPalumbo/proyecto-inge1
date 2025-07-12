@@ -280,6 +280,7 @@ public class ReservaController {
 		}
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "Usted no es empleado"));	
 	}
+	
 	@PostMapping("/admin/cerrarDia")
 	public ResponseEntity<?> cerrarDia(@RequestBody IdSucursalDTO request) {
 		Sucursal sucursal= sucursalService.obtenerSucursalPorId(request.idSucursal());
@@ -291,7 +292,6 @@ public class ReservaController {
 				service.actualizarReserva(r);
 			});
             return ResponseEntity.status(HttpStatus.OK).body(Map.of("message", "Dia cerrado correctamente"));	
-		
 	}
 
 }
