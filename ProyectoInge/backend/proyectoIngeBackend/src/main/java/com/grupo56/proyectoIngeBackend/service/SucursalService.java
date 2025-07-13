@@ -41,7 +41,7 @@ public class SucursalService {
 		return null;
 	}
 	public boolean sucursalNoExiste(String direcion, String localidad) {
-		Optional<Sucursal> sucu= repository.findByLocalidadAndDireccion(localidad, direcion);
+		Optional<Sucursal> sucu= repository.findByLocalidadAndDireccionAndBorradoFalse(localidad, direcion);
 		if(sucu.isPresent() && !sucu.get().isBorrado())
 			return false;
 		return true;

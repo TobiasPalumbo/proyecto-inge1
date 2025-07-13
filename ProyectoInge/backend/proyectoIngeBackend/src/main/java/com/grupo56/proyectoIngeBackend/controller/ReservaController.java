@@ -276,9 +276,10 @@ public class ReservaController {
 		Usuario usuario = ((SecurityUser) authentication.getPrincipal()).getUsuario();
 		if(usuario.getRol().equals("empleado")) {
 			Empleado empleado = empleadoService.obtenerEmpleadoPorIdUsuario(usuario);
-			List<Reserva> reservasSucu= service.obtenerReservaDeSucursal(empleado.getSucursal());
-			reservasSucu.stream().filter(r -> r.getEstado().equals("pendiente"))
-			.filter(r -> !r.getFechaEntrega().toLocalDate().isAfter(LocalDate.now()))
+			List<Reserva> reservasSucu= service.obtenerReservaDeSucursal(empleado.getSucursal()).stream().filter(r -> r.getEstado().equals("pendiente")).toList();
+			if(reservasSucu.isEmpty())
+	            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(Map.of("message", "No se encuentran reservas pendientes"));	
+			reservasSucu.stream().filter(r -> !r.getFechaEntrega().toLocalDate().isAfter(LocalDate.now()))
 			.forEach(r -> {
 				r.setEstado("vencido");
 				service.actualizarReserva(r);
@@ -291,9 +292,10 @@ public class ReservaController {
 	@PostMapping("/admin/cerrarDia")
 	public ResponseEntity<?> cerrarDia(@RequestBody IdSucursalDTO request) {
 		Sucursal sucursal= sucursalService.obtenerSucursalPorId(request.idSucursal());
-			List<Reserva> reservasSucu= service.obtenerReservaDeSucursal(sucursal);
-			reservasSucu.stream().filter(r -> r.getEstado().equals("pendiente"))
-			.filter(r -> !r.getFechaEntrega().toLocalDate().isAfter(LocalDate.now()))
+        	List<Reserva> reservasSucu= service.obtenerReservaDeSucursal(sucursal).stream().filter(r -> r.getEstado().equals("pendiente")).toList();
+			if(reservasSucu.isEmpty())
+	            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(Map.of("message", "No se encuentran reservas pendientes"));	
+			reservasSucu.stream().filter(r -> !r.getFechaEntrega().toLocalDate().isAfter(LocalDate.now()))
 			.forEach(r -> {
 				r.setEstado("vencido");
 				service.actualizarReserva(r);
