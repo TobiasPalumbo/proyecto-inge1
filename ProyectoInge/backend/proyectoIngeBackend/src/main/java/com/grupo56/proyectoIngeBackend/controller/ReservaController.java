@@ -152,7 +152,16 @@ public class ReservaController {
     }
 	
 	@PostMapping("/empleado/verReservasSucursal")
-	public ResponseEntity<List<ReservaDTO>> obtenerReservasSucursal(@RequestBody IdSucursalDTO idSucursalDTO){
+	public ResponseEntity<List<ReservaDTO>> obtenerReservasSucursal(Authentication authentication){
+		Usuario usuario = ((SecurityUser) authentication.getPrincipal()).getUsuario();
+		Empleado empleado = empleadoService.obtenerEmpleadoPorIdUsuario(usuario);
+		List<ReservaDTO> reservasDTO = service.obtenerReservasDeSucursal(empleado.getSucursal().getIdSucursal());
+		if(reservasDTO.isEmpty())
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+		return ResponseEntity.status(HttpStatus.OK).body(reservasDTO);
+	}
+	@PostMapping("/admin/verReservasSucursal")
+	public ResponseEntity<List<ReservaDTO>> AdminobtenerReservasSucursal(@RequestBody IdSucursalDTO idSucursalDTO){
 		List<ReservaDTO> reservasDTO = service.obtenerReservasDeSucursal(idSucursalDTO.idSucursal());
 		if(reservasDTO.isEmpty())
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
