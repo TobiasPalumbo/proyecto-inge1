@@ -10,6 +10,6 @@ import com.grupo56.proyectoIngeBackend.model.Sucursal;
 @Repository
 public interface SucursalRepository extends JpaRepository<Sucursal,Integer>{
 	
-	Optional<Sucursal> findByLocalidadAndDireccion(String localidad, String direccion);
+	Optional<Sucursal> findByLocalidadAndDireccionAndBorradoFalse(String localidad, String direccion);
 	Optional<Sucursal> findById(Integer idSucursal);
 }
