@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { Loader2, CheckCircle, XCircle } from "lucide-react"; 
+import { Loader2, CheckCircle, XCircle } from "lucide-react";
 
 type Sucursal = {
   idSucursal: number;
@@ -78,7 +78,7 @@ export default function ReservasSucursalTable() {
   const [anulandoReservaId, setAnulandoReservaId] = useState<number | null>(
     null
   );
-  
+
   const [mostrarModalConfirmacionAnular, setMostrarModalConfirmacionAnular] = useState(false);
   const [reservaParaAnularConfirmacion, setReservaParaAnularConfirmacion] = useState<Reserva | null>(null);
 
@@ -86,8 +86,12 @@ export default function ReservasSucursalTable() {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState<'success' | 'error' | ''>('');
 
-  const [estaCerrandoDia, setEstaCerrandoDia] = useState(false); 
+  const [estaCerrandoDia, setEstaCerrandoDia] = useState(false);
   const [mostrarModalConfirmacionCerrarDia, setMostrarModalConfirmacionCerrarDia] = useState(false);
+  const [reservasCargadas, setReservasCargadas] = useState(false);
+
+  // Eliminamos los estados `mensajeCierreDia` y `tipoMensajeCierreDia`
+  // porque el mensaje se mostrará con la notificación global.
 
 
   useEffect(() => {
@@ -109,7 +113,9 @@ export default function ReservasSucursalTable() {
   const handleSucursalChange = (value: string) => {
     setSucursalSeleccionada(value);
     setErrorMensaje(null);
-    setShowNotification(false); 
+    setShowNotification(false);
+    setReservasCargadas(false);
+    // Ya no es necesario limpiar los estados de mensaje de cierre de día aquí
   };
 
   const handleBuscarReservas = async () => {
@@ -119,13 +125,15 @@ export default function ReservasSucursalTable() {
     }
     setCargando(true);
     setErrorMensaje(null);
-    setShowNotification(false); 
+    setShowNotification(false);
     setReservas([]);
     setPresupuestos({});
-
+    setReservasCargadas(false);
+    // Ya no es necesario limpiar los estados de mensaje de cierre de día aquí
+    
     try {
       const response = await fetch(
-        "http://localhost:8080/empleado/verReservasSucursal",
+        "http://localhost:8080/admin/verReservasSucursal",
         {
           method: "POST",
           headers: {
@@ -158,9 +166,11 @@ export default function ReservasSucursalTable() {
 
       const data: Reserva[] = await response.json();
       setReservas(data);
+      setReservasCargadas(true);
     } catch (error: any) {
       setReservas([]);
       setErrorMensaje(`Error al cargar reservas: ${error.message}`);
+      setReservasCargadas(false);
     } finally {
       setCargando(false);
     }
@@ -194,7 +204,7 @@ export default function ReservasSucursalTable() {
 
   const handleCancelarReserva = async (idReserva: number) => {
     setCancelandoReservaId(idReserva);
-    setShowNotification(false); 
+    setShowNotification(false);
 
     try {
       const response = await fetch(
@@ -240,14 +250,14 @@ export default function ReservasSucursalTable() {
       setShowNotification(true);
     } finally {
       setCancelandoReservaId(null);
-      setTimeout(() => setShowNotification(false), 3000); 
+      setTimeout(() => setShowNotification(false), 3000);
     }
   };
 
   const handleClickAnular = (reserva: Reserva) => {
     setReservaParaAnularConfirmacion(reserva);
     setMostrarModalConfirmacionAnular(true);
-    setShowNotification(false); 
+    setShowNotification(false);
   };
 
   const confirmarAnulacion = async () => {
@@ -255,12 +265,12 @@ export default function ReservasSucursalTable() {
 
     const idReserva = reservaParaAnularConfirmacion.idReserva;
     setAnulandoReservaId(idReserva);
-    setMostrarModalConfirmacionAnular(false); 
-    setShowNotification(false); 
+    setMostrarModalConfirmacionAnular(false);
+    setShowNotification(false);
 
     try {
       const response = await fetch(
-        "http://localhost:8080/empleado/anularReservaAdminEmpleado", 
+        "http://localhost:8080/empleado/anularReservaAdminEmpleado",
         {
           method: "POST",
           headers: {
@@ -303,31 +313,36 @@ export default function ReservasSucursalTable() {
     } finally {
       setAnulandoReservaId(null);
       setReservaParaAnularConfirmacion(null);
-      setTimeout(() => setShowNotification(false), 3000); 
+      setTimeout(() => setShowNotification(false), 3000);
     }
   };
 
   const cancelarAnulacion = () => {
     setMostrarModalConfirmacionAnular(false);
     setReservaParaAnularConfirmacion(null);
-    setShowNotification(false); 
+    setShowNotification(false);
   };
 
   const handleCerrarDia = () => {
+    if (!sucursalSeleccionada) {
+      setErrorMensaje("Por favor, seleccione una sucursal para cerrar el día.");
+      return;
+    }
+    // No limpiamos el mensaje de cierre de día aquí, porque lo usará el sistema de notificaciones.
     setMostrarModalConfirmacionCerrarDia(true);
   };
 
   const confirmarCerrarDia = async () => {
-    setEstaCerrandoDia(true); 
-    setMostrarModalConfirmacionCerrarDia(false); 
-    setErrorMensaje(null); 
-    setShowNotification(false); 
+    setEstaCerrandoDia(true);
+    setErrorMensaje(null);
+    setShowNotification(false); // Aseguramos que la notificación esté oculta al iniciar la operación
 
     try {
       const response = await fetch("http://localhost:8080/admin/cerrarDia", {
-        method: "POST", 
+        method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
+        body: JSON.stringify({ idSucursal: parseInt(sucursalSeleccionada) }),
       });
 
       if (!response.ok) {
@@ -339,33 +354,30 @@ export default function ReservasSucursalTable() {
         } catch (e) {
           errorMessage = errorText || errorMessage;
         }
-        setNotificationMessage(errorMessage);
+        setNotificationMessage(errorMessage); // Usamos la notificación global
         setNotificationType('error');
-        setShowNotification(true);
-        return;
+      } else {
+        const data = await response.json();
+        setNotificationMessage(data.message || "Día cerrado con éxito."); // Usamos la notificación global
+        setNotificationType('success');
+        handleBuscarReservas(); // Recargar reservas después de cerrar el día
       }
-
-      const data = await response.json();
-      setNotificationMessage(data.message || "Día cerrado con éxito.");
-      setNotificationType('success');
-      setShowNotification(true);
-
-      handleBuscarReservas(); 
-
+      setShowNotification(true); // Mostrar la notificación después de recibir la respuesta
     } catch (error: any) {
       setNotificationMessage(`Error de conexión al cerrar el día: ${error.message}`);
       setNotificationType('error');
       setShowNotification(true);
     } finally {
-      setEstaCerrandoDia(false); 
-      setTimeout(() => setShowNotification(false), 3000); 
+      setEstaCerrandoDia(false);
+      setMostrarModalConfirmacionCerrarDia(false); // Cerramos el modal de confirmación
+      setTimeout(() => setShowNotification(false), 3000); // Ocultar notificación después de 3 segundos
     }
   };
 
   const cancelarCerrarDia = () => {
     setMostrarModalConfirmacionCerrarDia(false);
-    setEstaCerrandoDia(false); 
-    setShowNotification(false); 
+    setEstaCerrandoDia(false);
+    setShowNotification(false); // Aseguramos que la notificación esté oculta si se cancela
   };
 
   return (
@@ -412,20 +424,22 @@ export default function ReservasSucursalTable() {
           </Label>
         </div>
 
-        <Button
-          onClick={handleCerrarDia}
-          disabled={estaCerrandoDia}
-          className="bg-amber-800 hover:bg-amber-900 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-        >
-          {estaCerrandoDia ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Cerrando Día...
-            </>
-          ) : (
-            "Cerrar Día"
-          )}
-        </Button>
+        {reservasCargadas && sucursalSeleccionada && (
+          <Button
+            onClick={handleCerrarDia}
+            disabled={estaCerrandoDia}
+            className="bg-amber-800 hover:bg-amber-900 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+          >
+            {estaCerrandoDia ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Cerrando Día...
+              </>
+            ) : (
+              "Cerrar Día"
+            )}
+          </Button>
+        )}
       </div>
 
       {errorMensaje && (
@@ -437,7 +451,7 @@ export default function ReservasSucursalTable() {
           <span className="block sm:inline"> {errorMensaje}</span>
         </div>
       )}
-      
+
 
       <div className="overflow-x-auto rounded-lg border border-yellow-300 shadow-md">
         <Table>
@@ -534,7 +548,7 @@ export default function ReservasSucursalTable() {
                           ? "bg-blue-100 text-blue-800"
                           : reserva.estado === "confirmado"
                           ? "bg-green-100 text-green-800"
-                          : reserva.estado === "cancelado" || reserva.estado === "anulado"
+                          : reserva.estado === "cancelado" || reserva.estado === "anulado" || reserva.estado === "vencido"
                           ? "bg-red-100 text-red-800"
                           : "bg-gray-100 text-gray-800"
                       }`}
@@ -548,11 +562,12 @@ export default function ReservasSucursalTable() {
                       disabled={
                         reserva.estado === "cancelado" ||
                         reserva.estado === "anulado" ||
-                        reserva.estado === "confirmado" || 
+                        reserva.estado === "confirmado" ||
+                        reserva.estado === "vencido" ||
                         cancelandoReservaId === reserva.idReserva
                       }
                       className={`font-medium px-3 py-1.5 text-xs rounded-md shadow-md transition-colors duration-200 whitespace-nowrap ${
-                        reserva.estado === "cancelado" || reserva.estado === "anulado" || reserva.estado === "confirmado"
+                        reserva.estado === "cancelado" || reserva.estado === "anulado" || reserva.estado === "confirmado" || reserva.estado === "vencido"
                           ? "bg-gray-400 text-white cursor-not-allowed"
                           : "bg-red-600 hover:bg-red-700 text-white"
                       }`}
@@ -571,11 +586,12 @@ export default function ReservasSucursalTable() {
                       disabled={
                         reserva.estado === "cancelado" ||
                         reserva.estado === "anulado" ||
-                        reserva.estado === "confirmado" || 
+                        reserva.estado === "confirmado" ||
+                        reserva.estado === "vencido" ||
                         anulandoReservaId === reserva.idReserva
                       }
                       className={`font-medium px-3 py-1.5 text-xs rounded-md shadow-md transition-colors duration-200 whitespace-nowrap ${
-                        reserva.estado === "cancelado" || reserva.estado === "anulado" || reserva.estado === "confirmado"
+                        reserva.estado === "cancelado" || reserva.estado === "anulado" || reserva.estado === "confirmado" || reserva.estado === "vencido"
                           ? "bg-gray-400 text-white cursor-not-allowed"
                           : "bg-orange-600 hover:bg-orange-700 text-white"
                       }`}
@@ -641,7 +657,7 @@ export default function ReservasSucursalTable() {
           <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm text-center border-gray-500 border">
             <h3 className="text-xl font-bold text-gray-800 mb-4">Confirmar Cierre de Día</h3>
             <p className="text-gray-700 mb-6">
-              ¿Estás seguro de que deseas cerrar el día? 
+                ¿Estás seguro de que deseas cerrar el día para la sucursal seleccionada?
             </p>
 
             {estaCerrandoDia && (
@@ -659,11 +675,11 @@ export default function ReservasSucursalTable() {
                 Cancelar
               </Button>
               <Button
-                onClick={confirmarCerrarDia}
-                disabled={estaCerrandoDia}
-                className="bg-amber-800 hover:bg-amber-900 text-white font-semibold py-2 px-4 rounded-md flex items-center justify-center gap-2"
+                  onClick={confirmarCerrarDia}
+                  disabled={estaCerrandoDia}
+                  className="bg-amber-800 hover:bg-amber-900 text-white font-semibold py-2 px-4 rounded-md flex items-center justify-center gap-2"
               >
-                {estaCerrandoDia ? 'Cerrando Día...' : 'Confirmar Cierre'}
+                  Confirmar Cierre
               </Button>
             </div>
           </div>

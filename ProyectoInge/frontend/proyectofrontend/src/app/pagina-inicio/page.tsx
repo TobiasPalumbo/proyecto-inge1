@@ -53,5 +53,5 @@ export default function PaginaInicio() {
             <div className="py-12 px-4 max-w-7xl mx-auto"></div>
             <Footer/>
         </>
-    )
+    )   
 }

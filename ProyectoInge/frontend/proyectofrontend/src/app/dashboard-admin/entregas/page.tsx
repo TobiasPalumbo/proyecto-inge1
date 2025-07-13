@@ -177,7 +177,7 @@ export default function EntregasSucursalTable() {
                 Categoría
               </TableHead>
               <TableHead className="px-4 py-3 text-center text-sm font-bold text-amber-950 uppercase tracking-wider border-r border-yellow-500">
-                Hora de Entrega
+                Fecha de Entrega
               </TableHead>
               <TableHead className="px-4 py-3 text-center text-sm font-bold text-amber-950 uppercase tracking-wider border-r border-yellow-500">
                 Sucursal Entrega
@@ -223,6 +223,8 @@ export default function EntregasSucursalTable() {
                     {reserva.auto.categoria}
                   </TableCell>
                   <TableCell className="px-4 py-3 text-gray-800 border-r border-yellow-200">
+                    {reserva.fechaEntrega}
+                    {" - "}
                     {formatTime(reserva.horaEntrega)}
                   </TableCell>
                   <TableCell className="px-4 py-3 text-gray-800 border-r border-yellow-200">

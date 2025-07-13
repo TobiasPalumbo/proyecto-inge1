@@ -251,7 +251,7 @@ export default function VerDevolucionesTable() {
                 Paquetes Extras
               </TableHead>
               <TableHead className="text-center text-xs font-bold text-amber-950 uppercase border-r border-yellow-500">
-                Regreso
+                Fecha de Regreso
               </TableHead>
               <TableHead className="text-center text-sm font-bold text-amber-950 uppercase border-r border-yellow-500">
                 Precio

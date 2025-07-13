@@ -324,7 +324,7 @@ export default function ReservasSucursalTable() {
     setShowNotification(false); 
 
     try {
-      const response = await fetch("http://localhost:8080/admin/cerrarDia", {
+      const response = await fetch("http://localhost:8080/empleado/cerrarDia", {
         method: "POST", 
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -438,7 +438,6 @@ export default function ReservasSucursalTable() {
         </div>
       )}
       
-
       <div className="overflow-x-auto rounded-lg border border-yellow-300 shadow-md">
         <Table>
           <TableHeader>
