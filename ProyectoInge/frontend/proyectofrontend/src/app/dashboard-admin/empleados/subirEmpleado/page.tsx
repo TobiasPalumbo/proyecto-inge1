@@ -57,6 +57,10 @@ export default function SubirEmpleadoForm() {
       setFeedback({ message: "Completá todos los campos.", type: "error" });
       return;
     }
+    if (cuil && !/^\d{11,11}$/.test(cuil)) {
+      setFeedback({ message: "Debe tener 11 dígitos numéricos.", type: "error" });
+      return;
+    }
 
    try {
       setLoading(true);
