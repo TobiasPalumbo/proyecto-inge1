@@ -24,8 +24,8 @@ public class ClienteContoller {
 	@PostMapping("/admin/clientesRegistrados")
 	public ResponseEntity<List<ClienteDTO>> obtenerClientesRegistradoEnFechas(@RequestBody FechasRequestDTO request){
 		List<Cliente> clientes  = service.obtenerClientes();
-		if (clientes.isEmpty())
-			return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+			if (clientes.isEmpty())
+				return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 		List<Cliente> clientesFiltrados = 
 				clientes.stream().
 				filter(c -> 

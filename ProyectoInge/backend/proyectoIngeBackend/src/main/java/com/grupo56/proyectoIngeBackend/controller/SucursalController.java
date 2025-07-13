@@ -45,7 +45,7 @@ public class SucursalController {
 			return ResponseEntity.status(HttpStatus.CREATED).body("La sucursal se ha dado de baja");
 		return ResponseEntity.status(HttpStatus.CONFLICT).body(info);
 	}
-		
+	
 	}
 	
 

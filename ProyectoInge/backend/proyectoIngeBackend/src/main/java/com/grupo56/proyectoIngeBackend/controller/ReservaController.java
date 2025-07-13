@@ -229,8 +229,6 @@ public class ReservaController {
 	public ResponseEntity<?> obtenerGananciasSemanales(@RequestBody SemanaDTO request){
 		List<Reserva> reservas = service.obtenerReservasDeSemana(request.dia());
 		List<Alquiler> alquileres = alquilerService.obtenerAlquieresDeSemana(request.dia());
-		if (reservas.isEmpty())
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "No hay reservas registradas para esa semana"));	
 		WeekFields semanaEstandar = WeekFields.of(DayOfWeek.MONDAY, 1);
 		int semana = request.dia().get(semanaEstandar.weekOfYear());
 		SemanaHelper creadorSemana = new SemanaHelper();
@@ -241,11 +239,11 @@ public class ReservaController {
 		double ganancia = 0;
 		for (Reserva reserva : reservas) {
 			if (reserva.getEstado().equals("cancelado"))
-				ganancia = reserva.getPrecio() * reserva.getAutoPatente().getAuto().getPoliticaCancelacion().getPorcentaje();
-			else if (reserva.getEstado().equals("pendiente") || reserva.getEstado().equals("vencido"))
+				ganancia = reserva.getPrecio() - reserva.getPrecio() * reserva.getAutoPatente().getAuto().getPoliticaCancelacion().getPorcentaje();
+			else if (reserva.getEstado().equals("pendiente") || reserva.getEstado().equals("vencido") ||  reserva.getEstado().equals("confirmado"))
 				ganancia = reserva.getPrecio();
 			LocalDate fechaPago = reserva.getFechaDePago().toLocalDate();
-			
+	
 			if (diaMap.containsKey(fechaPago)) 
 			    diaMap.replace(fechaPago, diaMap.get(fechaPago) + ganancia);
 			else 
@@ -259,7 +257,7 @@ public class ReservaController {
 				double diferencia = alquiler.getPrecio() - alquiler.getReserva().getPrecio();
 				LocalDate fechaEntrega = alquiler.getReserva().getFechaEntrega().toLocalDate();
 				if (diaMap.containsKey(fechaEntrega)) 
-				    diaMap.replace(fechaEntrega, diaMap.get(fechaEntrega) + ganancia);
+				    diaMap.replace(fechaEntrega, diaMap.get(fechaEntrega) + diferencia);
 				else 
 				    diaMap.put(fechaEntrega, ganancia);
 				total+= diferencia;
