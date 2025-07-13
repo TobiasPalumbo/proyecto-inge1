@@ -89,7 +89,7 @@ public class AutoPatenteController {
 		if(autoP.isBorrado())
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "El auto se encuentra borrado"));
 		if(service.autoTieneReservasPendientes(autoP.getIdAutoPatente()))
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "El auto tiene reservas pendientes, cancelelas o anulalas para continuar"));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "El auto tiene reservas pendientes"));
 		if(service.autoTieneAlquilerConfirmada(autoP.getIdAutoPatente()))
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "El auto tiene un alquiler en curso"));
      autoP.setBorrado(true);

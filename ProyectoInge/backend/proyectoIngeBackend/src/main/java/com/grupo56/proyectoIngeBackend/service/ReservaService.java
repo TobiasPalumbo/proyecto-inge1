@@ -207,7 +207,5 @@ public class ReservaService {
     );
 		return reservasDTO;
 	}
-	public boolean existenReservasEnSucursal(Sucursal sucursal) {
-		return repository.existsBySucursalEntregaOrSucursalRegresoAndEstadoNot(sucursal, sucursal, "cancelado");
-	}
+
 }
