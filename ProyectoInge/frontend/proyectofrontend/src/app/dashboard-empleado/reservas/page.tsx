@@ -321,7 +321,7 @@ export default function ReservasSucursalTable() {
 
     try {
       const response = await fetch("http://localhost:8080/empleado/cerrarDia", {
-        method: "POST", 
+        method: "GET", 
         headers: { "Content-Type": "application/json" },
         credentials: "include",
       });
@@ -340,12 +340,13 @@ export default function ReservasSucursalTable() {
         setShowNotification(true);
         return;
       }
-
+      console.log(response)
       const data = await response.json();
       setNotificationMessage(data.message || "Día cerrado con éxito.");
       setNotificationType('success');
       setShowNotification(true);
 
+      handleBuscarReservas()
 
     } catch (error: any) {
       setNotificationMessage(`Error de conexión al cerrar el día: ${error.message}`);
@@ -498,7 +499,7 @@ export default function ReservasSucursalTable() {
                           ? "bg-blue-100 text-blue-800"
                           : reserva.estado === "confirmado"
                           ? "bg-green-100 text-green-800"
-                          : reserva.estado === "cancelado" || reserva.estado === "anulado"
+                          : reserva.estado === "cancelado" || reserva.estado === "anulado" || reserva.estado === "vencido"
                           ? "bg-red-100 text-red-800"
                           : "bg-gray-100 text-gray-800"
                       }`}
@@ -513,10 +514,11 @@ export default function ReservasSucursalTable() {
                         reserva.estado === "cancelado" ||
                         reserva.estado === "anulado" ||
                         reserva.estado === "confirmado" || 
+                        reserva.estado === "vencido" ||
                         cancelandoReservaId === reserva.idReserva
                       }
                       className={`font-medium px-3 py-1.5 text-xs rounded-md shadow-md transition-colors duration-200 whitespace-nowrap ${
-                        reserva.estado === "cancelado" || reserva.estado === "anulado" || reserva.estado === "confirmado"
+                        reserva.estado === "cancelado" || reserva.estado === "anulado" || reserva.estado === "confirmado" || reserva.estado === "vencido"
                           ? "bg-gray-400 text-white cursor-not-allowed"
                           : "bg-red-600 hover:bg-red-700 text-white"
                       }`}
@@ -536,10 +538,11 @@ export default function ReservasSucursalTable() {
                         reserva.estado === "cancelado" ||
                         reserva.estado === "anulado" ||
                         reserva.estado === "confirmado" || 
+                        reserva.estado === "vencido" ||
                         anulandoReservaId === reserva.idReserva
                       }
                       className={`font-medium px-3 py-1.5 text-xs rounded-md shadow-md transition-colors duration-200 whitespace-nowrap ${
-                        reserva.estado === "cancelado" || reserva.estado === "anulado" || reserva.estado === "confirmado"
+                        reserva.estado === "cancelado" || reserva.estado === "anulado" || reserva.estado === "confirmado" || reserva.estado === "vencido"
                           ? "bg-gray-400 text-white cursor-not-allowed"
                           : "bg-orange-600 hover:bg-orange-700 text-white"
                       }`}
