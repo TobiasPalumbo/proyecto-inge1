@@ -31,6 +31,7 @@ type Reserva = {
   idReserva: number;
   precio: number;
   estado: string;
+  fechaPago: string,
   fechaEntrega: string;
   horaEntrega: string;
   fechaRegreso: string;
@@ -422,6 +423,9 @@ export default function ReservasSucursalTable() {
               </TableHead>
               <TableHead className="px-4 py-3 text-center text-xs font-bold text-amber-950 uppercase tracking-wider border-r border-yellow-500">
                 Política de Cancelación
+              </TableHead>  
+              <TableHead className="px-4 py-3 text-center text-xs font-bold text-amber-950 uppercase tracking-wider border-r border-yellow-500">
+                Fecha de Pago
               </TableHead>
               <TableHead className="px-4 py-3 text-center text-xs font-bold text-amber-950 uppercase tracking-wider border-r border-yellow-500">
                 Entrega
@@ -475,6 +479,9 @@ export default function ReservasSucursalTable() {
                   </TableCell>
                   <TableCell className="px-4 py-3 border-r border-yellow-200 text-gray-700 text-sm">
                     {(reserva.auto.porcentaje * 100).toFixed(0)}%
+                  </TableCell>
+                  <TableCell className="px-4 py-3 border-r border-yellow-200 text-gray-700 text-sm">
+                    {reserva.fechaPago}
                   </TableCell>
                   <TableCell className="px-4 py-3 text-gray-800 border-r border-yellow-200">
                     {reserva.fechaEntrega} - {formatTime(reserva.horaEntrega)}{" "}

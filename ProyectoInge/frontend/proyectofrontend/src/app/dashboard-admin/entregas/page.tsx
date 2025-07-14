@@ -30,6 +30,7 @@ type Sucursal = {
 type Reserva = {
   idReserva: number;
   estado: string;
+  fechaPago: string;
   fechaEntrega: string;
   horaEntrega: string;
   sucursalEntrega: {
@@ -177,6 +178,9 @@ export default function EntregasSucursalTable() {
                 Categoría
               </TableHead>
               <TableHead className="px-4 py-3 text-center text-sm font-bold text-amber-950 uppercase tracking-wider border-r border-yellow-500">
+                Fecha de Pago
+              </TableHead>
+              <TableHead className="px-4 py-3 text-center text-sm font-bold text-amber-950 uppercase tracking-wider border-r border-yellow-500">
                 Fecha de Entrega
               </TableHead>
               <TableHead className="px-4 py-3 text-center text-sm font-bold text-amber-950 uppercase tracking-wider border-r border-yellow-500">
@@ -221,6 +225,9 @@ export default function EntregasSucursalTable() {
                   </TableCell>
                   <TableCell className="px-4 py-3 text-gray-800 border-r border-yellow-200">
                     {reserva.auto.categoria}
+                  </TableCell>
+                  <TableCell className="px-4 py-3 border-r border-yellow-200 text-gray-700 text-sm">
+                    {reserva.fechaPago}
                   </TableCell>
                   <TableCell className="px-4 py-3 text-gray-800 border-r border-yellow-200">
                     {reserva.fechaEntrega}

@@ -216,6 +216,7 @@ export default function RegistroAlquilerPage() {
               DNI Segundo Conductor
             </Label>
             <input
+              required
               id="dniSegundoConductor"
               type="text"
               value={dniSegundoConductor}
