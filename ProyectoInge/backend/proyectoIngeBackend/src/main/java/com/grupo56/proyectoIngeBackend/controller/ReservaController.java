@@ -294,7 +294,7 @@ public class ReservaController {
 		Sucursal sucursal= sucursalService.obtenerSucursalPorId(request.idSucursal());
         	List<Reserva> reservasSucu= service.obtenerReservaDeSucursal(sucursal).stream().filter(r -> r.getEstado().equals("pendiente")).toList();
 			if(reservasSucu.isEmpty())
-	            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(Map.of("message", "No se encuentran reservas pendientes"));	
+	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "No se encuentran reservas pendientes"));	
 			reservasSucu.stream().filter(r -> !r.getFechaEntrega().toLocalDate().isAfter(LocalDate.now()))
 			.forEach(r -> {
 				r.setEstado("vencido");
