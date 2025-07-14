@@ -151,7 +151,7 @@ public class ReservaController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "No es tu reserva o el código es inválido."));
     }
 	
-	@PostMapping("/empleado/verReservasSucursal")
+	@GetMapping("/empleado/verReservasSucursal")
 	public ResponseEntity<List<ReservaDTO>> obtenerReservasSucursal(Authentication authentication){
 		Usuario usuario = ((SecurityUser) authentication.getPrincipal()).getUsuario();
 		Empleado empleado = empleadoService.obtenerEmpleadoPorIdUsuario(usuario);
@@ -160,6 +160,7 @@ public class ReservaController {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 		return ResponseEntity.status(HttpStatus.OK).body(reservasDTO);
 	}
+	
 	@PostMapping("/admin/verReservasSucursal")
 	public ResponseEntity<List<ReservaDTO>> AdminobtenerReservasSucursal(@RequestBody IdSucursalDTO idSucursalDTO){
 		List<ReservaDTO> reservasDTO = service.obtenerReservasDeSucursal(idSucursalDTO.idSucursal());
@@ -211,6 +212,7 @@ public class ReservaController {
         String mensajeExito = "Reserva cancelada, se reintegro el " + (devolucionPorcentaje * 100)  + "% del precio de la reserva";
         return ResponseEntity.status(HttpStatus.OK).body(Map.of("message", mensajeExito));
 	}
+	
 	@PostMapping("/empleado/anularReservaAdminEmpleado")
 	public ResponseEntity<?> anularReserva(@RequestBody IdReservaDTO request){
 		Reserva reserva= service.obtenerReservaPorId(request.idReserva());
@@ -271,14 +273,15 @@ public class ReservaController {
 		GananciaSemanalDTO gananciaSemanalDTO = new GananciaSemanalDTO(semana, request.dia(), total, gananciasDiariasDTO);
 		return ResponseEntity.status(HttpStatus.OK).body(gananciaSemanalDTO);
 	}
-	@PostMapping("/empleado/cerrarDia")
+	
+	@GetMapping("/empleado/cerrarDia")
 	public ResponseEntity<?> cerrarDia(Authentication authentication) {
 		Usuario usuario = ((SecurityUser) authentication.getPrincipal()).getUsuario();
 		if(usuario.getRol().equals("empleado")) {
 			Empleado empleado = empleadoService.obtenerEmpleadoPorIdUsuario(usuario);
 			List<Reserva> reservasSucu= service.obtenerReservaDeSucursal(empleado.getSucursal()).stream().filter(r -> r.getEstado().equals("pendiente")).toList();
 			if(reservasSucu.isEmpty())
-	            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(Map.of("message", "No se encuentran reservas pendientes"));	
+	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "No se encuentran reservas pendientes"));	
 			reservasSucu.stream().filter(r -> !r.getFechaEntrega().toLocalDate().isAfter(LocalDate.now()))
 			.forEach(r -> {
 				r.setEstado("vencido");

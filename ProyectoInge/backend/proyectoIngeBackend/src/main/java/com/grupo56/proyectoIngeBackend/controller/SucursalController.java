@@ -35,9 +35,10 @@ public class SucursalController {
 			service.subirSucursal(nuevaSucursal);
 			return ResponseEntity.status(HttpStatus.CREATED).body("La sucursal se a subido");
 			}
-		return ResponseEntity.status(HttpStatus.CONFLICT).body("Ya hay una sucursal en esa localidad y direccion");
 
-		}
+		return ResponseEntity.status(HttpStatus.CONFLICT).body("Ya hay una sucursal en esa localidad y direccion");
+	}
+	
 	@PostMapping("/admin/darDeBajaSucursal")
 	public ResponseEntity<String> darDeBajaSucursal(@RequestBody IdSucursalDTO idSucursalDTO){
 		String info = service.borrarSucursal(idSucursalDTO.idSucursal());

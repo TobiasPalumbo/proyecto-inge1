@@ -110,8 +110,8 @@ public class AlquilerController {
 			List<Alquiler> alquileres = service.obtenerAlquilerPorIdSucursalRegreso(empleado.getSucursal().getIdSucursal());
 
 			List<Alquiler> alquileresFiltrados = alquileres.stream()
-					.filter(a -> a.getFechaRegreso().toLocalDate().equals(LocalDate.now()) 
-							|| (a.getFechaRegreso().toLocalDate().isBefore(LocalDate.now()) && a.getEstado().equals("pendiente")))
+					.filter(a -> (a.getFechaRegreso().toLocalDate().equals(LocalDate.now()) || a.getFechaRegreso().toLocalDate().isBefore(LocalDate.now()))
+							&& a.getEstado().equals("pendiente"))
 							.toList();
 			if (alquileresFiltrados.isEmpty())
 				return ResponseEntity.status(HttpStatus.NO_CONTENT).body(Map.of("messege", "la sucursal no contiene devolciones"));
@@ -129,8 +129,8 @@ public class AlquilerController {
 		if (alquileres.isEmpty())
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(Map.of("messege", "la sucursal no contiene devolciones"));
 		List<Alquiler> alquileresFiltrados = alquileres.stream()
-				.filter(a -> a.getFechaRegreso().toLocalDate().equals(LocalDate.now()) 
-						|| (a.getFechaRegreso().toLocalDate().isBefore(LocalDate.now()) && a.getEstado().equals("pendiente")))
+				.filter(a -> (a.getFechaRegreso().toLocalDate().equals(LocalDate.now()) || a.getFechaRegreso().toLocalDate().isBefore(LocalDate.now()))
+						&& a.getEstado().equals("pendiente"))
 						.toList();
 		if (alquileresFiltrados.isEmpty())
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(Map.of("messege", "la sucursal no contiene devolciones"));
@@ -151,8 +151,8 @@ public class AlquilerController {
 							(request.fechaInicio().isEqual(a.getReserva().getFechaEntrega().toLocalDate()))
 							|| request.fechaInicio().isBefore(a.getReserva().getFechaEntrega().toLocalDate())
 							&& 
-							(request.fechaFin().isEqual(a.getFechaRegreso().toLocalDate()) 
-							|| request.fechaFin().isAfter(a.getFechaRegreso().toLocalDate())))
+							(request.fechaFin().isEqual(a.getReserva().getFechaEntrega().toLocalDate()) 
+							|| request.fechaFin().isAfter(a.getReserva().getFechaEntrega().toLocalDate())))
 							.toList();
 		        for (Alquiler a : alquileresFiltrados) {
 		        	Reserva r = a.getReserva();
