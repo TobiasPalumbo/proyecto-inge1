@@ -185,7 +185,7 @@ export default function ReservasSucursalTable() {
   const displayReservas = useMemo(() => {
     let currentReservas = [...reservas];
 
-    if (!mostrarHistorial) {
+    if (false) {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
@@ -356,6 +356,7 @@ export default function ReservasSucursalTable() {
         }
         setNotificationMessage(errorMessage); // Usamos la notificación global
         setNotificationType('error');
+
       } else {
         const data = await response.json();
         setNotificationMessage(data.message || "Día cerrado con éxito."); // Usamos la notificación global
@@ -412,17 +413,6 @@ export default function ReservasSucursalTable() {
       </div>
 
       <div className="flex justify-between items-center mb-4">
-        <div className="flex items-center space-x-2">
-          <Switch
-            id="show-history"
-            checked={mostrarHistorial}
-            onCheckedChange={setMostrarHistorial}
-            className="data-[state=checked]:bg-yellow-500 data-[state=unchecked]:bg-gray-300"
-          />
-          <Label htmlFor="show-history" className="text-gray-700 font-medium">
-            Mostrar Historial de Reservas
-          </Label>
-        </div>
 
         {reservasCargadas && sucursalSeleccionada && (
           <Button

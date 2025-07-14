@@ -113,10 +113,6 @@ export default function ReservasSucursalTable() {
   };
 
   const handleBuscarReservas = async () => {
-    if (!sucursalSeleccionada || sucursalSeleccionada === "") {
-      setErrorMensaje("Por favor, seleccione una sucursal.");
-      return;
-    }
     setCargando(true);
     setErrorMensaje(null);
     setShowNotification(false); 
@@ -127,15 +123,14 @@ export default function ReservasSucursalTable() {
       const response = await fetch(
         "http://localhost:8080/empleado/verReservasSucursal",
         {
-          method: "POST",
+          method: "GET",
           headers: {
             "Content-Type": "application/json",
           },
           credentials: "include",
-          body: JSON.stringify({ idSucursal: parseInt(sucursalSeleccionada) }),
         }
       );
-
+      console.log(response) 
       if (response.status === 204) {
         setReservas([]);
         setErrorMensaje(
@@ -157,6 +152,7 @@ export default function ReservasSucursalTable() {
       }
 
       const data: Reserva[] = await response.json();
+      console.log(data)
       setReservas(data);
     } catch (error: any) {
       setReservas([]);
@@ -175,7 +171,7 @@ export default function ReservasSucursalTable() {
   const displayReservas = useMemo(() => {
     let currentReservas = [...reservas];
 
-    if (!mostrarHistorial) {
+    if (false) {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
@@ -350,7 +346,6 @@ export default function ReservasSucursalTable() {
       setNotificationType('success');
       setShowNotification(true);
 
-      handleBuscarReservas(); 
 
     } catch (error: any) {
       setNotificationMessage(`Error de conexión al cerrar el día: ${error.message}`);
@@ -362,6 +357,11 @@ export default function ReservasSucursalTable() {
     }
   };
 
+    useEffect(() => {
+      handleBuscarReservas(); 
+  }, []);
+
+
   const cancelarCerrarDia = () => {
     setMostrarModalConfirmacionCerrarDia(false);
     setEstaCerrandoDia(false); 
@@ -371,46 +371,11 @@ export default function ReservasSucursalTable() {
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       <h1 className="text-3xl font-extrabold text-amber-800 mb-6 text-center">
-        Panel de Reservas por Sucursal
+        Panel de Reservas de Sucursal
       </h1>
 
-      <div className="flex flex-col sm:flex-row gap-4 items-center mb-6 justify-center">
-        <Select
-          value={sucursalSeleccionada}
-          onValueChange={handleSucursalChange}
-        >
-          <SelectTrigger className="w-[250px] bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-yellow-500">
-            <SelectValue placeholder="Seleccionar sucursal" />
-          </SelectTrigger>
-          <SelectContent className="bg-white border border-gray-200 rounded-lg shadow-lg">
-            {sucursales.map((s) => (
-              <SelectItem key={s.idSucursal} value={String(s.idSucursal)}>
-                {s.localidad} - {s.direccion}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Button
-          onClick={handleBuscarReservas}
-          disabled={!sucursalSeleccionada || cargando}
-          className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {cargando ? "Cargando..." : "Ver reservas"}
-        </Button>
-      </div>
 
       <div className="flex justify-between items-center mb-4">
-        <div className="flex items-center space-x-2">
-          <Switch
-            id="show-history"
-            checked={mostrarHistorial}
-            onCheckedChange={setMostrarHistorial}
-            className="data-[state=checked]:bg-yellow-500 data-[state=unchecked]:bg-gray-300"
-          />
-          <Label htmlFor="show-history" className="text-gray-700 font-medium">
-            Mostrar Historial de Reservas
-          </Label>
-        </div>
 
         <Button
           onClick={handleCerrarDia}

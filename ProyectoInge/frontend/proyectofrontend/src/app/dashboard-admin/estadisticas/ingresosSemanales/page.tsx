@@ -260,6 +260,7 @@ export default function GananciasSemanalasPage() {
         return; 
       }
       const data: GananciaSemanalDTO = await response.json();
+      console.log(data)
       setGananciasData(data);
 
       setLoadedDateString(selectedDateString); 
